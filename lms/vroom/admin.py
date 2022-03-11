@@ -9,6 +9,13 @@ class LinkInline(admin.TabularInline):
 class EjercicioAdmin(admin.ModelAdmin):
     list_display= ('titulo','get_Curso',)
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        cursos = Curso.objects.filter(centro = request.user)
+        return qs.filter(curso__in=cursos)
+
     def get_Curso(self,obj):
         return obj.curso.titulo
     get_Curso.short_description = 'Curso'
@@ -25,9 +32,16 @@ class EntregaAdmin(admin.ModelAdmin):
         return str(obj.autor.get_full_name())
     get_Autor.short_description = 'Autor'
 
-admin.site.register(Curso)
-admin.site.register(Ejercicio,EjercicioAdmin)
-admin.site.register(Entrega,EntregaAdmin)
+class CursoAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(centro=request.user)
+
+admin.site.register(Curso, CursoAdmin)
+admin.site.register(Ejercicio, EjercicioAdmin)
+admin.site.register(Entrega, EntregaAdmin)
 admin.site.register(Tipo_Ejercicio)
 admin.site.register(Link)
 admin.site.register(Documento)

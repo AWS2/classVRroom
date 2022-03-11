@@ -13,7 +13,7 @@ class Curso(models.Model):
     titulo = models.CharField(max_length=100,null=False,blank=False)
     descripcion = models.TextField()
     estado = models.BooleanField(null=False,blank=False,default=False)
-
+    centro = models.ForeignKey(User,on_delete=models.DO_NOTHING,default=True)
     def __str__(self):
         return self.titulo
 
