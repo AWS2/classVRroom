@@ -29,6 +29,8 @@ class Ejercicio(models.Model):
     def __str__(self):
         return self.titulo
 
+    
+
 class Entrega(models.Model):
     autor = models.ForeignKey(User,on_delete=models.DO_NOTHING,default=True)
     fecha_publicacion = models.DateTimeField()

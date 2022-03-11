@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import * 
+from django import forms
 
 # Register your models here.
 
@@ -17,12 +18,18 @@ class EjercicioAdmin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        cursos = Curso.objects.filter(centro = request.user)
-        return qs.filter(curso__in=cursos)
+        return qs.filter(curso__in=Curso.objects.filter(centro = request.user))
+
+    # Filter in creation form
+    def render_change_form(self, request, context, *args, **kwargs):
+         context['adminform'].form.fields['curso'].queryset = Ejercicio.objects.filter(curso__in=Curso.objects.filter(centro = request.user))
+         return super(EjercicioAdmin, self).render_change_form(request, context, *args, **kwargs)
+
+
 
 class EntregaAdmin(admin.ModelAdmin):
     list_display= ('id','get_Ejercicio','get_Autor')
-    
+
     def get_Ejercicio(self,obj):
         return obj.ejercicio.titulo
     get_Ejercicio.short_description = 'Ejercicio'
@@ -36,9 +43,14 @@ class EntregaAdmin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        cursos = Curso.objects.filter(centro = request.user)
-        ejercicios = Ejercicio.objects.filter(curso__in = cursos)
-        return qs.filter(ejercicio__in = ejercicios)
+
+        return qs.filter(ejercicio__in = Ejercicio.objects.filter(curso__in = Curso.objects.filter(centro = request.user)))
+
+    # Filter in creation form
+    def render_change_form(self, request, context, *args, **kwargs):
+        
+        context['adminform'].form.fields['ejercicio'].queryset = Ejercicio.objects.filter(curso__in = Curso.objects.filter(centro = request.user))
+        return super(EntregaAdmin, self).render_change_form(request, context, *args, **kwargs)
 
 class CursoAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
@@ -46,6 +58,16 @@ class CursoAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         return qs.filter(centro=request.user)
+
+    # Filter in creation form
+    def render_change_form(self, request, context, *args, **kwargs):
+        if request.user.is_superuser:
+            return super(CursoAdmin,self).render_change_form(request, context, *args, **kwargs)
+        centros=User.objects.filter(id=request.user.id)
+        context['adminform'].form.fields['centro'].queryset = centros
+        return super(CursoAdmin,self).render_change_form(request, context, *args, **kwargs)
+
+    
 
 admin.site.register(Curso, CursoAdmin)
 admin.site.register(Ejercicio, EjercicioAdmin)
