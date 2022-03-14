@@ -1,0 +1,22 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <button>Vista general</button>
+        <p> curso: {{curso.titulo}}</p>
+        <p> ejercicio: {{ejercicio.titulo}} </p>
+        <p> alumno: {{entrega.autor}} </p>
+        <p> email alumno: {{alumno.email}}</p>
+        <p> comentario del alumno: {{entrega.comentario_alumno}} </p>
+        <p> entrega: {{entrega.fecha_publicacion}} </p>
+        <p> última edición: {{entrega.fecha_edicion}} </p>
+        <p><a href="{{entrega.archivo}}"> archivo </a><p>
+        <p> 
+            nota: <input value={{entrega.nota}}>
+            <input type="checkbox" id="chkNotificacion"> 
+            <label for="chkNotificacion">envia notificación al alumno</label> 
+        </p>
+        <p> comentario del profesor: <textarea>{{entrega.comentario_profesor}}</textarea> </p>
+        <button>Guarda</button>
+    </body>
+</html>
