@@ -19,3 +19,16 @@ from django.urls import path
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
+
+
+
+
+
+
+#API
+from . import views
+
+urlpatterns += [
+    path('api/ping', views.ping, name='ping'),
+    path('api/cursos/:id_centro', views.cursos, name='cursos'),
+]
