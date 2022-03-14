@@ -89,10 +89,11 @@ class CursoAdmin(admin.ModelAdmin):
             return qs
         return qs.filter(centro=request.user)
     inlines = [LinkInline, TextoInline ,DocumentoInline, EjercicioInline, Usuario_CursoInline ]
-   
- 
+
+    
 admin.site.register(Curso, CursoAdmin)
 admin.site.register(Ejercicio, EjercicioAdmin)
+admin.site.register(Tipo_Ejercicio)
 
 
 
