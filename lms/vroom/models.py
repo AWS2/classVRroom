@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 
 
 class Usuario(AbstractUser):
-    terminos = models.ForeignKey('Terminos',on_delete=models.DO_NOTHING,null=False) 
+    terminos = models.ForeignKey('Terminos',on_delete=models.DO_NOTHING,null=True) 
 
     def __str__(self):
         return self.username
@@ -14,7 +14,7 @@ Usuario._meta.get_field('email')._unique = True
 class Terminos(models.Model):
     version = models.FloatField()
     permisos = models.IntegerField()
-    texto = models.TextField(null=False)
+    texto = models.TextField(null=True)
 
 class Curso(models.Model):
     titulo = models.CharField(max_length=100,null=False,blank=False)
@@ -58,11 +58,11 @@ class Link(models.Model):
     def __str__(self):
         return self.titulo
 
-class Text(models.Model):
+class Texto(models.Model):
     autor = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=True)
     curso = models.ForeignKey('Curso',on_delete=models.DO_NOTHING,default=True)
     titulo = models.CharField(max_length=100)
-    text = models.TextField(null=False)
+    texto = models.TextField(null=True)
 
     def __str__(self):
         return self.titulo
