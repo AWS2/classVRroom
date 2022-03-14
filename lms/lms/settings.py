@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-u4g#d8lt!9d_p#e+pt%tyta!b&37y1r=e$8^_$*wg*@xq@hl#k'
+SECRET_KEY = 'django-insecure-*n8bm$h!&304e#q1r8)ymnq5)b5vr_c7@&eq=h8-2as=)qvdi6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'vroom',
 ]
 
-AUTH_USER_MODEL = 'vroom.CustomUser'
+AUTH_USER_MODEL = 'vroom.Usuario'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

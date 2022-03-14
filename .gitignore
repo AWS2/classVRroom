@@ -1,4 +1,1 @@
 env/
-lms/lms/__pycache__
-lms/vroom/__pycache__
-lms/vroom/migrations
