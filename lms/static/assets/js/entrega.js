@@ -3,6 +3,7 @@ const app = Vue.createApp({
   data() {
       return {
           id_entrega: '',
+          id_ejercicio: '',
 
           curso: '',
           ejercicio: '',
@@ -59,6 +60,7 @@ const app = Vue.createApp({
               let ejercicio = result.data[0];
 
               this.ejercicio = ejercicio.titulo;
+              this.id_ejercicio = ejercicio.id;
               this.nota_maxima = ejercicio.nota_maxima;
 
               fetch(`/api/curso/${ejercicio.curso_id}`, {method: 'GET'})
@@ -78,6 +80,52 @@ const app = Vue.createApp({
 
     set_entrega(id_entrega) {
       this.id_entrega = id_entrega;
+    },
+
+    set_siguiente() {
+      fetch(`/api/entregas/${this.id_ejercicio}`, {method: 'GET'})
+        .then(response => response.json())
+        .then((result) => {
+          let entregas = result.data;
+          entregas.sort( (a, b) => a.id > b.id );
+
+          let siguiente_id;
+          for (var i = 0; i < entregas.length - 1; i++){
+            if (entregas[i].id == this.id_entrega){
+              siguiente_id = entregas[i+1].id; 
+              break;
+            }
+          }
+          if (!siguiente_id) {
+            siguiente_id = entregas[0].id;
+          }
+
+          this.set_entrega(siguiente_id);
+        })
+        .catch(error => console.log('error', error));
+    },
+
+    set_anterior() {
+      fetch(`/api/entregas/${this.id_ejercicio}`, {method: 'GET'})
+        .then(response => response.json())
+        .then((result) => {
+          let entregas = result.data;
+          entregas.sort( (a, b) => a.id > b.id );
+
+          let anterior_id;
+          for (var i = entregas.length -1; i > 0; i--){
+            if (entregas[i].id == this.id_entrega){
+              anterior_id = entregas[i-1].id; 
+              break;
+            }
+          }
+          if (!anterior_id) {
+            anterior_id = entregas[entregas.length-1].id;
+          }
+
+          this.set_entrega(anterior_id);
+        })
+        .catch(error => console.log('error', error));
     }
 
   },
