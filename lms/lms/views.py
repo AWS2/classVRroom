@@ -1,6 +1,8 @@
 from django.http import JsonResponse
 from django.http import Http404
 from vroom.models import *
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 def ping(request):
     if (request.method=='GET'):
@@ -71,13 +73,47 @@ def entregas(request, id_ejercicio):
         return JsonResponse({
             'data': list(entregas)
         })
+
+@csrf_exempt
 def entrega(request, id_entrega):
     if (request.method=='GET'):
         entrega = Entrega.objects.filter(id = id_entrega).values()
 
+
         if (len(entrega) == 0):
             raise Http404()
+
+
 
         return JsonResponse({
             'data': list(entrega) 
         })
+
+    elif (request.method=='POST'):
+
+    
+        entrega = Entrega.objects.filter(id = id_entrega).values()
+
+
+        if (len(entrega) == 0):
+            raise Http404()
+
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        
+        if 'max_note' in body and 'new_note' in body and 'comment_prof' in body:
+            max_note = float(body['max_note'])
+            note = float(body['new_note'])
+            comment = str(body['comment_prof'])
+  
+
+            if note and max_note:
+                if note <= max_note:
+                    entrega.update(nota=note)
+                    entrega.update(comentario_profesor=comment)  
+        
+
+        return JsonResponse({
+            'data': list(entrega) 
+        })
+        

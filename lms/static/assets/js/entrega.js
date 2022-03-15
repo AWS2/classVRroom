@@ -126,7 +126,33 @@ const app = Vue.createApp({
           this.set_entrega(anterior_id);
         })
         .catch(error => console.log('error', error));
+    },
+
+    save_nota_and_comment() {
+
+      var note=this.nota;
+      var comment=this.comentario_profesor;
+      var id = this.id_ejercicio;
+
+      $.ajax({
+        method:'POST',
+        dataType: 'json',
+        contentType: 'application/json',
+        url:`/api/entrega/${id}`,
+        data: JSON.stringify({
+          'max_note': this.nota_maxima,
+          'new_note': note,
+          'comment_prof': comment,
+        }),
+        success: (res)=>{
+          console.log("Nota y Comentario guardados");
+        }
+      });
+
+
+
     }
+    
 
   },
   mounted() {
