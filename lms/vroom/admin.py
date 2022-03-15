@@ -94,7 +94,3 @@ class CursoAdmin(admin.ModelAdmin):
 admin.site.register(Curso, CursoAdmin)
 admin.site.register(Ejercicio, EjercicioAdmin)
 admin.site.register(Tipo_Ejercicio)
-
-
-
-# Register your models here.

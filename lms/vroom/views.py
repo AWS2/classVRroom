@@ -1,6 +1,10 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Entrega
 
-# Create your views here.
-    
+from .models import *
+
+
+def entrega(request):
+    return render(request, 'vroom/entrega.html')

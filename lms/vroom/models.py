@@ -16,10 +16,16 @@ class Terminos(models.Model):
     permisos = models.IntegerField()
     texto = models.TextField(null=True)
 
+class Centro(models.Model):
+    nombre = models.CharField(max_length=100)
+    icono = models.ImageField()
+    administrador = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=True)
+
 class Curso(models.Model):
     titulo = models.CharField(max_length=100,null=False,blank=False)
     descripcion = models.TextField()
     estado = models.BooleanField(null=False,blank=False,default=False)
+    centro = models.ForeignKey('Centro',on_delete=models.DO_NOTHING,default=True)
 
     def __str__(self):
         return self.titulo
@@ -31,7 +37,7 @@ class Ejercicio(models.Model):
     descripcion = models.TextField()
     enunciado = models.TextField()
     nota_maxima = models.FloatField()
-    tipo_ejercicio = models.ForeignKey('Tipo_Ejercicio',on_delete=models.DO_NOTHING)
+    tipo_ejercicio = models.ForeignKey('Tipo_Ejercicio',on_delete=models.DO_NOTHING,default=True)
 
     def __str__(self):
         return self.titulo
@@ -40,7 +46,7 @@ class Entrega(models.Model):
     autor = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=True)
     fecha_publicacion = models.DateTimeField()
     fecha_edicion = models.DateTimeField()
-    archivo = models.FileField(upload_to='monka/',null=True)
+    archivo = models.FileField(upload_to='static/assets/archivos',null=True)
     comentario_alumno = models.CharField(max_length=500)
     comentario_profesor = models.CharField(max_length=500)
     ejercicio = models.ForeignKey('Ejercicio',on_delete=models.DO_NOTHING,null=False) 
