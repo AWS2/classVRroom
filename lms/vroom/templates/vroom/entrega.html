@@ -1,0 +1,59 @@
+{% load static %}
+
+<html>
+    <head>
+        <style>
+            table {
+                margin: auto
+            }
+            #app {
+                text-align: center;
+            }
+        </style>
+    </head>
+    <script src="https://unpkg.com/vue@next"></script>
+    <body>
+        <div id="app">
+            
+            <p><button>Alumno anterior</button> <button>Vista completa</button> <button>Siguiente alumno</button></p>
+            <table class="m-auto text-justify">
+                <tr>
+                    <th>Curso</th>
+                    <td>[[curso]]</td>
+                </tr>
+                <tr>
+                    <th>Ejercicio</th>
+                    <td>[[ejercicio]]</td>
+                </tr>
+                <tr>
+                    <th>Alumno</th>
+                    <td>[[nombre]]</td>
+                </tr>
+                <tr>
+                    <th>Correo</th>
+                    <td>[[correo]]</td>
+                </tr>
+                <tr>
+                    <th>Archivo</th>
+                    <td>[[archivo]]</td>
+                </tr>
+                <tr>
+                    <th>Calificación</th>
+                    <td>[[nota]]/[[nota_maxima]]</td>
+                </tr>
+                <tr>
+                    <th>Comentario del alumno</th>
+                    <td>[[comentario_alumno]]</td>
+                </tr>
+                <tr>
+                    <th>Comentario del profesor</th>
+                    <td>[[comentario_profesor]]</td>
+                </tr>
+            </table>
+            <p><input type="checkbox" id="ckbNotificacion"><label for="ckbNotificacion">Notificar al alumno</label><button>Guardar</button></p>
+            
+        </div>
+
+        <script src="{% static 'assets/js/entrega.js' %}"></script>
+    </body>
+</html>

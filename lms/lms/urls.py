@@ -14,10 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('vroom.urls')),
 ]
 
 
@@ -30,5 +31,11 @@ from . import views
 
 urlpatterns += [
     path('api/ping', views.ping, name='ping'),
-    path('api/cursos/:id_centro', views.cursos, name='cursos'),
+    path('api/usuario/<int:id_usuario>', views.usuario, name='usuario'),
+    path('api/cursos/<int:id_centro>', views.cursos, name='cursos'),
+    path('api/curso/<int:id_curso>', views.curso, name='curso'),
+    path('api/ejercicios/<int:id_curso>', views.ejercicios, name='ejercicios'),
+    path('api/ejercicio/<int:id_ejercicio>', views.ejercicio, name='ejercicio'),
+    path('api/entregas/<int:id_ejercicio>', views.entregas, name='entregas'),
+    path('api/entrega/<int:id_entrega>', views.entrega, name='entrega'),
 ]
