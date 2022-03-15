@@ -1,1 +1,1 @@
-web: gunicorn lms.wsgi
+web: gunicorn --pythonpath lms lms.wsgi
