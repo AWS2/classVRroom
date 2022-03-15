@@ -46,7 +46,7 @@ class Entrega(models.Model):
     autor = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=True)
     fecha_publicacion = models.DateTimeField()
     fecha_edicion = models.DateTimeField()
-    archivo = models.FileField(upload_to='monka/',null=True)
+    archivo = models.FileField(upload_to='static/assets/archivos',null=True)
     comentario_alumno = models.CharField(max_length=500)
     comentario_profesor = models.CharField(max_length=500)
     ejercicio = models.ForeignKey('Ejercicio',on_delete=models.DO_NOTHING,null=False) 
