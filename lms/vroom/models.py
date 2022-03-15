@@ -4,14 +4,14 @@ from django.contrib.auth.models import AbstractUser
 
 
 class Usuario(AbstractUser):
-    terminos = models.ForeignKey('Terminos',on_delete=models.DO_NOTHING,null=True) 
+    termino = models.ForeignKey('Termino',on_delete=models.DO_NOTHING,null=True) 
 
     def __str__(self):
         return self.username
 
 Usuario._meta.get_field('email')._unique = True
 
-class Terminos(models.Model):
+class Termino(models.Model):
     version = models.FloatField()
     permisos = models.IntegerField()
     texto = models.TextField(null=True)

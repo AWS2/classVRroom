@@ -145,7 +145,7 @@ const app = Vue.createApp({
           'comment_prof': comment,
         }),
         success: (res)=>{
-          console.log("Nota y Comentario guardados");
+          alert("Nota y Comentario guardados");
         }
       });
 
