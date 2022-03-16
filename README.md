@@ -27,7 +27,7 @@ Para cualquier duda contactar con los autores
 
 ## Autores
   
-[@EduValls](https://github.com/edupedu101/)
+[@EduValle](https://github.com/edupedu101/)
 [@CarlosMuñoz](https://github.com/CarlosMunozRo/)
 [@MartiLlorach](https://github.com/MartiLlorach/)
 
