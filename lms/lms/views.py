@@ -89,7 +89,7 @@ def entrega(request, id_entrega):
             'data': list(entrega) 
         })
 
-    elif (request.method=='POST'):
+    elif (request.method=='PUT'):
 
     
         entrega = Entrega.objects.filter(id = id_entrega).values()

@@ -130,26 +130,24 @@ const app = Vue.createApp({
 
     save_nota_and_comment() {
 
-      var note=this.nota;
-      var comment=this.comentario_profesor;
-      var id = this.id_ejercicio;
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
 
-      $.ajax({
-        method:'POST',
-        dataType: 'json',
-        contentType: 'application/json',
-        url:`/api/entrega/${id}`,
-        data: JSON.stringify({
-          'max_note': this.nota_maxima,
-          'new_note': note,
-          'comment_prof': comment,
-        }),
-        success: (res)=>{
-          alert("Nota y Comentario guardados");
-        }
+      var raw = JSON.stringify({
+        "max_note": this.nota_maxima,
+        "new_note": this.nota,
+        "comment_prof": this.comentario_profesor
       });
 
+      var requestOptions = {
+        method: 'PUT',
+        headers: myHeaders,
+        body: raw      
+      };
 
+      fetch(`/api/entrega/${this.id_entrega}`, requestOptions)
+        .then(alert('entrega actualizada'))
+        .catch(error => console.log('error', error));
 
     }
     
