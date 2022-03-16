@@ -10,6 +10,9 @@ class Usuario(AbstractUser):
         return self.username
 
 Usuario._meta.get_field('email')._unique = True
+Usuario._meta.get_field('email').blank = False
+Usuario._meta.get_field('email').null = False
+
 
 class Termino(models.Model):
     version = models.FloatField()
@@ -84,7 +87,7 @@ class Documento(models.Model):
 
 class Tipo_Ejercicio(models.Model):
     nombre = models.CharField(max_length=30)
-    icono = models.ImageField()
+    icono = models.ImageField(upload_to='static/assets/archivos')
 
     def __str__(self):
         return self.nombre
