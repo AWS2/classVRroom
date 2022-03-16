@@ -1,0 +1,76 @@
+{% load static %}
+
+<html>
+    <head>
+        <style>
+            table {
+                margin: auto
+            }
+            #app {
+                text-align: center;
+            }
+        </style>
+
+    </head>
+    <script src="https://unpkg.com/vue@next"></script>
+    <body>
+        <div id="app">
+            
+            <p><button @click="set_anterior()">Alumno anterior</button> <button>Vista completa</button> <button @click="set_siguiente()">Siguiente alumno</button></p>
+            <table class="m-auto text-justify">
+                <tr>
+                    <th>Curso</th>
+                    <td>[[curso]]</td>
+                </tr>
+                <tr>
+                    <th>Ejercicio</th>
+                    <td>[[ejercicio]]</td>
+                </tr>
+                <tr>
+                    <th>
+                        Enunciado
+                    </th>
+                    <td>
+                        [[enunciado]]
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Tipo de ejercicio
+                    </th>
+                    <td>
+                        Ejercicio [[tipo_ejercicio]] <img :src=[[icono_ejercicio]] width="50" height="50" alt="icono ejercicio">
+                    </td>
+                </tr>
+                <tr>
+                    <th>Alumno</th>
+                    <td>[[nombre]]</td>
+                </tr>
+                <tr>
+                    <th>Correo</th>
+                    <td>[[correo]]</td>
+                </tr>
+                <tr>
+                    <th>Archivo</th>
+                    <td><a :href=[[archivo]] target="_blank">descarga</a></td>
+                </tr>
+                <tr>
+                    <th>Calificación</th>
+                    <td><input type="number" v-model="nota">/[[nota_maxima]]</td>
+                </tr>
+                <tr>
+                    <th>Comentario del alumno</th>
+                    <td>[[comentario_alumno]]</td>
+                </tr>
+                <tr>
+                    <th>Comentario del profesor</th>
+                    <td><textarea v-model="comentario_profesor"></textarea></td>
+                </tr>
+            </table>
+            <p><input type="checkbox" id="ckbNotificacion"><label for="ckbNotificacion">Notificar al alumno</label><button @click="save_nota_and_comment()">Guardar</button></p>
+            
+        </div>
+
+        <script src="{% static 'assets/js/entrega.js' %}"></script>
+    </body>
+</html>
