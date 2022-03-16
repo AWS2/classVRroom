@@ -117,3 +117,16 @@ def entrega(request, id_entrega):
             'data': list(entrega) 
         })
         
+def tipo_ejercicio(request, id_tipo):
+    if (request.method=='GET'):
+        tipo = Tipo_Ejercicio.objects.filter(id = id_tipo).values()
+
+
+        if (len(tipo) == 0):
+            raise Http404()
+
+
+
+        return JsonResponse({
+            'data': list(tipo) 
+        })

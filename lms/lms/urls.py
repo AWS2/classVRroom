@@ -38,4 +38,5 @@ urlpatterns += [
     path('api/ejercicio/<int:id_ejercicio>', views.ejercicio, name='ejercicio'),
     path('api/entregas/<int:id_ejercicio>', views.entregas, name='entregas'),
     path('api/entrega/<int:id_entrega>', views.entrega, name='entrega'),
+    path('api/tipo_ejercicio/<int:id_tipo>', views.tipo_ejercicio, name='tipo_ejercicio')
 ]

@@ -7,6 +7,9 @@ const app = Vue.createApp({
 
           curso: '',
           ejercicio: '',
+          enunciado: '',
+          tipo_ejercicio: '',
+          icono_ejercicio: '',
           nombre: '',
           correo: '',
           archivo: '',
@@ -60,8 +63,18 @@ const app = Vue.createApp({
               let ejercicio = result.data[0];
 
               this.ejercicio = ejercicio.titulo;
+              this.enunciado = ejercicio.enunciado;
               this.id_ejercicio = ejercicio.id;
               this.nota_maxima = ejercicio.nota_maxima;
+
+              fetch(`/api/tipo_ejercicio/${ejercicio.tipo_ejercicio_id}`, {method: 'GET'})
+                .then(response => response.json())
+                .then((result) => {
+                  let tipo_ejercicio = result.data[0];
+
+                  this.tipo_ejercicio = tipo_ejercicio.nombre;
+                  this.icono_ejercicio = tipo_ejercicio.icono;
+                })
 
               fetch(`/api/curso/${ejercicio.curso_id}`, {method: 'GET'})
                 .then(response => response.json())
