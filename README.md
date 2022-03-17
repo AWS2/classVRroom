@@ -40,3 +40,7 @@ Para cualquier duda contactar con los autores
 ## Dedicaciones
 
 A Antonio Calvo y a toda la clase de AWS2
+
+## Permisos
+
+
