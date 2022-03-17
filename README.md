@@ -41,5 +41,32 @@ Para cualquier duda contactar con los autores
 
 A Antonio Calvo y a toda la clase de AWS2
 
+## Permisos
+
+### Admin Centro
+
+- Control total de curso
+- Control total de documento
+- Control total de ejercicio
+- Control total de entrega
+- Control total de invitacion
+- Control total de link
+- Control total de texto
+- Control total de tipo_ejercicio
+- Control total de user
+- Control total de usuario_curso
+
+### Profesor
+
+- Control total de documento
+- Control total de ejercicio
+- Control total de entrega
+- Control total de invitacion
+- Control total de link
+- Control total de texto
+
+
+
+
 
 
