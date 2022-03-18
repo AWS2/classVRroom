@@ -40,7 +40,7 @@ const app = Vue.createApp({
         .then((result) => {
           let entrega = result.data[0];
 
-          this.archivo = entrega.archivo;
+          this.archivo = '/'+entrega.archivo;
           this.comentario_alumno = entrega.comentario_alumno;
           this.comentario_profesor = entrega.comentario_profesor;
           this.fecha_publicacion = entrega.fecha_publicacion;
@@ -73,7 +73,7 @@ const app = Vue.createApp({
                   let tipo_ejercicio = result.data[0];
 
                   this.tipo_ejercicio = tipo_ejercicio.nombre;
-                  this.icono_ejercicio = tipo_ejercicio.icono;
+                  this.icono_ejercicio = '/'+tipo_ejercicio.icono;
                 })
 
               fetch(`/api/curso/${ejercicio.curso_id}`, {method: 'GET'})

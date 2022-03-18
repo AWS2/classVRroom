@@ -8,3 +8,7 @@ from .models import *
 
 def entrega(request):
     return render(request, 'vroom/entrega.html')
+
+def index(request):
+
+    return render(request, 'vroom/index.html')
