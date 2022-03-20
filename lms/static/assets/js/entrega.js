@@ -147,7 +147,6 @@ const app = Vue.createApp({
       myHeaders.append("Content-Type", "application/json");
 
       var raw = JSON.stringify({
-        "max_note": this.nota_maxima,
         "new_note": this.nota,
         "comment_prof": this.comentario_profesor
       });
@@ -159,8 +158,9 @@ const app = Vue.createApp({
       };
 
       fetch(`/api/entrega/${this.id_entrega}`, requestOptions)
-        .then(alert('entrega actualizada'))
-        .catch(error => console.log('error', error));
+        .then(respuesta => respuesta.text())
+        .then(mensage => alert(mensage))
+        .catch(error => console.log(error));
 
     }
     
