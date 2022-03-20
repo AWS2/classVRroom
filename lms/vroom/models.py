@@ -6,6 +6,9 @@ from django.contrib.auth.models import AbstractUser
 class Usuario(AbstractUser):
     termino = models.ForeignKey('Termino',on_delete=models.DO_NOTHING,null=True) 
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
     def __str__(self):
         return self.username
 
