@@ -1,9 +1,27 @@
 {% extends '../vroom/components/base.html' %}
 {% block content %}
-    <h1>System Login</h1>
-    <form method="POST">
-         {% csrf_token %}
-        {{form.as_p}}
-        <button>Login</button>
-    </form>
+
+
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="px-8 py-6 mt-4 text-left bg-white shadow-lg">
+        <h3 class="text-2xl font-bold text-center">Login to your account</h3>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mt-4">
+                
+            {% for field in form %}
+                <div>
+                    <label class="block" for="{{ field.auto_id }}">{{ field.label }}</label>
+                    {{ field }}
+                </div>
+            {% endfor %}
+                
+                <div class="flex items-baseline justify-between">
+                    <button class="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">Login</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="https://cdn.tailwindcss.com"></script>
 {% endblock %}
