@@ -91,7 +91,7 @@ def ejercicio(request, id_ejercicio):
     if (request.method=='GET'):
         
         #proteccion: estar subscrito al curso, ser el admin del centro, o ser el super
-        curso = Ejercicio.objects.get(id = id_ejercicio)
+        curso = Curso.objects.get(id = Ejercicio.objects.get(id = id_ejercicio).curso.id)
         subscripcion = Usuario_Curso.objects.filter(usuario = request.user.id, curso = curso.id)
         admin_curso = Curso.objects.filter(centro__in = Centro.objects.filter(administrador = request.user.id), id = curso.id)
 
@@ -112,6 +112,15 @@ def ejercicio(request, id_ejercicio):
 def entregas(request, id_ejercicio):
     if (request.method=='GET'):
 
+        #proteccion: ser profesor del curso, ser el admin del centro o ser el super
+        curso = Curso.objects.get(id = Ejercicio.objects.get(id = id_ejercicio).curso.id)
+        profesor = Usuario_Curso.objects.filter(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))
+        admin = Curso.objects.filter(centro__in = Centro.objects.filter(administrador = request.user.id), id = curso.id)
+
+        if (len(profesor) == 0 and len(admin) == 0 and not request.user.is_superuser):
+            raise PermissionDenied()
+        #fin proteccion
+
         entregas = Entrega.objects.filter(ejercicio = id_ejercicio).values()
 
         if (len(entregas) == 0):
@@ -125,6 +134,17 @@ def entregas(request, id_ejercicio):
 @login_required
 def entrega(request, id_entrega):
     if (request.method=='GET'):
+        
+
+        #proteccion: ser profesor del curso, ser el admin del centro, ser el autor de la entrega o ser el super
+        entrega = Entrega.objects.get(id = id_entrega)
+        curso = Curso.objects.get(id = Ejercicio.objects.get(id = entrega.ejercicio.id).curso.id)
+        profesor = Usuario_Curso.objects.filter(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))
+        admin = Curso.objects.filter(centro__in = Centro.objects.filter(administrador = request.user.id), id = curso.id)
+
+        if (len(profesor) == 0 and len(admin) == 0 and not entrega.autor == request.user.id and not request.user.is_superuser):
+            raise PermissionDenied()
+        #fin proteccion
 
         entrega = Entrega.objects.filter(id = id_entrega).values()
 
@@ -135,10 +155,20 @@ def entrega(request, id_entrega):
             'data': list(entrega) 
         })
 
-    elif (request.method=='PUT'):
+    elif (request.method=='PUT'): #para actualizar/poner la nota y/o el comentario del profesor
     
+        #proteccion: ser profesor del curso, ser el admin del centro o ser el super
+        entrega = Entrega.objects.get(id = id_entrega)
+        curso = Curso.objects.get(id = Ejercicio.objects.get(id = entrega.ejercicio.id).curso.id)
+        profesor = Usuario_Curso.objects.filter(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))
+        admin = Curso.objects.filter(centro__in = Centro.objects.filter(administrador = request.user.id), id = curso.id)
+
+        if (len(profesor) == 0 and len(admin) == 0 and not request.user.is_superuser):
+            raise PermissionDenied()
+        #fin proteccion
+
         entrega = Entrega.objects.filter(id = id_entrega).values()
-        ejercicio = Ejercicio.objects.get(id__in = Entrega.objects.filter(id = id_entrega).values('ejercicio'))
+        ejercicio = Ejercicio.objects.get_object_or_404(id__in = Entrega.objects.filter(id = id_entrega).values('ejercicio'))
 
         if (len(entrega) == 0):
             raise Http404()
@@ -170,11 +200,8 @@ def tipo_ejercicio(request, id_tipo):
     if (request.method=='GET'):
         tipo = Tipo_Ejercicio.objects.filter(id = id_tipo).values()
 
-
         if (len(tipo) == 0):
             raise Http404()
-
-
 
         return JsonResponse({
             'data': list(tipo) 
