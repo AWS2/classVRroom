@@ -44,26 +44,22 @@ A Antonio Calvo y a toda la clase de AWS2
 ## Permisos
 
 ### Admin Centro
-
-- Control total de curso
-- Control total de documento
-- Control total de ejercicio
-- Control total de entrega
-- Control total de invitacion
-- Control total de link
-- Control total de texto
-- Control total de tipo_ejercicio
-- Control total de user
-- Control total de usuario_curso
+-Curso: añadir, borrar, modificar y ver.
+-Documento: añadir, borrar, modificar y ver. 
+-Ejercicio: añadir, borrar, modificar y ver.
+-Entrega: añadir, borrar, modificar y ver.
+-Invitacion: añadir, borrar, modificar y ver.
+-Link: añadir, borrar, modificar y ver.
+-Texto: añadir, borrar, modificar y ver.
+-User: añadir, borrar, modificar y ver.
 
 ### Profesor
-
-- Control total de documento
-- Control total de ejercicio
-- Control total de entrega
-- Control total de invitacion
-- Control total de link
-- Control total de texto
+-Documento: añadir, borrar, modificar y ver. 
+-Ejercicio: añadir, borrar, modificar y ver.
+-Entrega: añadir, borrar, modificar y ver.
+-Invitacion: añadir, borrar, modificar y ver.
+-Link: añadir, borrar, modificar y ver.
+-Texto: añadir, borrar, modificar y ver.
 
 
 
