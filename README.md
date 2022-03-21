@@ -44,22 +44,22 @@ A Antonio Calvo y a toda la clase de AWS2
 ## Permisos
 
 ### Admin Centro
--Curso: añadir, borrar, modificar y ver.
--Documento: añadir, borrar, modificar y ver. 
--Ejercicio: añadir, borrar, modificar y ver.
--Entrega: añadir, borrar, modificar y ver.
--Invitacion: añadir, borrar, modificar y ver.
--Link: añadir, borrar, modificar y ver.
--Texto: añadir, borrar, modificar y ver.
--User: añadir, borrar, modificar y ver.
+- Curso: añadir, borrar, modificar y ver.
+- Documento: añadir, borrar, modificar y ver. 
+- Ejercicio: añadir, borrar, modificar y ver.
+- Entrega: añadir, borrar, modificar y ver.
+- Invitacion: añadir, borrar, modificar y ver.
+- Link: añadir, borrar, modificar y ver.
+- Texto: añadir, borrar, modificar y ver.
+- User: añadir, borrar, modificar y ver.
 
 ### Profesor
--Documento: añadir, borrar, modificar y ver. 
--Ejercicio: añadir, borrar, modificar y ver.
--Entrega: añadir, borrar, modificar y ver.
--Invitacion: añadir, borrar, modificar y ver.
--Link: añadir, borrar, modificar y ver.
--Texto: añadir, borrar, modificar y ver.
+- Documento: añadir, borrar, modificar y ver. 
+- Ejercicio: añadir, borrar, modificar y ver.
+- Entrega: añadir, borrar, modificar y ver.
+- Invitacion: añadir, borrar, modificar y ver.
+- Link: añadir, borrar, modificar y ver.
+- Texto: añadir, borrar, modificar y ver.
 
 
 
