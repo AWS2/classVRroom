@@ -1,6 +1,7 @@
 
 from django.core.management import BaseCommand
 from django.contrib.auth.models import User, Group , Permission
+from vroom.models import *
 import logging
 
 GROUPS = {
@@ -30,10 +31,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        for group_name in GROUPS:
-
+        for group_name in GROUPS:   
             new_group, created = Group.objects.get_or_create(name=group_name)
-
+    
             # Loop models in group
             for app_model in GROUPS[group_name]:
 
@@ -51,3 +51,7 @@ class Command(BaseCommand):
                         continue
 
                     new_group.permissions.add(model_add_perm)
+        Tipo_Subscripcion.objects.get_or_create(nombre="alumno")
+        Tipo_Subscripcion.objects.get_or_create(nombre="profesor")
+        Tipo_Ejercicio.objects.get_or_create(nombre="vr", icono="static/assets/archivos/vr.png")
+        Tipo_Ejercicio.objects.get_or_create(nombre="no vr", icono="static/assets/archivos/novr.png")
