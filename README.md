@@ -15,6 +15,10 @@ Necesitaras python 3
 pip install -r requirements.txt
 ```
 
+Para crear los grupos y modelos por defecto
+```
+python3 manage.py initvroom
+```
 ### Ejecutando el programa
 
 ```
