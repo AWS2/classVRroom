@@ -1,0 +1,17 @@
+{% extends 'vroom/components/base.html' %}
+
+{% load static %}
+
+{% block content %}
+    <div id="app">
+        <script>
+            var id = "{{user.id}}"
+        </script>
+
+        <div class="curso" v-for="curso in cursos">
+            <p>titulo: [[curso.titulo]], descripcion: [[curso.descripcion]], rol: [[curso.rol]]</p>
+        </div>  
+
+    <script src="{% static 'assets/js/dashboard.js' %}"></script>
+
+{% endblock %}

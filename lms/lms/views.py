@@ -206,3 +206,29 @@ def tipo_ejercicio(request, id_tipo):
         return JsonResponse({
             'data': list(tipo) 
         })
+
+@login_required
+def usuario_cursos(request, id_usuario):
+    if (request.method=='GET'):
+
+        #proteccion: es el usuario, es el super
+        if (not request.user.id == id_usuario and not request.user.is_superuser):
+            raise PermissionDenied()
+        #fin proteccion
+
+        cursos_id =  list(Usuario_Curso.objects.filter(usuario = id_usuario).values_list('curso', flat=True))
+        cursos = Curso.objects.filter(id__in = cursos_id).values()
+
+        for curso in cursos:
+            if (len(Usuario_Curso.objects.filter(usuario = id_usuario, curso = curso["id"], tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))) == 0):
+                curso["rol"] = "Profesor"
+            else:
+                curso["rol"] = "Alumno"
+            
+
+        if (len(cursos) == 0):
+            raise Http404()
+
+        return JsonResponse({
+            'data': list(cursos)
+        })
