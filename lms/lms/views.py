@@ -168,9 +168,9 @@ def entrega(request, id_entrega):
         #fin proteccion
 
         entrega = Entrega.objects.filter(id = id_entrega).values()
-        ejercicio = Ejercicio.objects.get_object_or_404(id__in = Entrega.objects.filter(id = id_entrega).values('ejercicio'))
+        ejercicio = Ejercicio.objects.get(id__in = Entrega.objects.filter(id = id_entrega).values('ejercicio'))
 
-        if (len(entrega) == 0):
+        if (len(entrega) == 0 or ejercicio is None):
             raise Http404()
 
         body_unicode = request.body.decode('utf-8')
