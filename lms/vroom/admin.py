@@ -7,13 +7,11 @@ from .models import *
 class EjercicioInline(admin.TabularInline):
     model = Ejercicio
     fields = ('id', 'autor','titulo','enunciado','nota_maxima','tipo_ejercicio')  
-    readonly_fields = ('autor',)
     extra = 0
  
 class EntregaInline(admin.TabularInline):
     model = Entrega
     fields = ('autor','fecha_publicacion','ejercicio')
-    readonly_fields = ('autor',)
     extra = 0
  
 class LinkInline(admin.TabularInline):
@@ -28,7 +26,6 @@ class TextoInline(admin.TabularInline):
  
 class DocumentoInline(admin.TabularInline):
     model = Documento
-    readonly_fields = ('autor',)
     fields = ('autor','titulo','archivo')
     extra = 0
  
@@ -37,7 +34,6 @@ class Usuario_CursoInline(admin.TabularInline):
     verbose_name = "Suscripcion"
     verbose_plural_name = "Suscripciones"
     fields = ('usuario','tipo_subscripcion',)
-    readonly_fields = ('usuario','tipo_subscripcion')
     extra = 0
  
  
