@@ -1,70 +1,77 @@
 @font-face {
-    font-family: 'Bicyclette';
-    src: url('../fonts/Bicyclette-Black.woff2') format('woff2'),
-        url('../fonts/Bicyclette-Black.woff') format('woff');
-    font-weight: 900;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'Bicyclette';
+  src: url("../fonts/Bicyclette-Black.woff2") format("woff2"), url("../fonts/Bicyclette-Black.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Bicyclette';
-    src: url('../fonts/Bicyclette-Bold.woff2') format('woff2'),
-        url('../fonts/Bicyclette-Bold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'Bicyclette';
+  src: url("../fonts/Bicyclette-Bold.woff2") format("woff2"), url("../fonts/Bicyclette-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Bicyclette';
-    src: url('../fonts/Bicyclette-Italic.woff2') format('woff2'),
-        url('../fonts/Bicyclette-Italic.woff') format('woff');
-    font-weight: normal;
-    font-style: italic;
-    font-display: swap;
+  font-family: 'Bicyclette';
+  src: url("../fonts/Bicyclette-Italic.woff2") format("woff2"), url("../fonts/Bicyclette-Italic.woff") format("woff");
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Bicyclette';
-    src: url('../fonts/Bicyclette-Regular.woff2') format('woff2'),
-        url('../fonts/Bicyclette-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'Bicyclette';
+  src: url("../fonts/Bicyclette-Regular.woff2") format("woff2"), url("../fonts/Bicyclette-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Bicyclette';
-    src: url('../fonts/Bicyclette-Light.woff2') format('woff2'),
-        url('../fonts/Bicyclette-Light.woff') format('woff');
-    font-weight: 300;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'Bicyclette';
+  src: url("../fonts/Bicyclette-Light.woff2") format("woff2"), url("../fonts/Bicyclette-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Bicyclette';
-    src: url('../fonts/Bicyclette-Thin.woff2') format('woff2'),
-        url('../fonts/Bicyclette-Thin.woff') format('woff');
-    font-weight: 100;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'Bicyclette';
+  src: url("../fonts/Bicyclette-Thin.woff2") format("woff2"), url("../fonts/Bicyclette-Thin.woff") format("woff");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Bicyclette Ultra';
-    src: url('../fonts/Bicyclette-Ultra.woff2') format('woff2'),
-        url('../fonts/Bicyclette-Ultra.woff') format('woff');
-    font-weight: 900;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'Bicyclette Ultra';
+  src: url("../fonts/Bicyclette-Ultra.woff2") format("woff2"), url("../fonts/Bicyclette-Ultra.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
 }
 
-body{
-    font-family: 'Bicyclette';
+body {
+  font-family: 'Bicyclette';
 }
 
-.bg-primary{
-    background-color: #8EC6FF !important;
+.bg-primary {
+  background-color: #8EC6FF !important;
 }
+
+.main-content-container {
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.entrega-vista-completa table {
+  margin: auto;
+}
+
+.entrega-vista-completa #app {
+  text-align: center;
+}
+/*# sourceMappingURL=style.css.map */
