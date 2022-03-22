@@ -1,5 +1,5 @@
 var socket = new WebSocket(
-  'ws://'+
+  'wss://'+
   'ietivroom.herokuapp.com/'+
   'ws/entrega/'
 );
