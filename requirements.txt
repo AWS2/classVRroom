@@ -5,6 +5,7 @@ Automat==20.2.0
 cffi==1.15.0
 channels==3.0.4
 click==8.0.4
+colorama==0.4.4
 constantly==15.1.0
 cryptography==36.0.2
 daphne==3.0.2
@@ -38,8 +39,9 @@ service-identity==21.1.0
 six==1.16.0
 sqlparse==0.4.2
 Twisted==22.2.0
+twisted-iocpsupport==1.0.2
 txaio==22.2.1
-typing-extensions==4.1.1
+typing_extensions==4.1.1
 Werkzeug==2.0.3
 whitenoise==6.0.0
 wrapt==1.14.0
