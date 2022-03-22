@@ -1,6 +1,6 @@
 var socket = new WebSocket(
   'ws://'+
-  'localhost:8000/'+
+  'ietivroom.herokuapp.com/'+
   'ws/entrega/'
 );
 
