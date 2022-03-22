@@ -11,6 +11,9 @@ urlpatterns = [
 #API
 from . import views
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns += [
     path('api/ping', views.ping, name='ping'),
     path('api/usuario/<int:id_usuario>', views.usuario, name='usuario'),
@@ -21,4 +24,4 @@ urlpatterns += [
     path('api/entregas/<int:id_ejercicio>', views.entregas, name='entregas'),
     path('api/entrega/<int:id_entrega>', views.entrega, name='entrega'),
     path('api/tipo_ejercicio/<int:id_tipo>', views.tipo_ejercicio, name='tipo_ejercicio')
-]
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

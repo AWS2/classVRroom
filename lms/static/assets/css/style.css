@@ -1,0 +1,96 @@
+@font-face {
+  font-family: 'Bicyclette';
+  src: url("../fonts/Bicyclette-Black.woff2") format("woff2"), url("../fonts/Bicyclette-Black.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bicyclette';
+  src: url("../fonts/Bicyclette-Bold.woff2") format("woff2"), url("../fonts/Bicyclette-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bicyclette';
+  src: url("../fonts/Bicyclette-Italic.woff2") format("woff2"), url("../fonts/Bicyclette-Italic.woff") format("woff");
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bicyclette';
+  src: url("../fonts/Bicyclette-Regular.woff2") format("woff2"), url("../fonts/Bicyclette-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bicyclette';
+  src: url("../fonts/Bicyclette-Light.woff2") format("woff2"), url("../fonts/Bicyclette-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bicyclette';
+  src: url("../fonts/Bicyclette-Thin.woff2") format("woff2"), url("../fonts/Bicyclette-Thin.woff") format("woff");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bicyclette Ultra';
+  src: url("../fonts/Bicyclette-Ultra.woff2") format("woff2"), url("../fonts/Bicyclette-Ultra.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: 'Bicyclette';
+}
+
+.bg-primary {
+  background-color: #8EC6FF !important;
+}
+
+.entrega-vista-completa table {
+  margin: auto;
+}
+
+.entrega-vista-completa #app {
+  text-align: center;
+}
+
+.entrega-vista-completa .main-content-container {
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.main-content-container {
+  margin-top: 80px;
+}
+
+.header-container {
+  height: 80px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+
+.header-container.shrink {
+  height: 50px;
+  position: fixed;
+}
+/*# sourceMappingURL=style.css.map */
