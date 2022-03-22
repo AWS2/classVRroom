@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 
 
-
 def index(request):
     return render(request, 'vroom/index.html')
 
