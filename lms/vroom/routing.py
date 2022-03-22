@@ -3,5 +3,5 @@ from django.urls import re_path
 from . import consumers
 
 websocket_urlpatterns = [
-    re_path(r'ws/entrega/', consumers.EntregaConsumer)
+    re_path(r'ws/entrega/', consumers.EntregaConsumer.as_asgi())
 ]

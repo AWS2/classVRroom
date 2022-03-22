@@ -1,7 +1,23 @@
+var socket = new WebSocket(
+  'ws://'+
+  'localhost:8000/'+
+  'ws/entrega/'
+);
+
+socket.onmessage = function(e) {
+  const data = JSON.parse(e.data);
+  console.log(`entrega con id=${data.id} ha sido editada`)
+  document.getElementById("diana").value = data.id
+}
+
+
+
 const app = Vue.createApp({
   delimiters: ['[[', ']]'],
   data() {
       return {
+          id_entrega_cambiada: '',
+
           id_entrega: '',
           id_ejercicio: '',
 
@@ -28,11 +44,16 @@ const app = Vue.createApp({
       handler(id) {
         this.get_data(id);
       }
+    },
+
+    id_entrega_cambiada: {
+      handler() {
+        update_entrega();
+      }
     }
 
   },
   methods: {
-
     get_data(id) {
       
       fetch(`/api/entrega/${id}`, {method: 'GET'})
@@ -93,6 +114,15 @@ const app = Vue.createApp({
 
     set_entrega(id_entrega) {
       this.id_entrega = id_entrega;
+    },
+
+    update_entrega() {
+      console.log("update_entrega called")
+      if (this.id_entrega == this.entrega_cambiada) {
+        console.log("recargando")
+        this.get_data(id_entrega);
+      }
+      this.entrega_cambiada = '';
     },
 
     set_siguiente() {
@@ -159,7 +189,12 @@ const app = Vue.createApp({
 
       fetch(`/api/entrega/${this.id_entrega}`, requestOptions)
         .then(respuesta => respuesta.text())
-        .then(mensage => alert(mensage))
+        .then((mensage) => {
+          alert(mensage);
+          socket.send(JSON.stringify({
+              'id': this.id_entrega
+          }))
+        })
         .catch(error => console.log(error));
 
     }
