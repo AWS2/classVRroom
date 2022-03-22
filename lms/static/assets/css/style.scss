@@ -69,10 +69,7 @@ body{
     background-color: #8EC6FF !important;
 }
 
-.main-content-container{
-    padding-top: 25px;
-    padding-bottom: 25px;
-}
+
 
 .entrega-vista-completa{
     table {
@@ -81,5 +78,26 @@ body{
     #app {
         text-align: center;
     }
+    .main-content-container{
+        padding-top: 25px;
+        padding-bottom: 25px;
+    }
 }
 
+.main-content-container{
+    margin-top: 80px;
+
+}
+
+.header-container{
+    height: 80px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    transition: all 1s;
+    &.shrink{
+        height: 50px;
+        position: fixed;
+    }
+}
