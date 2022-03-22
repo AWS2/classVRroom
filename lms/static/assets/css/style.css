@@ -58,13 +58,13 @@ body {
   font-family: 'Bicyclette';
 }
 
-.bg-primary {
-  background-color: #8EC6FF !important;
-}
-
-.main-content-container {
+body:not(.login) .main-content-container {
   padding-top: 25px;
   padding-bottom: 25px;
+}
+
+.bg-primary {
+  background-color: #8EC6FF !important;
 }
 
 .entrega-vista-completa table {
@@ -73,5 +73,21 @@ body {
 
 .entrega-vista-completa #app {
   text-align: center;
+}
+
+.dashboard .curso {
+  width: 50%;
+  margin: 5px auto;
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid black;
+}
+
+.dashboard .curso h3 {
+  display: inline;
+}
+
+.dashboard p {
+  margin: 0 !important;
 }
 /*# sourceMappingURL=style.css.map */
