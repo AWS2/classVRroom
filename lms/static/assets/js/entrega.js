@@ -1,5 +1,11 @@
+if (window.location.protocol == "https:") {
+  var ws_scheme = "wss://";
+} else {
+  var ws_scheme = "ws://"
+};
+
 var socket = new WebSocket(
-  'ws://'+
+  ws_scheme+
   window.location.host+
   '/ws/entrega/'
 );
