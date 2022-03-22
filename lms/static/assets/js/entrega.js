@@ -8,6 +8,12 @@ socket.onmessage = function(e) {
   const data = JSON.parse(e.data);
   console.log(`entrega con id=${data.id} ha sido editada`)
   document.getElementById("diana").value = data.id
+
+  $.ajax({url:'/api/entrega/'+data.id,success:(res)=>{
+    $('.js-nota').val(res.data[0].nota)
+    console.log(res.data[0].nota);
+  }})
+
 }
 
 
@@ -47,9 +53,11 @@ const app = Vue.createApp({
     },
 
     id_entrega_cambiada: {
-      handler() {
-        update_entrega();
+      handler(value) {
+        console.log(this.params)
+        
       }
+      ,deep: true
     }
 
   },
