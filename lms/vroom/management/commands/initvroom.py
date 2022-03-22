@@ -18,7 +18,7 @@ GROUPS = {
     'profesores': {
         "documento" : ["add","delete","change","view"],
         "ejercicio" : ["add","delete","change","view"],
-        "entrega" : ["add","delete","change","view"],
+        "entrega" : ["change","view"],
         "invitacion" : ["add","delete","change","view"],
         "link" : ["add","delete","change","view"],
         "texto" : ["add","delete","change","view"],
@@ -27,7 +27,7 @@ GROUPS = {
 
 class Command(BaseCommand):
 
-    help = "Creates read only default permission groups for users"
+    help = "Creates groups with its permissions and inserts essential data"
 
     def handle(self, *args, **options):
 
