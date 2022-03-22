@@ -1,3 +1,22 @@
+<style>
+    .curso {
+        width: 50%;
+        margin: 5px auto;
+        padding: 20px;
+        border-radius: 20px;
+        border: 1px solid black;
+    }
+
+    .curso h3 {
+        display: inline;
+    }
+
+    p {
+        margin: 0 !important;
+    }
+
+</style>
+
 {% extends 'vroom/components/base.html' %}
 
 {% load static %}
@@ -7,9 +26,11 @@
         <script>
             var id = "{{user.id}}"
         </script>
+        
 
         <div class="curso" v-for="curso in cursos">
-            <p>titulo: [[curso.titulo]], descripcion: [[curso.descripcion]], rol: [[curso.rol]]</p>
+            <p><h3><a href='#'>[[curso.titulo]]</a></h3>  -  [[curso.rol]]</p>
+            <p>[[curso.descripcion]]</p>
         </div>  
 
     <script src="{% static 'assets/js/dashboard.js' %}"></script>
