@@ -8,6 +8,25 @@
 {% block content %}
 
     <div id="app">
+
+        <div id = "respuestas"></div>
+
+        <script>
+
+            var socket = new WebSocket(
+                'ws://'+
+                'localhost:8000/'+
+                'ws/entrega/'
+            );
+
+            socket.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                console.log(data);
+                document.getElementById("respuestas").innerHTML = data.tester
+            }
+
+        </script>
+
                 
         <p><button @click="set_anterior()">Alumno anterior</button> <button>Vista completa</button> <button @click="set_siguiente()">Siguiente alumno</button></p>
         <table class="m-auto text-justify">
