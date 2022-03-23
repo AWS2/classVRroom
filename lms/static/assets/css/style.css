@@ -85,4 +85,29 @@ body:not(.login) .main-content-container {
 .entrega-vista-completa #app {
   text-align: center;
 }
+
+.entrega-vista-completa .main-content-container {
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.dashboard .curso {
+  width: 50%;
+  margin: 5px auto;
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid black;
+}
+
+.dashboard .curso h3 {
+  display: inline;
+}
+
+.dashboard p {
+  margin: 0 !important;
+}
+
+.main-content-container {
+  margin-top: 80px;
+}
 /*# sourceMappingURL=style.css.map */

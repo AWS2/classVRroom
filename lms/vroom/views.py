@@ -1,5 +1,3 @@
-from multiprocessing import context
-from django.http import HttpResponse
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -13,3 +11,7 @@ def index(request):
 @login_required
 def entrega(request):
     return render(request, 'vroom/entrega.html')
+
+@login_required
+def dashboard(request):
+    return render(request, 'vroom/dashboard.html')
