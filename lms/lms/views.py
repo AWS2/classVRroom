@@ -186,9 +186,9 @@ def entrega(request, id_entrega):
                 if note <= max_note:
                     entrega.update(nota=note)
                     entrega.update(comentario_profesor=comment)
-                    return HttpResponse("Nota actualizada")  
+                    return JsonResponse({"msg": "Nota actualizada", "tipo": "success"})  
                 else :
-                    return HttpResponse("La nota no puede superar la nota máxima")
+                    return JsonResponse({"msg": "La nota no puede superar la nota máxima", "tipo": "danger"})
         
 
         return JsonResponse({

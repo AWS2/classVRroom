@@ -180,3 +180,7 @@ body{
         }
     }
 }
+
+.alert {
+    display: none; position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%); width: 80%
+}

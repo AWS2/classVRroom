@@ -194,9 +194,16 @@ const app = Vue.createApp({
       };
 
       fetch(`/api/entrega/${this.id_entrega}`, requestOptions)
-        .then(respuesta => respuesta.text())
-        .then((mensage) => {
-          alert(mensage);
+        .then(respuesta => respuesta.json())
+        .then((res) => {
+          let alerta = $(`<div class='alert alert-${res.tipo}' role='alert'>${res.msg}</div>`);
+          alerta.appendTo($('body'));
+          alerta.fadeIn();
+          setTimeout(
+            function() {
+              alerta.fadeOut( () => alerta.remove())
+            }, 2000);
+
           socket.send(JSON.stringify({
               'id': this.id_entrega
           }))

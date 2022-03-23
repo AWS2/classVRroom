@@ -153,7 +153,7 @@ body:not(.login) .main-content-container {
 
 .entrega-vista-completa #app .body .content {
   width: 70%;
-  background-image: url("/static/assets/Img/alt-entrega.png");
+  background-image: url("{% static 'assets/Img/alt-entrega.png' %}");
   background-position: center;
   background-repeat: no-repeat;
 }
@@ -170,5 +170,15 @@ body:not(.login) .main-content-container {
 .entrega-vista-completa #app .body .details .detalles_alumno {
   border-bottom: 1px solid darkgrey;
   margin-bottom: 20px;
+}
+
+.alert {
+  display: none;
+  position: fixed;
+  bottom: 50px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  width: 80%;
 }
 /*# sourceMappingURL=style.css.map */
