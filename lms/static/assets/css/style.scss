@@ -75,8 +75,11 @@ body{
 
 /* HEADER */
 .header-container{
+    position: sticky;
+    top: 0;
     .navbar-brand{
         img{
+            transition: width .3s;
             width: 60px;
             height: auto;
         }
@@ -129,3 +132,14 @@ body{
     }
 }
 
+.text-justify{
+    text-align: justify;
+}
+
+
+.landing{
+    img{
+        width: 100%;
+        height: auto;
+    }
+}

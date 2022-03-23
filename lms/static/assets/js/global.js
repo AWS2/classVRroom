@@ -7,9 +7,9 @@ $(document).ready(()=>{
         var scrollTop = $(document).scrollTop();
         
         
-        if(scrollTop>1){
+        if(scrollTop>100){
             $header.addClass('shrink');
-        }else{
+        }else if(scrollTop<50){
             $header.removeClass('shrink');
         }
 

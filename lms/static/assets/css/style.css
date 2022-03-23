@@ -64,7 +64,15 @@ body:not(.login) .main-content-container {
 }
 
 /* HEADER */
+.header-container {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+
 .header-container .navbar-brand img {
+  -webkit-transition: width .3s;
+  transition: width .3s;
   width: 60px;
   height: auto;
 }
@@ -107,7 +115,12 @@ body:not(.login) .main-content-container {
   margin: 0 !important;
 }
 
-.main-content-container {
-  margin-top: 80px;
+.text-justify {
+  text-align: justify;
+}
+
+.landing img {
+  width: 100%;
+  height: auto;
 }
 /*# sourceMappingURL=style.css.map */

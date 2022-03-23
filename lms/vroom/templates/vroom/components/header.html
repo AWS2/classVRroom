@@ -11,17 +11,16 @@
         <a class="nav-link active" aria-current="page" href="{% url 'entrega' %}">Entrega</a>
         <a class="nav-link" href="#">Pricing</a>
         <a class="nav-link disabled">Disabled</a>
+
       </div>
     </div>
     
     {% if user.is_authenticated %}
-      <div class="">
+      <span class="">
         {{user}}
-      </div>
+      </span>
     {% else %}
-      <div class="">
-        <a href="/login">login</a>
-      </div>
+      <a href="{% url 'login' %}">login</a>
     {% endif %}
   </div>
 </nav>

@@ -220,10 +220,13 @@ def usuario_cursos(request, id_usuario):
         cursos = Curso.objects.filter(id__in = cursos_id).values()
 
         for curso in cursos:
-            if (len(Usuario_Curso.objects.filter(usuario = id_usuario, curso = curso["id"], tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))) == 0):
-                curso["rol"] = "Profesor"
+            if (not len(Usuario_Curso.objects.filter(usuario = id_usuario, curso = curso["id"], tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))) == 0):
+                curso["rol"] =  "Profesor"
             else:
                 curso["rol"] = "Alumno"
+
+            print(len(Usuario_Curso.objects.filter(usuario = id_usuario, curso = curso["id"], tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))))
+
             
 
         if (len(cursos) == 0):
