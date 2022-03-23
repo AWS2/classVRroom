@@ -62,6 +62,31 @@ const app = Vue.createApp({
     }
 
   },
+  computed: {
+    vista_archivo: function () {
+      let extensiones_imagen = ['gif', 'jpg', 'jpeg', 'png'];
+      let extensiones_video = ['webm', 'ogg', 'mp4', 'avi'];
+      let extensiones_app = ['pdf'];
+      let extensiones_texto = ['csv', 'html'];
+
+      let extension = this.archivo.split(".").slice(-1)[0];
+
+      let tipo = '';
+      if (extensiones_imagen.includes(extension)) {
+        tipo += 'image/';
+      } else if (extensiones_video.includes(extension)) {
+        tipo += 'video/';
+      } else if (extensiones_app.includes(extension)) {
+        tipo += 'application/';
+      } else if (extensiones_texto.includes(extension)) {
+        tipo += 'text/';
+      }
+      tipo += extension;
+
+      return  `<embed type=${tipo} src=${this.archivo}>`;
+      
+    }
+  },
   methods: {
     get_data(id) {
       
