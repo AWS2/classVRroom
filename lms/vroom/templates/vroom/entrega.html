@@ -1,3 +1,4 @@
+
 {% extends 'vroom/components/base.html' %}
 
 {% load static %}
@@ -7,60 +8,93 @@
 
 {% block content %}
 
+<style>
+    
+    #app {
+        width: 100%;
+        height: 100%;
+    }
+
+    #app .header {
+        display: flex;
+        justify-content: space-around;
+        border-bottom: 1px solid black;
+    }
+
+    #app .header .right img {
+        width: 30px;
+    }
+
+    #app .body {
+        display: flex;
+        justify-content: space-around;
+        height: 600px;
+    }
+
+    #app .body .content {
+        width: 70%;
+    }
+
+    #app .body .content embed {
+        width: 100%;
+        height: 100%;
+    }
+
+    #app .body .details {
+        margin-top: 30px;
+    }
+
+    #app .body .details .detalles_alumno {
+        border-bottom: 1px solid darkgrey;
+        margin-bottom: 20px;
+    }
+
+</style>
+
     <div id="app">
+
+        <div class="header">
+            <div class="left">
+                <p>Curso: [[curso]]</p>
+                <p>Ejercicio: [[ejercicio]]</p>
+                <button>Visualiza todas las entregas</button>
+            </div>
+            <div class="middle">
+                <p>Alumno: [[nombre]]</p>
+                <p>[[correo]]</p>
+                <p>Fecha de publicación: [[fecha_publicacion]]</p>
+            </div>
+            <div class="right">
+                <p>
+                    <button @click="set_anterior()"><img src="{% static 'assets/Img/left-arrow.png' %}" alt="flecha izquierda"></button>
+                    Cambia de alumno
+                    <button @click="set_siguiente()"><img src="{% static 'assets/Img/right-arrow.png' %}" alt="flecha derecha"></button>
+                </p>        
+            </div>
+        </div>
                 
-        <p><button @click="set_anterior()">Alumno anterior</button> <button>Vista completa</button> <button @click="set_siguiente()">Siguiente alumno</button></p>
-        <table class="m-auto text-justify">
-            <tr>
-                <th>Curso</th>
-                <td>[[curso]]</td>
-            </tr>
-            <tr>
-                <th>Ejercicio</th>
-                <td>[[ejercicio]]</td>
-            </tr>
-            <tr>
-                <th>
-                    Enunciado
-                </th>
-                <td>
-                    [[enunciado]]
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Tipo de ejercicio
-                </th>
-                <td>
-                    Ejercicio [[tipo_ejercicio]] <img :src=[[icono_ejercicio]] width="50" height="50" alt="icono ejercicio">
-                </td>
-            </tr>
-            <tr>
-                <th>Alumno</th>
-                <td>[[nombre]]</td>
-            </tr>
-            <tr>
-                <th>Correo</th>
-                <td>[[correo]]</td>
-            </tr>
-            <tr>
-                <th>Archivo</th>
-                <td><a :href=[[archivo]] target="_blank">descarga</a></td>
-            </tr>
-            <tr>
-                <th>Calificación</th>
-                <td><input type="number" v-model="nota">/[[nota_maxima]]</td>
-            </tr>
-            <tr>
-                <th>Comentario del alumno</th>
-                <td>[[comentario_alumno]]</td>
-            </tr>
-            <tr>
-                <th>Comentario del profesor</th>
-                <td><textarea v-model="comentario_profesor"></textarea></td>
-            </tr>
-        </table>
-        <p><input type="checkbox" id="ckbNotificacion"><label for="ckbNotificacion">Notificar al alumno</label><button @click="save_nota_and_comment()">Guardar</button></p>
+        <div class="body">
+            <div class="content">
+                <embed :src=[[archivo]] frameborder="0" alt="Archivo no visualizable"></embed>
+            </div>
+            <div class="details">
+                <div class="detalles_alumno">
+                    <p>Archivo:<a :href=[[archivo]] target="_blank">descarga</a></p>
+                    
+                    <p>Comentario del alumno:</p> 
+                    <p>[[comentario_alumno]]</p>
+                </div>
+                        
+                <h3>Calificación</h3>
+                <p>Calificación sobre [[nota_maxima]]:</p>
+                <p><input type="number" v-model="nota"></p>
+                    
+                <p>Comentario del profesor</p>
+                <p><textarea v-model="comentario_profesor"></textarea></p>
+                    
+                <p><input type="checkbox" id="ckbNotificacion"><label for="ckbNotificacion">Notificar al alumno</label><button @click="save_nota_and_comment()">Guardar</button></p>
+            </div>
+        </div>
         
     </div>
 
