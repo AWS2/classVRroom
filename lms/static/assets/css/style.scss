@@ -73,6 +73,25 @@ body{
 
 }
 
+/* HEADER */
+.header-container{
+    .navbar-brand{
+        img{
+            width: 60px;
+            height: auto;
+        }
+    }
+
+    &.shrink{
+        .navbar-brand{
+            img{
+                width: 40px;
+                height: auto;
+            }
+        }
+    }
+}
+
 .bg-primary{
     background-color: #8EC6FF !important;
 }
