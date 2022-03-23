@@ -77,6 +77,11 @@ body{
     background-color: #8EC6FF !important;
 }
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> origin/int
 .entrega-vista-completa{
     table {
         margin: auto
@@ -84,8 +89,13 @@ body{
     #app {
         text-align: center;
     }
+    .main-content-container{
+        padding-top: 25px;
+        padding-bottom: 25px;
+    }
 }
 
+<<<<<<< HEAD
 .dashboard{
     .curso {
         width: 50%;
@@ -101,5 +111,22 @@ body{
 
     p {
         margin: 0 !important;
+=======
+.main-content-container{
+    margin-top: 80px;
+
+}
+
+.header-container{
+    height: 80px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    transition: all 1s;
+    &.shrink{
+        height: 50px;
+        position: fixed;
+>>>>>>> origin/int
     }
 }

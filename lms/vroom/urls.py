@@ -14,5 +14,5 @@ from .forms import CustomLoginForm
 
 urlpatterns += [
     path('login/', LoginView.as_view(authentication_form=CustomLoginForm), name='login'),
-    path('logout/', LogoutView.as_view(), name='logout')
+    path('logout/', LogoutView.as_view(), name='logout'),
 ]
