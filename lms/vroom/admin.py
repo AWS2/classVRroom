@@ -43,6 +43,7 @@ class EjercicioAdmin(admin.ModelAdmin):
     def get_Curso(self,obj):
         return obj.curso.titulo
     get_Curso.short_description = 'Curso'
+    inlines = [EntregaInline]
  
 class EntregaAdmin(admin.ModelAdmin):
     list_display= ('id','get_Ejercicio','get_Autor')
