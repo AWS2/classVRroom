@@ -58,13 +58,13 @@ body {
   font-family: 'Bicyclette';
 }
 
-.bg-primary {
-  background-color: #8EC6FF !important;
-}
-
-.main-content-container {
+body:not(.login) .main-content-container {
   padding-top: 25px;
   padding-bottom: 25px;
+}
+
+.bg-primary {
+  background-color: #8EC6FF !important;
 }
 
 .entrega-vista-completa table {

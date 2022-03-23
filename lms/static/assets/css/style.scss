@@ -63,16 +63,21 @@
 
 body{
     font-family: 'Bicyclette';
+
+    &:not(.login){
+        .main-content-container{
+            padding-top: 25px;
+            padding-bottom: 25px;
+        }
+    }
+
 }
 
 .bg-primary{
     background-color: #8EC6FF !important;
 }
 
-.main-content-container{
-    padding-top: 25px;
-    padding-bottom: 25px;
-}
+
 
 .entrega-vista-completa{
     table {
