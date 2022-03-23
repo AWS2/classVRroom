@@ -7,7 +7,7 @@ class Usuario(AbstractUser):
     termino = models.ForeignKey('Termino',on_delete=models.DO_NOTHING,null=True) 
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username']
 
     def __str__(self):
         return self.username
