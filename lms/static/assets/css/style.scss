@@ -63,6 +63,36 @@
 
 body{
     font-family: 'Bicyclette';
+
+    &:not(.login){
+        .main-content-container{
+            padding-top: 25px;
+            padding-bottom: 25px;
+        }
+    }
+
+}
+
+/* HEADER */
+.header-container{
+    position: sticky;
+    top: 0;
+    .navbar-brand{
+        img{
+            transition: width .3s;
+            width: 60px;
+            height: auto;
+        }
+    }
+
+    &.shrink{
+        .navbar-brand{
+            img{
+                width: 40px;
+                height: auto;
+            }
+        }
+    }
 }
 
 .bg-primary{
@@ -84,20 +114,32 @@ body{
     }
 }
 
-.main-content-container{
-    margin-top: 80px;
+.dashboard{
+    .curso {
+        width: 50%;
+        margin: 5px auto;
+        padding: 20px;
+        border-radius: 20px;
+        border: 1px solid black;
+    }
 
+    .curso h3 {
+        display: inline;
+    }
+
+    p {
+        margin: 0 !important;
+    }
 }
 
-.header-container{
-    height: 80px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    transition: all 1s;
-    &.shrink{
-        height: 50px;
-        position: fixed;
+.text-justify{
+    text-align: justify;
+}
+
+
+.landing{
+    img{
+        width: 100%;
+        height: auto;
     }
 }
