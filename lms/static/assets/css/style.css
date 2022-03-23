@@ -58,14 +58,11 @@ body {
   font-family: 'Bicyclette';
 }
 
-<<<<<<< HEAD
 body:not(.login) .main-content-container {
   padding-top: 25px;
   padding-bottom: 25px;
 }
 
-=======
->>>>>>> origin/int
 .bg-primary {
   background-color: #8EC6FF !important;
 }
@@ -78,7 +75,6 @@ body:not(.login) .main-content-container {
   text-align: center;
 }
 
-<<<<<<< HEAD
 .dashboard .curso {
   width: 50%;
   margin: 5px auto;
@@ -93,7 +89,8 @@ body:not(.login) .main-content-container {
 
 .dashboard p {
   margin: 0 !important;
-=======
+}
+
 .entrega-vista-completa .main-content-container {
   padding-top: 25px;
   padding-bottom: 25px;
@@ -116,6 +113,5 @@ body:not(.login) .main-content-container {
 .header-container.shrink {
   height: 50px;
   position: fixed;
->>>>>>> origin/int
 }
 /*# sourceMappingURL=style.css.map */
