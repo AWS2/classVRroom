@@ -7,13 +7,11 @@ from .models import *
 class EjercicioInline(admin.TabularInline):
     model = Ejercicio
     fields = ('id', 'autor','titulo','enunciado','nota_maxima','tipo_ejercicio')  
-    readonly_fields = ('autor',)
     extra = 0
  
 class EntregaInline(admin.TabularInline):
     model = Entrega
     fields = ('autor','fecha_publicacion','ejercicio')
-    readonly_fields = ('autor',)
     extra = 0
  
 class LinkInline(admin.TabularInline):
@@ -28,7 +26,6 @@ class TextoInline(admin.TabularInline):
  
 class DocumentoInline(admin.TabularInline):
     model = Documento
-    readonly_fields = ('autor',)
     fields = ('autor','titulo','archivo')
     extra = 0
  
@@ -37,7 +34,6 @@ class Usuario_CursoInline(admin.TabularInline):
     verbose_name = "Suscripcion"
     verbose_plural_name = "Suscripciones"
     fields = ('usuario','tipo_subscripcion',)
-    readonly_fields = ('usuario','tipo_subscripcion')
     extra = 0
  
  
@@ -47,6 +43,7 @@ class EjercicioAdmin(admin.ModelAdmin):
     def get_Curso(self,obj):
         return obj.curso.titulo
     get_Curso.short_description = 'Curso'
+    inlines = [EntregaInline]
  
 class EntregaAdmin(admin.ModelAdmin):
     list_display= ('id','get_Ejercicio','get_Autor')
@@ -93,6 +90,8 @@ admin.site.register(Centro)
 admin.site.register(Curso, CursoAdmin)
 admin.site.register(Ejercicio, EjercicioAdmin)
 admin.site.register(Tipo_Ejercicio)
+admin.site.register(Tipo_Subscripcion)
 admin.site.register(Usuario, UserAdmin)
 admin.site.register(Termino)
 admin.site.register(Entrega)
+admin.site.register(Usuario_Curso)
