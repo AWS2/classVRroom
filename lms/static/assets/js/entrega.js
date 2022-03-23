@@ -50,17 +50,6 @@ const app = Vue.createApp({
       }
     },
 
-    id_entrega_cambiada(nuevo, antiguo) {
-      console.log("cambio")
-      if (nuevo == '') {
-        return;
-      }
-      if (nuevo == this.id_entrega) {
-        this.get_data(nuevo)
-      }
-      nuevo = '';
-    }
-
   },
   computed: {
     vista_archivo: function () {
@@ -151,7 +140,8 @@ const app = Vue.createApp({
     },
 
     update_entrega(id_entrega_cambiada) {
-      if (this.id_entrega = id_entrega_cambiada) {
+      if (this.id_entrega == id_entrega_cambiada) {
+        console.log("actualizando")
         this.get_data(this.id_entrega);
       }
     },

@@ -64,5 +64,5 @@ class Command(BaseCommand):
 
         Tipo_Subscripcion.objects.get_or_create(nombre="Alumno")
         Tipo_Subscripcion.objects.get_or_create(nombre="Profesor")
-        Tipo_Ejercicio.objects.get_or_create(nombre="vr", icono="static/assets/archivos/vr.png")
-        Tipo_Ejercicio.objects.get_or_create(nombre="no vr", icono="static/assets/archivos/novr.png")
+        Tipo_Ejercicio.objects.get_or_create(nombre="vr", icono="static/assets/img/vr.png")
+        Tipo_Ejercicio.objects.get_or_create(nombre="no vr", icono="static/assets/img/novr.png")
