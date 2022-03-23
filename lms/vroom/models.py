@@ -6,6 +6,9 @@ from django.contrib.auth.models import AbstractUser
 class Usuario(AbstractUser):
     termino = models.ForeignKey('Termino',on_delete=models.DO_NOTHING,null=True) 
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
+
     def __str__(self):
         return self.username
 
@@ -24,11 +27,14 @@ class Centro(models.Model):
     icono = models.ImageField()
     administrador = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=True)
 
+    def __str__(self):
+        return self.nombre
+
 class Curso(models.Model):
     titulo = models.CharField(max_length=100,null=False,blank=False)
     descripcion = models.TextField()
     estado = models.BooleanField(null=False,blank=False,default=False)
-    centro = models.ForeignKey('Centro',on_delete=models.DO_NOTHING,default=True)
+    centro = models.ForeignKey('Centro',on_delete=models.DO_NOTHING,default=True)   
 
     def __str__(self):
         return self.titulo
@@ -94,6 +100,9 @@ class Tipo_Ejercicio(models.Model):
 
 class Tipo_Subscripcion(models.Model):
     nombre = models.CharField(max_length=100,null=False,blank=False)
+
+    def __str__(self):
+        return self.nombre
 
 class Usuario_Curso(models.Model):
     usuario = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=True)

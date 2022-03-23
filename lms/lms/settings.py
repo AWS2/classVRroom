@@ -39,10 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'vroom',
 ]
 
 AUTH_USER_MODEL = 'vroom.Usuario'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/login'
+LOGOUT_REDIRECT_URL = '/login'
+
 
 
 MIDDLEWARE = [
@@ -126,6 +131,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT= '/static'
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
@@ -137,4 +144,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
  
-STATIC_ROOT= '/static'
+ASGI_APPLICATION = "lms.routing.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}

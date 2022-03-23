@@ -1,3 +1,23 @@
+if (window.location.protocol == "https:") {
+  var ws_scheme = "wss://";
+} else {
+  var ws_scheme = "ws://"
+};
+
+var socket = new WebSocket(
+  ws_scheme+
+  window.location.host+
+  '/ws/entrega/'
+);
+
+socket.onmessage = function(e) {
+  const data = JSON.parse(e.data);
+  console.log(`entrega con id=${data.id} ha sido editada`)
+  root.update_entrega(data.id)
+}
+
+
+
 const app = Vue.createApp({
   delimiters: ['[[', ']]'],
   data() {
@@ -28,11 +48,21 @@ const app = Vue.createApp({
       handler(id) {
         this.get_data(id);
       }
+    },
+
+    id_entrega_cambiada(nuevo, antiguo) {
+      console.log("cambio")
+      if (nuevo == '') {
+        return;
+      }
+      if (nuevo == this.id_entrega) {
+        this.get_data(nuevo)
+      }
+      nuevo = '';
     }
 
   },
   methods: {
-
     get_data(id) {
       
       fetch(`/api/entrega/${id}`, {method: 'GET'})
@@ -40,7 +70,7 @@ const app = Vue.createApp({
         .then((result) => {
           let entrega = result.data[0];
 
-          this.archivo = entrega.archivo;
+          this.archivo = '/'+entrega.archivo;
           this.comentario_alumno = entrega.comentario_alumno;
           this.comentario_profesor = entrega.comentario_profesor;
           this.fecha_publicacion = entrega.fecha_publicacion;
@@ -73,7 +103,7 @@ const app = Vue.createApp({
                   let tipo_ejercicio = result.data[0];
 
                   this.tipo_ejercicio = tipo_ejercicio.nombre;
-                  this.icono_ejercicio = tipo_ejercicio.icono;
+                  this.icono_ejercicio = '/'+tipo_ejercicio.icono;
                 })
 
               fetch(`/api/curso/${ejercicio.curso_id}`, {method: 'GET'})
@@ -93,6 +123,12 @@ const app = Vue.createApp({
 
     set_entrega(id_entrega) {
       this.id_entrega = id_entrega;
+    },
+
+    update_entrega(id_entrega_cambiada) {
+      if (this.id_entrega = id_entrega_cambiada) {
+        this.get_data(this.id_entrega);
+      }
     },
 
     set_siguiente() {
@@ -147,7 +183,6 @@ const app = Vue.createApp({
       myHeaders.append("Content-Type", "application/json");
 
       var raw = JSON.stringify({
-        "max_note": this.nota_maxima,
         "new_note": this.nota,
         "comment_prof": this.comentario_profesor
       });
@@ -159,8 +194,21 @@ const app = Vue.createApp({
       };
 
       fetch(`/api/entrega/${this.id_entrega}`, requestOptions)
-        .then(alert('entrega actualizada'))
-        .catch(error => console.log('error', error));
+        .then(respuesta => respuesta.json())
+        .then((res) => {
+          let alerta = $(`<div class='alert alert-${res.tipo}' role='alert'>${res.msg}</div>`);
+          alerta.appendTo($('body'));
+          alerta.fadeIn();
+          setTimeout(
+            function() {
+              alerta.fadeOut( () => alerta.remove())
+            }, 2000);
+
+          socket.send(JSON.stringify({
+              'id': this.id_entrega
+          }))
+        })
+        .catch(error => console.log(error));
 
     }
     
@@ -170,4 +218,4 @@ const app = Vue.createApp({
     this.set_entrega(1);
   }
 });
-app.mount('#app');
+const root = app.mount('#app');
