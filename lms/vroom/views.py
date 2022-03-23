@@ -11,3 +11,7 @@ def index(request):
 @login_required
 def entrega(request):
     return render(request, 'vroom/entrega.html')
+
+@login_required
+def dashboard(request):
+    return render(request, 'vroom/dashboard.html')

@@ -3,6 +3,7 @@
 
 {% load static %}
 
+{% block title %}Entrega{% endblock %}
 
 {% block extraclass %}entrega-vista-completa{% endblock %}
 
@@ -52,7 +53,6 @@
                 <p><input type="checkbox" id="ckbNotificacion"><label for="ckbNotificacion">Notificar al alumno</label><button @click="save_nota_and_comment()">Guardar</button></p>
             </div>
         </div>
-        
     </div>
 
     <script src="{% static 'assets/js/entrega.js' %}"></script>

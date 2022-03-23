@@ -58,6 +58,30 @@ body {
   font-family: 'Bicyclette';
 }
 
+body:not(.login) .main-content-container {
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+/* HEADER */
+.header-container {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+
+.header-container .navbar-brand img {
+  -webkit-transition: width .3s;
+  transition: width .3s;
+  width: 60px;
+  height: auto;
+}
+
+.header-container.shrink .navbar-brand img {
+  width: 40px;
+  height: auto;
+}
+
 .bg-primary {
   background-color: #8EC6FF !important;
 }
@@ -75,23 +99,29 @@ body {
   padding-bottom: 25px;
 }
 
-.main-content-container {
-  margin-top: 80px;
+.dashboard .curso {
+  width: 50%;
+  margin: 5px auto;
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid black;
 }
 
-.header-container {
-  height: 80px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  -webkit-transition: all 1s;
-  transition: all 1s;
+.dashboard .curso h3 {
+  display: inline;
 }
 
-.header-container.shrink {
-  height: 50px;
-  position: fixed;
+.dashboard p {
+  margin: 0 !important;
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+.landing img {
+  width: 100%;
+  height: auto;
 }
 
 .entrega-vista-completa #app {

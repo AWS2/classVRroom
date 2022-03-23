@@ -1,3 +1,23 @@
+if (window.location.protocol == "https:") {
+  var ws_scheme = "wss://";
+} else {
+  var ws_scheme = "ws://"
+};
+
+var socket = new WebSocket(
+  ws_scheme+
+  window.location.host+
+  '/ws/entrega/'
+);
+
+socket.onmessage = function(e) {
+  const data = JSON.parse(e.data);
+  console.log(`entrega con id=${data.id} ha sido editada`)
+  root.update_entrega(data.id)
+}
+
+
+
 const app = Vue.createApp({
   delimiters: ['[[', ']]'],
   data() {
@@ -28,11 +48,21 @@ const app = Vue.createApp({
       handler(id) {
         this.get_data(id);
       }
+    },
+
+    id_entrega_cambiada(nuevo, antiguo) {
+      console.log("cambio")
+      if (nuevo == '') {
+        return;
+      }
+      if (nuevo == this.id_entrega) {
+        this.get_data(nuevo)
+      }
+      nuevo = '';
     }
 
   },
   methods: {
-
     get_data(id) {
       
       fetch(`/api/entrega/${id}`, {method: 'GET'})
@@ -93,6 +123,12 @@ const app = Vue.createApp({
 
     set_entrega(id_entrega) {
       this.id_entrega = id_entrega;
+    },
+
+    update_entrega(id_entrega_cambiada) {
+      if (this.id_entrega = id_entrega_cambiada) {
+        this.get_data(this.id_entrega);
+      }
     },
 
     set_siguiente() {
@@ -159,7 +195,12 @@ const app = Vue.createApp({
 
       fetch(`/api/entrega/${this.id_entrega}`, requestOptions)
         .then(respuesta => respuesta.text())
-        .then(mensage => alert(mensage))
+        .then((mensage) => {
+          alert(mensage);
+          socket.send(JSON.stringify({
+              'id': this.id_entrega
+          }))
+        })
         .catch(error => console.log(error));
 
     }
@@ -170,4 +211,4 @@ const app = Vue.createApp({
     this.set_entrega(1);
   }
 });
-app.mount('#app');
+const root = app.mount('#app');
