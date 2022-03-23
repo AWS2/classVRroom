@@ -32,9 +32,7 @@
         </div>
                 
         <div class="body">
-            <div class="content">
-                <embed :src=[[archivo]] frameborder="0"></embed>
-            </div>
+            <div class="content" v-html="vista_archivo"></div>
             <div class="details">
                 <div class="detalles_alumno">
                     <p>Archivo:<a :href=[[archivo]] target="_blank">descarga</a></p>

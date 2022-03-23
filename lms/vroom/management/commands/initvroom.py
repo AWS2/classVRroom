@@ -15,7 +15,7 @@ GROUPS = {
         "texto" : ["add","delete","change","view"],
         "user" : ["add","delete","change","view"],
     },
-    'profesores': {
+    'profesor': {
         "documento" : ["add","delete","change","view"],
         "ejercicio" : ["add","delete","change","view"],
         "entrega" : ["change","view"],
@@ -30,6 +30,14 @@ class Command(BaseCommand):
     help = "Creates groups with its permissions and inserts essential data"
 
     def handle(self, *args, **options):
+
+        admin_centro = Group.objects.filter(name = "admin centro")
+        if not len(admin_centro) == 0:
+            GROUPS.pop("admin_centro")
+
+        profesor = Group.objects.filter(name = "profesor")
+        if not len(profesor) == 0:
+            GROUPS.pop("profesor")
 
         for group_name in GROUPS:   
             new_group, created = Group.objects.get_or_create(name=group_name)
@@ -51,7 +59,10 @@ class Command(BaseCommand):
                         continue
 
                     new_group.permissions.add(model_add_perm)
-        Tipo_Subscripcion.objects.get_or_create(nombre="alumno")
-        Tipo_Subscripcion.objects.get_or_create(nombre="profesor")
+
+        
+
+        Tipo_Subscripcion.objects.get_or_create(nombre="Alumno")
+        Tipo_Subscripcion.objects.get_or_create(nombre="Profesor")
         Tipo_Ejercicio.objects.get_or_create(nombre="vr", icono="static/assets/archivos/vr.png")
         Tipo_Ejercicio.objects.get_or_create(nombre="no vr", icono="static/assets/archivos/novr.png")
