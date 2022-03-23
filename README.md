@@ -47,7 +47,7 @@ Para cualquier duda contactar con los autores
 ### Profesor
 - Documento: añadir, borrar, modificar y ver. 
 - Ejercicio: añadir, borrar, modificar y ver.
-- Entrega: añadir, borrar, modificar y ver.
+- Entrega: modificar y ver.
 - Invitacion: añadir, borrar, modificar y ver.
 - Link: añadir, borrar, modificar y ver.
 - Texto: añadir, borrar, modificar y ver.
