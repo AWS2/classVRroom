@@ -182,14 +182,15 @@ def entrega(request, id_entrega):
             comment = str(body['comment_prof'])
   
 
-            if note and max_note:
-                if note <= max_note:
+            if not note==None and max_note:
+                if note <0:
+                    return JsonResponse({"msg": "La nota no puede ser negativa", "tipo": "danger"})
+                elif note <= max_note:
                     entrega.update(nota=note)
                     entrega.update(comentario_profesor=comment)
                     return JsonResponse({"msg": "Nota actualizada", "tipo": "success"})  
                 else :
                     return JsonResponse({"msg": "La nota no puede superar la nota máxima", "tipo": "danger"})
-        
 
         return JsonResponse({
             'data': list(entrega) 

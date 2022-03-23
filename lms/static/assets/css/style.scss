@@ -162,7 +162,7 @@ body{
             height: 600px;
             .content {
                 width: 70%;
-                background-image: url("{% static 'assets/Img/alt-entrega.png' %}");
+                background-image: url("/static/assets/Img/alt-entrega.png");
                 background-position: center;
                 background-repeat: no-repeat;
                 embed {
