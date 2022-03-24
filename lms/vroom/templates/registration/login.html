@@ -29,4 +29,17 @@
     </div>
 </div>
 
+{% if form.errors %}
+    <script>
+        let alerta = $("<div class='alert alert-danger' role='alert'>credenciales incorrectas</div>");
+        alerta.appendTo($('body'));
+        alerta.fadeIn();
+        setTimeout(
+            function() {
+                alerta.fadeOut( () => alerta.remove())
+            }, 5000
+        );
+    </script>
+{% endif %}
+
 {% endblock %}
