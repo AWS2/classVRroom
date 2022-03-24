@@ -5,7 +5,7 @@ from vroom.models import *
 import logging
 
 GROUPS = {
-    'admin_centro': {
+    'admin centro': {
         "curso" : ["add","delete","change","view"],
         "documento" : ["add","delete","change","view"],
         "ejercicio" : ["add","delete","change","view"],
@@ -33,7 +33,7 @@ class Command(BaseCommand):
 
         admin_centro = Group.objects.filter(name = "admin centro")
         if not len(admin_centro) == 0:
-            GROUPS.pop("admin_centro")
+            GROUPS.pop("admin centro")
 
         profesor = Group.objects.filter(name = "profesor")
         if not len(profesor) == 0:
