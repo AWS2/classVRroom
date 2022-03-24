@@ -82,6 +82,10 @@ body:not(.login) .main-content-container {
   height: auto;
 }
 
+.header-container .container {
+  max-width: 1320px;
+}
+
 .bg-primary {
   background-color: #8EC6FF !important;
 }

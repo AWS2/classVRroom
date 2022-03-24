@@ -69,6 +69,8 @@ const app = Vue.createApp({
         tipo += 'application/';
       } else if (extensiones_texto.includes(extension)) {
         tipo += 'text/';
+      } else {
+        return '';
       }
       tipo += extension;
 
@@ -87,8 +89,8 @@ const app = Vue.createApp({
           this.archivo = '/'+entrega.archivo;
           this.comentario_alumno = entrega.comentario_alumno;
           this.comentario_profesor = entrega.comentario_profesor;
-          this.fecha_publicacion = entrega.fecha_publicacion;
-          this.fecha_edicion = entrega.fecha_edicion;
+          this.fecha_publicacion = entrega.fecha_publicacion.split("T")[0].split("-").reverse().join('/') + ' - ' + entrega.fecha_publicacion.split("T")[1].slice(0, -1);
+          this.fecha_edicion = entrega.fecha_edicion.split("T")[0].split("-").reverse().join('/') + ' - ' + entrega.fecha_edicion.split("T")[1].slice(0, -1);
           this.nota = entrega.nota;
 
           fetch(`/api/usuario/${entrega.autor_id}`, {method: 'GET'})
