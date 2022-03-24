@@ -187,3 +187,17 @@ body{
 .alert {
     display: none; position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%); width: 80%
 }
+
+#breadcrumbs {
+    text-align: left;
+    width: fit-content;
+    background-color: #8EC6FF !important;
+    border: 1px solid grey;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    margin-left: 50px;
+
+    p {
+        margin: 0;
+    }
+}
