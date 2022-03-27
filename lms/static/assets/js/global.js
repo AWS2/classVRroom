@@ -16,6 +16,10 @@ $(document).ready(()=>{
 
     });
 
+    setTimeout(()=>{
+        $('body').removeClass('loading');
+    },5000);
+
 
 });
 
