@@ -229,16 +229,70 @@ body:not(.login) .main-content-container {
 
 .curso .contenidos .contenido {
   border-top: 0;
-  margin: 10px auto;
-  padding: 10px;
+  margin: auto;
+  padding: 20px;
   cursor: pointer;
+}
+
+.curso .contenidos .contenido p {
+  display: inline;
 }
 
 .curso .contenidos .contenido:not(:first-of-type) {
   border-top: 1px solid black;
 }
 
+.curso .contenidos .contenido:nth-child(2n) {
+  background-color: #dedede;
+}
+
+.curso .contenidos .contenido:hover p {
+  text-decoration: underline;
+}
+
+.curso .contenidos .contenido:hover p a {
+  -webkit-text-decoration-color: black;
+          text-decoration-color: black;
+}
+
 .curso .contenidos .contenido img {
   width: 30px;
+}
+
+.ejercicio_alumno p {
+  margin: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.ejercicio_alumno .ejercicio, .ejercicio_alumno .entrega {
+  margin: auto;
+  max-width: 1320px;
+}
+
+.ejercicio_alumno .ejercicio {
+  border-bottom: 1px solid black;
+}
+
+.ejercicio_alumno .entrega > * {
+  padding: 20px 0;
+  border-top: 0;
+}
+
+.ejercicio_alumno .entrega > *:not(:first-of-type) {
+  border-top: 1px solid black;
+}
+
+.ejercicio_alumno .entrega #pGuardar {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
 }
 /*# sourceMappingURL=style.css.map */

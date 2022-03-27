@@ -21,20 +21,20 @@
                         {% csrf_token %}
                         <input type="hidden" name="id" value="{{contenido.id}}">
                     </form>
-                    <img src="{% static 'assets/img/' %}{{contenido.tipo}}.png" alt="{{contenido.tipo}}"> <i>{{contenido.tipo}}</i> - {{contenido.titulo}}
+                    <img src="{% static 'assets/img/' %}{{contenido.tipo}}.png" alt="{{contenido.tipo}}"> <i>{{contenido.tipo}}</i> - <p>{{contenido.titulo}}</p>
                 </div>
             {% elif contenido.tipo == "link" %}
                 <div class="contenido">
                     <img src="{% static 'assets/img/' %}{{contenido.tipo}}.png" alt="{{contenido.tipo}}"> <i>{{contenido.tipo}}</i> -
-                    <a href="{{contenido.link}}" target="_blank">{{contenido.titulo}}</a>
+                    <p><a href="{{contenido.link}}" target="_blank">{{contenido.titulo}}</a></p>
                 </div>
             {% elif contenido.tipo == "texto" %}
                 <div class="contenido">
-                    <img src="{% static 'assets/img/' %}{{contenido.tipo}}.png" alt="{{contenido.tipo}}"> <i>{{contenido.tipo}}</i> - {{contenido.titulo}}
+                    <img src="{% static 'assets/img/' %}{{contenido.tipo}}.png" alt="{{contenido.tipo}}"> <i>{{contenido.tipo}}</i> - <p>{{contenido.titulo}}</p>
                 </div>
             {% elif contenido.tipo == "documento" %}
                 <div class="contenido">    
-                    <img src="{% static 'assets/img/' %}{{contenido.tipo}}.png" alt="{{contenido.tipo}}"> <i>{{contenido.tipo}}</i> - {{contenido.titulo}}
+                    <img src="{% static 'assets/img/' %}{{contenido.tipo}}.png" alt="{{contenido.tipo}}"> <i>{{contenido.tipo}}</i> - <p>{{contenido.titulo}}</p>
                 </div>
             {% endif %}
         {% endfor %}

@@ -226,16 +226,61 @@ body{
         max-width: 1320px;
         margin: auto;
         .contenido {
+            p {
+                display: inline;
+            }
             border-top: 0;
             &:not(:first-of-type) {
                 border-top: 1px solid black;
             }
-            margin: 10px auto;
-            padding: 10px;
+            &:nth-child(2n) {
+                background-color: #dedede;
+            }
+            &:hover {
+                p {
+                    text-decoration: underline;
+                    a {
+                        text-decoration-color: black;
+                    }
+                }
+            }
+            margin: auto;
+            padding: 20px;
             cursor: pointer;
             img {
                 width: 30px;
             }
+        }
+    }
+}
+
+.ejercicio_alumno {
+    p {
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
+    .ejercicio, .entrega {
+        margin: auto;
+        max-width: 1320px;
+    }
+    .ejercicio {
+        border-bottom: 1px solid black;
+    }
+    .entrega {
+        > * {
+            padding: 20px 0;
+            border-top: 0;
+            &:not(:first-of-type) {
+                border-top: 1px solid black;
+            }
+        }
+        #pGuardar {
+            display: flex;
+            justify-content: flex-end
+        }
+        #btnGuardar {
+
         }
     }
 }

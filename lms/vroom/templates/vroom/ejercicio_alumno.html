@@ -2,7 +2,7 @@
 
 {% block title %}{{ejercicio}}{% endblock %}
 
-{% block extraclass %}ejercicio{% endblock %}
+{% block extraclass %}ejercicio_alumno{% endblock %}
 
 {% load static %}
 
@@ -10,13 +10,49 @@
 
 
 <div id="app">
-    <h1>{{ejercicio.titulo}}</h1>
-    <h3>{{ejercicio.descripcion}}</h3>
-    <p>{{ejercicio.enunciado}}</p>
-    <h1>Estado de la entrega</h1>
-    {% if entrega %}
-        <p>{{entrega.archivo}}</p>
-    {% endif %}
+    <div class="ejercicio">
+        <h1>{{ejercicio.titulo}}</h1>
+        {% if ejercicio.descripcion %}
+            <p>{{ejercicio.descripcion}}</p>
+        {% endif %}
+        {% if ejercicio.enunciado %}
+            <h4>Enunciado</h4>
+            <p>{{ejercicio.enunciado}}</p>
+        {% endif %}
+    </div>
+    <div class="entrega">
+        <h2>Estado de la entrega</h2>
+        {% if entrega %}
+            <p>Última modificación: {{ entrega.fecha_edicion|date:"d/m/Y-H/m" }}</p>
+            <p>Comentario: <textarea cols="30" rows="1">{{entrega.comentario_alumno}}</textarea></p>
+            {% if ejercicio.tipo_ejercicio.nombre == "vr" %}
+                <p>Metadatos: {{entrega.nombre_archivo}}</p>
+            {% else %}
+                {% if not entrega.archivo %}
+                    <p><button>Subir archivo</button></p>
+                {% else %}
+                    <p>Archivo: {{entrega.nombre_archivo}} <button>modificar</button> </p>
+                {% endif %}
+            {% endif %}
+            {% if entrega.nota %}
+                <p>Calificación: {{entrega.nota}}/{{ejercicio.nota_maxima}}</p>
+            {% else %}
+                <p>En espera de calificación</p>
+            {% endif %}
+        {% else %}
+            <h5>Entrega pendiente</h5>
+            {% if ejercicio.tipo_ejercicio.nombre == "vr" %}
+                <p>Los metadatos se subiran automaticamente al finalizar el ejercicio</p>
+            {% else %}
+                <p><button>Subir archivo</button></p>
+            {% endif %}
+            <p>Comentario: <textarea cols="30" rows="1"></textarea></p>
+        {% endif %}
+        {% if entrega.comentario_profesor %}
+            <p>Comentario del profesor: {{entrega.comentario_profesor}}</p>
+        {% endif %}
+        <p id="pGuardar"><button id="btnGuardar">Guardar</button></p>
+    </div>
 </div> 
 {% comment %} <script src="{% static 'assets/js/ejercicio.js' %}"></script> {% endcomment %}
 {% endblock %}
