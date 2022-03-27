@@ -1,0 +1,51 @@
+{% extends 'vroom/components/base.html' %}
+
+{% block title %}{{ejercicio.titulo}}{% endblock %}
+
+{% block extraclass %}ejercicio_alumno{% endblock %}
+
+{% load static %}
+
+{% block content %}
+
+<div id="app">
+    {{ entregas|json_script:"entregas" }}
+    {{ ejercicio|json_script:"ejercicio" }}
+    <table>
+        <tr>
+            <th>Usuario</th>
+            <th>Correo</th>
+            <th>Estado</th>
+            <th>Archivo</th>
+            <th>Comentarios del alumno</th>
+            <th>Última modificación (entrega)</th>
+            <th>Calificación</th>
+            <th>Comentarios del profesor</th>
+            <th>Última modificación (calificación)</th>
+        </tr>
+        <tr v-for="entrega in entregas">
+            <td>[[entrega.alumno.first_name]] [[entrega.alumno.last_name]]</td>
+            <td>[[entrega.alumno.email]]</td>
+            
+            <td v-if="entrega.contenido.nota" class="calificado">Calificado</td>
+            <td v-else-if="entrega.contenido" class="porCalificar">Por calificar</td>
+            <td v-else class="noEntregado">No entregado</td>
+
+            <td><a :href="[[entrega.contenido.archivo]]">[[nombre_archivo(entrega.contenido.archivo)]]</a></td>
+
+            <td>[[entrega.contenido.comentario_alumno]]</td>
+
+            <td>[[formato_fecha(entrega.contenido.fecha_edicion)]]</td>
+
+            <td v-if="entrega.contenido.nota">[[entrega.contenido.nota]]/[[ejercicio.nota_maxima]]</td>
+            <td v-else>Sin calificar</td>
+
+            <td><textarea id="comentario_profesor" cols="15" rows="2">[[entrega.contenido.comentario_profesor]]</textarea></td>
+
+            <td>[[formato_fecha(entrega.contenido.fecha_edicion_calificacion)]]</td>
+        </tr>
+    </table>
+</div>
+<script src="{% static 'assets/js/entrega_profesor.js' %}"></script>
+
+{% endblock %}

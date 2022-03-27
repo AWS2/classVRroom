@@ -295,4 +295,13 @@ body:not(.login) .main-content-container {
       -ms-flex-pack: end;
           justify-content: flex-end;
 }
+
+.ejercicio_alumno table {
+  max-width: 1320px;
+  margin: auto;
+}
+
+.ejercicio_alumno table, .ejercicio_alumno th, .ejercicio_alumno td {
+  border: 1px solid black;
+}
 /*# sourceMappingURL=style.css.map */

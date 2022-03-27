@@ -279,8 +279,15 @@ body{
             display: flex;
             justify-content: flex-end
         }
-        #btnGuardar {
+    }
+}
 
-        }
+.ejercicio_alumno{
+    table {
+        max-width: 1320px;
+        margin: auto;
+    }
+    table, th, td {
+        border: 1px solid black;
     }
 }

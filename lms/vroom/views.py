@@ -50,20 +50,40 @@ def curso(request):
 
         return render(request, 'vroom/curso.html', contexto)
 
+from django.forms.models import model_to_dict
+
 @login_required
 def ejercicio(request):
     if (request.POST.get('id')):
         ejercicio = Ejercicio.objects.get(id = request.POST.get('id'))
 
-        #si es alumno
-        try:
-            entrega = Entrega.objects.get(ejercicio = ejercicio.id, autor = request.user.id)
-        except:
-            entrega = False
+        rol = Usuario_Curso.objects.get(usuario = request.user, curso = ejercicio.curso).tipo_subscripcion
 
-        contexto = {
-            "ejercicio": ejercicio,
-            "entrega": entrega
-        }
+        if (rol.nombre == "Alumno"):
+            try:
+                entrega = Entrega.objects.get(ejercicio = ejercicio.id, autor = request.user.id)
+            except:
+                entrega = False
 
-        return render(request, 'vroom/ejercicio_alumno.html', contexto)
+            contexto = {
+                "ejercicio": ejercicio,
+                "entrega": entrega
+            }
+
+            return render(request, 'vroom/ejercicio_alumno.html', contexto)
+
+        else:
+            entregas = []
+            for contenido in Entrega.objects.filter(ejercicio = ejercicio.id).values():
+                alumno = Usuario.objects.get(id = contenido["autor_id"])
+                entrega = {}
+                entrega["alumno"] = model_to_dict(alumno)
+                entrega["contenido"] = contenido
+                entregas.append(entrega)
+
+            contexto = {
+                "ejercicio": model_to_dict(ejercicio),
+                "entregas": entregas
+            }
+
+            return render(request, 'vroom/ejercicio_profesor.html', contexto)
