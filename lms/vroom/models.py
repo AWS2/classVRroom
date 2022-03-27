@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 
 
 
@@ -47,13 +48,14 @@ class Ejercicio(models.Model):
     enunciado = models.TextField()
     nota_maxima = models.FloatField()
     tipo_ejercicio = models.ForeignKey('Tipo_Ejercicio',on_delete=models.DO_NOTHING,default=True)
+    fecha_publicacion = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.titulo
 
 class Entrega(models.Model):
     autor = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=True)
-    fecha_publicacion = models.DateTimeField()
+    fecha_publicacion = models.DateTimeField(default=timezone.now)
     fecha_edicion = models.DateTimeField()
     archivo = models.FileField(upload_to='static/assets/archivos',null=True)
     comentario_alumno = models.CharField(max_length=500)
@@ -69,6 +71,7 @@ class Link(models.Model):
     curso = models.ForeignKey('Curso',on_delete=models.DO_NOTHING,default=True)
     titulo = models.CharField(max_length=100)
     link = models.URLField(null=False)
+    fecha_publicacion = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.titulo
@@ -78,6 +81,7 @@ class Texto(models.Model):
     curso = models.ForeignKey('Curso',on_delete=models.DO_NOTHING,default=True)
     titulo = models.CharField(max_length=100)
     texto = models.TextField(null=True)
+    fecha_publicacion = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.titulo
@@ -87,6 +91,7 @@ class Documento(models.Model):
     curso = models.ForeignKey('Curso',on_delete=models.DO_NOTHING,default=True)
     titulo = models.CharField(max_length=100)
     archivo = models.FileField(upload_to='documents/',null=True)
+    fecha_publicacion = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.titulo

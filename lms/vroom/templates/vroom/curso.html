@@ -1,0 +1,44 @@
+{% extends 'vroom/components/base.html' %}
+
+{% block title %}{{curso}}{% endblock %}
+
+{% block extraclass %}curso{% endblock %}
+
+{% load static %}
+
+{% block content %}
+
+
+<div id="app">
+    <div class="detalles">
+        <p><h1>{{curso}}</h1> - {{rol}}</p>
+    </div>
+    <div class="contenidos">    
+        {% for contenido in contenidos %}
+            {% if contenido.tipo == "ejercicio" %}                
+                <div class="contenido" onclick="goToEjercicio('{{contenido.id}}')">
+                    <form action="{% url 'ejercicio' %}" id="ejercicio-{{contenido.id}}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{contenido.id}}">
+                    </form>
+                    <img src="{% static 'assets/img/' %}{{contenido.tipo}}.png" alt="{{contenido.tipo}}"> <i>{{contenido.tipo}}</i> - {{contenido.titulo}}
+                </div>
+            {% elif contenido.tipo == "link" %}
+                <div class="contenido">
+                    <img src="{% static 'assets/img/' %}{{contenido.tipo}}.png" alt="{{contenido.tipo}}"> <i>{{contenido.tipo}}</i> -
+                    <a href="{{contenido.link}}" target="_blank">{{contenido.titulo}}</a>
+                </div>
+            {% elif contenido.tipo == "texto" %}
+                <div class="contenido">
+                    <img src="{% static 'assets/img/' %}{{contenido.tipo}}.png" alt="{{contenido.tipo}}"> <i>{{contenido.tipo}}</i> - {{contenido.titulo}}
+                </div>
+            {% elif contenido.tipo == "documento" %}
+                <div class="contenido">    
+                    <img src="{% static 'assets/img/' %}{{contenido.tipo}}.png" alt="{{contenido.tipo}}"> <i>{{contenido.tipo}}</i> - {{contenido.titulo}}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div> 
+<script src="{% static 'assets/js/curso.js' %}"></script>
+{% endblock %}

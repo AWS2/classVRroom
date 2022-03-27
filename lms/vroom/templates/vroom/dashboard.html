@@ -19,8 +19,11 @@
         
 
         <div class="curso" v-for="curso in cursos">
-            <p><h3><a href='#'>[[curso.titulo]]</a></h3>  -  [[curso.rol]]</p>
-            <p>[[curso.descripcion]]</p>
+            <form action="{% url 'curso' %}" method="POST">
+                {% csrf_token %} 
+                <p><h3><label :for=[[curso.id]]>[[curso.titulo]]</label><input type="submit" name="curso" :value=[[curso.id]] :id=[[curso.id]]></h3>  -  [[curso.rol]]</p>    
+                <p>[[curso.descripcion]]</p>
+            </form>
         </div>  
 
     <script src="{% static 'assets/js/dashboard.js' %}"></script>

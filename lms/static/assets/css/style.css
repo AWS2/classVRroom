@@ -119,6 +119,17 @@ body:not(.login) .main-content-container {
   margin: 0 !important;
 }
 
+.dashboard .curso input {
+  display: none;
+}
+
+.dashboard .curso label {
+  all: unset;
+  color: #0d6efd;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .text-justify {
   text-align: justify;
 }
@@ -200,5 +211,34 @@ body:not(.login) .main-content-container {
 
 #breadcrumbs p {
   margin: 0;
+}
+
+.curso .detalles {
+  max-width: 1320px;
+  margin: auto;
+}
+
+.curso .detalles h1 {
+  display: inline;
+}
+
+.curso .contenidos {
+  max-width: 1320px;
+  margin: auto;
+}
+
+.curso .contenidos .contenido {
+  border-top: 0;
+  margin: 10px auto;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.curso .contenidos .contenido:not(:first-of-type) {
+  border-top: 1px solid black;
+}
+
+.curso .contenidos .contenido img {
+  width: 30px;
 }
 /*# sourceMappingURL=style.css.map */
