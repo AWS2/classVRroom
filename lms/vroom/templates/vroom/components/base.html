@@ -7,12 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
 
+    <!-- Jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
-    <script src="https://unpkg.com/vue@next"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>    <script src="https://cdn.tailwindcss.com"></script>
-
+    <!-- Global Custom Assets -->
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
     <script src="{% static 'assets/js/global.js' %}"></script>
+    
+    <!-- Google Analitics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8QBYYSYMSQ"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -20,6 +22,10 @@
         gtag('js', new Date());
         gtag('config', 'G-8QBYYSYMSQ');
     </script>
+
+    <!-- Tailwind -->
+    <script src="https://unpkg.com/vue@next"></script>
+
 </head>
 <body class="{% block extraclass %}{% endblock %} bg-light loading">
 
@@ -44,6 +50,8 @@
         {% endblock %}
     </div>
     
+    <div id="alert-container"></div>
+
     {% include "vroom/components/footer.html" %}
 
 </body>
