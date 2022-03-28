@@ -1,3 +1,4 @@
+from enum import auto
 from django.http import JsonResponse
 from django.http import Http404
 from vroom.models import *
@@ -21,19 +22,92 @@ def ping(request):
             'ping': 'pong'
         })
 
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_course_details(request, id_curso):
+    subscripcion_profesor = Tipo_Subscripcion.objects.filter(nombre = "Profesor")
+    curso = Curso.objects.get( pk = id_curso)
+    content = {"courseID": curso.pk, "title": curso.titulo, "description": curso.descripcion, "status": curso.estado,"center": curso.centro.pk}
+    if(id_curso == None):
+        return Response({
+        "status" : 'ERROR',
+        "message" : 'courseID is required'
+    })
+        
+    if(request.user.Usuario_Curso.Tipo_subscripcion__in == subscripcion_profesor):
+        return Response({
+            "status" : 'ERROR',
+            "message" : 'Insufficient permissions'
+        })    
 
-def get_course_details(request):
-    return Response(content)
+    links = Link.objects.filter(pk = id_curso)
+    links_items = []
+    for link in links:
+        links_items.append({"linkID": link.pk, "title": link.titulo, "link": link.link})   
+    content.append(links_items)
+    
+    textos = Texto.objects.filter(pk = id_curso)
+    textos_items = []
+    for texto in textos:
+        textos_items.append({"textID": texto.pk, "autor":texto.autor, "title": texto.titulo, "texto": texto.texto})
+    content.append(textos_items)
+    
+    documents = Documento.objects.filter(pk = id_curso)
+    documents_items = []
+    for document in documents:
+        documents_items.append({"documentID": document.pk, "autor":document.autor, "file":document.archivo})
+    content.append(documents_items)
+    
+    tasks = Ejercicio.objects.filter(pk = id_curso)
+    tasks_items = []
+    for task in tasks:
+        tasks_items.append({"taskID": task.pk, "title": task.titulo, "description": task.descripcion, "quote": task.enunciado, "maxQualification": task.nota_maxima, "task_type": task.tipo_ejercicio})
+    content.append(tasks_items)
+          
+               
+    return Response({
+        "status" : 'OK',
+        "course_list": content
+    })
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_courses(request):
-    cursos = Curso.objects.all().values()
-    content = {
-        'course_list': list(cursos)
-    }
-    return Response(content)
+
+        cursos = Curso.objects.all()
+
+        content = []
+        subscripcion_profesor = Tipo_Subscripcion.objects.filter(nombre = "Profesor")
+        subscripcion_alumno = Tipo_Subscripcion.objects.filter(nombre = "Alumno")
+
+        for icurso in cursos:
+            curso_item ={"courseID": icurso.pk, "title": icurso.titulo, "description": icurso.descripcion, "status": icurso.estado,"center": icurso.centro.pk}      
+            profesor_curso = Usuario_Curso.objects.filter( curso = icurso, tipo_subscripcion = subscripcion_profesor) 
+            if(profesor_curso == None):    
+                
+                curso_item.append({"UserID": profesor_curso.Usuario.pk, "username": profesor_curso.Usuario.username, "email":profesor_curso.Usuario.email})
+            alumnos_curso = Usuario_Curso.objects.filter( curso = icurso, tipo_subscripcion = subscripcion_alumno) 
+            alumno_item_list = []
+            if(alumnos_curso == None):
+                for alumno in alumnos_curso:
+                    alumno_item_list.append({"UserID": alumno.Usuario.pk,"username":alumno.Usuario.username, "email":alumno.Usuario.email})
+                curso_item.append(alumno_item_list)
+            content.append(curso_item)
+            
+                
+        return Response({
+            "status" : 'OK',
+            "course_list": content
+            })
+    
+    ##except:
+        #return Response({
+         #   "status" : 'ERROR',
+          #  "message": 'session_token is required'
+           # })
+
 
 #Api de deslogueo
 @api_view(['GET'])
