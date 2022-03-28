@@ -283,7 +283,7 @@ body{
 }
 
 .ejercicio_alumno{
-    #app {
+    table {
         max-width: 1320px;
         margin: auto;
     }
@@ -308,5 +308,9 @@ body{
     }
     .txtNota {
         resize: none;
+    }
+    .guardar {
+        
+
     }
 }

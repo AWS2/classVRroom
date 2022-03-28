@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
+from django.utils import timezone
 
 
 
@@ -175,7 +176,7 @@ def entrega(request, id_entrega):
 
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-        
+        print(body)
         if 'new_note' in body and 'comment_prof' in body:
             max_note = ejercicio.nota_maxima
             note = float(body['new_note'])
@@ -188,13 +189,54 @@ def entrega(request, id_entrega):
                 elif note <= max_note:
                     entrega.update(nota=note)
                     entrega.update(comentario_profesor=comment)
-                    return JsonResponse({"msg": "Nota actualizada", "tipo": "success"})  
+                    entrega.update(fecha_calificacion=timezone.now())
+                    return JsonResponse({"msg": "Calificación actualizada", "tipo": "success"})  
                 else :
                     return JsonResponse({"msg": "La nota no puede superar la nota máxima", "tipo": "danger"})
+            else:
+                return JsonResponse({"msg": "Faltan datos", "tipo": "danger"})
 
         return JsonResponse({
             'data': list(entrega) 
         })
+
+@csrf_exempt
+def entrega_nueva_cal(request, ejercicio_id):
+    if (request.method=='POST'):
+
+        #proteccion: ser subscriptor del curso, ser el admin del centro o ser el super
+        curso = Curso.objects.get(id = Ejercicio.objects.get(id = ejercicio_id).curso.id)
+        profesor = Usuario_Curso.objects.filter(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))
+        admin = Curso.objects.filter(centro__in = Centro.objects.filter(administrador = request.user.id), id = curso.id)
+
+        if (len(profesor) == 0 and len(admin) == 0 and not request.user.is_superuser):
+            raise PermissionDenied()
+        #fin proteccion
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+
+        nota = float(body['new_note'])
+        nota_maxima = Ejercicio.objects.get(id = ejercicio_id).nota_maxima
+        print(nota)
+
+        if nota>nota_maxima:
+            return JsonResponse({"msg": "La nota no puede superar la nota máxima", "tipo": "danger"})
+        elif nota>=0:
+            comentario = str(body['comment_prof'])
+            autor = str(body['autor'])
+            entrega = Entrega.objects.create(ejercicio = Ejercicio.objects.get(id=ejercicio_id), autor_id = autor, nota = nota, comentario_profesor = comentario)
+            return JsonResponse({"msg": "Calificación creada", "tipo": "success"})
+        else:
+            return JsonResponse({"msg": "Faltan datos", "tipo": "danger"})  
+            
+            
+
+
+
+
+        Entrega.create(ejercicio = Ejercicio.objects.get(id = ejercicio_id), autor = request.user.id, fecha_entrega = timezone.now())
+
+
         
 @login_required
 def tipo_ejercicio(request, id_tipo):

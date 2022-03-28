@@ -11,15 +11,18 @@
 <div id="app">
     {{ alumnos|json_script:"alumnos" }}
     {{ ejercicio|json_script:"ejercicio" }}
-    <h2>[[ejercicio.titulo]]</h2>
 
-    <input type="text" id="buscador" placeholder="busca por nombre" v-model="filtro">
+    <div class="container">
+        <h2>[[ejercicio.titulo]]</h2>
+        
+        <input type="text" id="buscador" placeholder="busca por nombre" v-model="filtro_nombre">
+    </div>
 
     <table>
         <tr>
-            <th class="clicable" @click="cambiarOrden()">[[usuario_th]]</th>
+            <th class="clicable" @click="cambiarOrden_nombre()">[[usuario_th]]</th>
             <th>Correo</th>
-            <th>Estado</th>
+            <th class="clicable" @click="cambiarOrden_estado()">[[estado_th]]</th>
             <th>Archivo</th>
             <th>Comentario del alumno</th>
             <th>Última modificación (entrega)</th>
@@ -36,18 +39,21 @@
             <td v-else-if="get_entrega(alumno)" class="porCalificar">Por calificar</td>
             <td v-else class="noEntregado">No entregado</td>
 
-            <td><a :href="[[get_entrega(alumno).archivo]]">[[nombre_archivo(get_entrega(alumno).archivo)]]</a></td>
+            <td><a :href="'/'+[[get_entrega(alumno).archivo]]" target="_blank   ">[[nombre_archivo(get_entrega(alumno).archivo)]]</a></td>
 
             <td>[[get_entrega(alumno).comentario_alumno]]</td>
 
             <td>[[formato_fecha(get_entrega(alumno).fecha_edicion)]]</td>
 
-            <td v-if="get_entrega(alumno).nota"><textarea cols="3" rows="1" class="txtNota">[[get_entrega(alumno).nota]]</textarea>/[[ejercicio.nota_maxima]]</td>
-            <td v-else><textarea cols="3" rows="1" class="txtNota"></textarea>/[[ejercicio.nota_maxima]]</td>
+            <td v-if="get_entrega(alumno).nota"><textarea cols="3" rows="1" class="txtNota" :id="'nota'+[[alumno.id]]">[[get_entrega(alumno).nota]]</textarea>/[[ejercicio.nota_maxima]]</td>
+            <td v-else><textarea cols="3" rows="1" class="txtNota" :id="'nota'+[[alumno.id]]"></textarea>/[[ejercicio.nota_maxima]]</td>
 
-            <td><textarea id="comentario_profesor" cols="15" rows="2">[[get_entrega(alumno).comentario_profesor]]</textarea></td>
+            <td><textarea cols="15" rows="2" :id="'comentario'+[[alumno.id]]">[[get_entrega(alumno).comentario_profesor]]</textarea></td>
 
             <td>[[formato_fecha(get_entrega(alumno).fecha_calificacion)]]</td>
+
+            <td @click="guardar(alumno)"><button class="btn">Guardar</button></td>
+            <td @click="ver(alumno)"><button class="btn">Ver</button></td>
         </tr>
     </table>
 </div>

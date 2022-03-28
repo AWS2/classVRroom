@@ -56,7 +56,7 @@ class Ejercicio(models.Model):
 class Entrega(models.Model):
     autor = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=True)
     fecha_publicacion = models.DateTimeField(default=timezone.now)
-    fecha_edicion = models.DateTimeField()
+    fecha_edicion = models.DateTimeField(default=timezone.now)
     fecha_calificacion = models.DateTimeField(default=None, blank=True, null=True)
     archivo = models.FileField(upload_to='static/assets/archivos',default=None, blank=True, null=True)
     comentario_alumno = models.CharField(max_length=500,default=None, blank=True, null=True)

@@ -296,7 +296,7 @@ body:not(.login) .main-content-container {
           justify-content: flex-end;
 }
 
-.ejercicio_alumno #app {
+.ejercicio_alumno table {
   max-width: 1320px;
   margin: auto;
 }
