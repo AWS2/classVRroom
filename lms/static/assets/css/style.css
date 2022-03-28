@@ -296,12 +296,37 @@ body:not(.login) .main-content-container {
           justify-content: flex-end;
 }
 
-.ejercicio_alumno table {
+.ejercicio_alumno #app {
   max-width: 1320px;
   margin: auto;
 }
 
-.ejercicio_alumno table, .ejercicio_alumno th, .ejercicio_alumno td {
-  border: 1px solid black;
+.ejercicio_alumno th, .ejercicio_alumno td {
+  padding: 5px 20px;
+}
+
+.ejercicio_alumno td {
+  border-top: 1px solid black;
+}
+
+.ejercicio_alumno .clicable {
+  color: #0d6efd;
+  cursor: pointer;
+}
+
+.ejercicio_alumno .noEntregado {
+  background-color: lightcoral;
+}
+
+.ejercicio_alumno .porCalificar {
+  background-color: lightyellow;
+}
+
+.ejercicio_alumno .calificado {
+  background-color: lightgreen;
+}
+
+.ejercicio_alumno .txtNota {
+  resize: none;
 }
 /*# sourceMappingURL=style.css.map */

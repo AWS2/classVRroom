@@ -73,17 +73,17 @@ def ejercicio(request):
             return render(request, 'vroom/ejercicio_alumno.html', contexto)
 
         else:
-            entregas = []
-            for contenido in Entrega.objects.filter(ejercicio = ejercicio.id).values():
-                alumno = Usuario.objects.get(id = contenido["autor_id"])
-                entrega = {}
-                entrega["alumno"] = model_to_dict(alumno)
-                entrega["contenido"] = contenido
-                entregas.append(entrega)
+            
+            alumnos_curso = list(Usuario_Curso.objects.filter(curso = ejercicio.curso, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Alumno").id).values())
 
+            alumnos = []
+            for alumno in alumnos_curso:
+                id_alumno = alumno["usuario_id"]
+                alumnos.append(model_to_dict(Usuario.objects.get(id = id_alumno)))
+                
             contexto = {
                 "ejercicio": model_to_dict(ejercicio),
-                "entregas": entregas
+                "alumnos": list(alumnos)
             }
 
             return render(request, 'vroom/ejercicio_profesor.html', contexto)

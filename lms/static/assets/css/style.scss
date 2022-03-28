@@ -283,11 +283,30 @@ body{
 }
 
 .ejercicio_alumno{
-    table {
+    #app {
         max-width: 1320px;
         margin: auto;
     }
-    table, th, td {
-        border: 1px solid black;
+    th, td {
+        padding: 5px 20px;
+    }
+    td {
+        border-top: 1px solid black;
+    }
+    .clicable {
+        color: #0d6efd;
+        cursor: pointer;
+    }
+    .noEntregado {
+        background-color: lightcoral;
+    }
+    .porCalificar {
+        background-color: lightyellow;
+    }
+    .calificado {
+        background-color: lightgreen;
+    }
+    .txtNota {
+        resize: none;
     }
 }

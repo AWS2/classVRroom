@@ -9,40 +9,45 @@
 {% block content %}
 
 <div id="app">
-    {{ entregas|json_script:"entregas" }}
+    {{ alumnos|json_script:"alumnos" }}
     {{ ejercicio|json_script:"ejercicio" }}
+    <h2>[[ejercicio.titulo]]</h2>
+
+    <input type="text" id="buscador" placeholder="busca por nombre" v-model="filtro">
+
     <table>
         <tr>
-            <th>Usuario</th>
+            <th class="clicable" @click="cambiarOrden()">[[usuario_th]]</th>
             <th>Correo</th>
             <th>Estado</th>
             <th>Archivo</th>
-            <th>Comentarios del alumno</th>
+            <th>Comentario del alumno</th>
             <th>Última modificación (entrega)</th>
             <th>Calificación</th>
-            <th>Comentarios del profesor</th>
+            <th>Comentario del profesor</th>
             <th>Última modificación (calificación)</th>
         </tr>
-        <tr v-for="entrega in entregas">
-            <td>[[entrega.alumno.first_name]] [[entrega.alumno.last_name]]</td>
-            <td>[[entrega.alumno.email]]</td>
+        <tr v-if="alumnos.length == 0"><td colspan="9">No hay alumnos</td></tr>
+        <tr v-else v-for="alumno in alumnos">
+            <td>[[alumno.first_name]] [[alumno.last_name]]</td>
+            <td>[[alumno.email]]</td>
             
-            <td v-if="entrega.contenido.nota" class="calificado">Calificado</td>
-            <td v-else-if="entrega.contenido" class="porCalificar">Por calificar</td>
+            <td v-if="get_entrega(alumno).nota" class="calificado">Calificado</td>
+            <td v-else-if="get_entrega(alumno)" class="porCalificar">Por calificar</td>
             <td v-else class="noEntregado">No entregado</td>
 
-            <td><a :href="[[entrega.contenido.archivo]]">[[nombre_archivo(entrega.contenido.archivo)]]</a></td>
+            <td><a :href="[[get_entrega(alumno).archivo]]">[[nombre_archivo(get_entrega(alumno).archivo)]]</a></td>
 
-            <td>[[entrega.contenido.comentario_alumno]]</td>
+            <td>[[get_entrega(alumno).comentario_alumno]]</td>
 
-            <td>[[formato_fecha(entrega.contenido.fecha_edicion)]]</td>
+            <td>[[formato_fecha(get_entrega(alumno).fecha_edicion)]]</td>
 
-            <td v-if="entrega.contenido.nota">[[entrega.contenido.nota]]/[[ejercicio.nota_maxima]]</td>
-            <td v-else>Sin calificar</td>
+            <td v-if="get_entrega(alumno).nota"><textarea cols="3" rows="1" class="txtNota">[[get_entrega(alumno).nota]]</textarea>/[[ejercicio.nota_maxima]]</td>
+            <td v-else><textarea cols="3" rows="1" class="txtNota"></textarea>/[[ejercicio.nota_maxima]]</td>
 
-            <td><textarea id="comentario_profesor" cols="15" rows="2">[[entrega.contenido.comentario_profesor]]</textarea></td>
+            <td><textarea id="comentario_profesor" cols="15" rows="2">[[get_entrega(alumno).comentario_profesor]]</textarea></td>
 
-            <td>[[formato_fecha(entrega.contenido.fecha_edicion_calificacion)]]</td>
+            <td>[[formato_fecha(get_entrega(alumno).fecha_calificacion)]]</td>
         </tr>
     </table>
 </div>
