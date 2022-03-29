@@ -23,7 +23,8 @@
             <th class="clicable" @click="cambiarOrden_nombre()">[[usuario_th]]</th>
             <th>Correo</th>
             <th class="clicable" @click="cambiarOrden_estado()">[[estado_th]]</th>
-            <th>Archivo</th>
+            <th v-if="ejercicio.tipo == 'vr'">Metadatos</th>
+            <th v-else>Archivo</th>
             <th>Comentario del alumno</th>
             <th>Última modificación (entrega)</th>
             <th>Calificación</th>

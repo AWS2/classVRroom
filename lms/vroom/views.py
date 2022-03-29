@@ -57,6 +57,9 @@ def ejercicio(request):
     if (request.POST.get('id')):
         ejercicio = Ejercicio.objects.get(id = request.POST.get('id'))
 
+        ejercicio_dict = model_to_dict(ejercicio)
+        ejercicio_dict["tipo"] = ejercicio.tipo_ejercicio.nombre
+
         rol = Usuario_Curso.objects.get(usuario = request.user, curso = ejercicio.curso).tipo_subscripcion
 
         if (rol.nombre == "Alumno"):
@@ -82,7 +85,7 @@ def ejercicio(request):
                 alumnos.append(model_to_dict(Usuario.objects.get(id = id_alumno)))
                 
             contexto = {
-                "ejercicio": model_to_dict(ejercicio),
+                "ejercicio": ejercicio_dict,
                 "alumnos": list(alumnos)
             }
 

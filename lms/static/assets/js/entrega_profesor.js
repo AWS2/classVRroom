@@ -58,13 +58,14 @@ const app = Vue.createApp({
     },
     methods: {
         nombre_archivo(archivo) {
-            return archivo
-            // return archivo.split("/").slice(-1).pop();
+            // return archivo
+            return archivo.split("/").slice(-1).pop();
         },
         formato_fecha(fecha) {
             try {
-                
-                return `${fecha.split("T")[0].split("-")[2]}/${fecha.split("T")[0].split("-")[1]}/${fecha.split("T")[0].split("-")[0]}-${fecha.split("T")[1].split("Z")[0]}`
+                let fecha2 = `${fecha.split("T")[0].split("-")[2]}/${fecha.split("T")[0].split("-")[1]}/${fecha.split("T")[0].split("-")[0]}`
+                let hora = `${fecha.split("T")[1].split("Z")[0].split(':')[0]}:${fecha.split("T")[1].split("Z")[0].split(':')[1]}`
+                return fecha2 + '-' + hora
             } catch (error) {
                 return "No hay fecha"
             }
