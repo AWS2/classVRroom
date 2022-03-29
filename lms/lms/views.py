@@ -224,18 +224,10 @@ def entrega_nueva_cal(request, ejercicio_id):
         elif nota>=0:
             comentario = str(body['comment_prof'])
             autor = str(body['autor'])
-            entrega = Entrega.objects.create(ejercicio = Ejercicio.objects.get(id=ejercicio_id), autor_id = autor, nota = nota, comentario_profesor = comentario)
+            entrega = Entrega.objects.create(ejercicio = Ejercicio.objects.get(id=ejercicio_id), autor_id = autor, nota = nota, comentario_profesor = comentario, fecha_calificacion = timezone.now())
             return JsonResponse({"msg": "Calificación creada", "tipo": "success"})
         else:
-            return JsonResponse({"msg": "Faltan datos", "tipo": "danger"})  
-            
-            
-
-
-
-
-        Entrega.create(ejercicio = Ejercicio.objects.get(id = ejercicio_id), autor = request.user.id, fecha_entrega = timezone.now())
-
+            return JsonResponse({"msg": "Faltan datos", "tipo": "danger"})
 
         
 @login_required

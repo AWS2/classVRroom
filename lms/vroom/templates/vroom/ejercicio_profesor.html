@@ -32,10 +32,11 @@
         </tr>
         <tr v-if="alumnos.length == 0"><td colspan="9">No hay alumnos</td></tr>
         <tr v-else v-for="alumno in alumnos">
+
             <td>[[alumno.first_name]] [[alumno.last_name]]</td>
             <td>[[alumno.email]]</td>
             
-            <td v-if="get_entrega(alumno).nota" class="calificado">Calificado</td>
+            <td v-if="get_entrega(alumno).nota || get_entrega(alumno).nota == 0" class="calificado">Calificado</td>
             <td v-else-if="get_entrega(alumno)" class="porCalificar">Por calificar</td>
             <td v-else class="noEntregado">No entregado</td>
 
@@ -44,9 +45,8 @@
             <td>[[get_entrega(alumno).comentario_alumno]]</td>
 
             <td>[[formato_fecha(get_entrega(alumno).fecha_edicion)]]</td>
-
-            <td v-if="get_entrega(alumno).nota"><textarea cols="3" rows="1" class="txtNota" :id="'nota'+[[alumno.id]]">[[get_entrega(alumno).nota]]</textarea>/[[ejercicio.nota_maxima]]</td>
-            <td v-else><textarea cols="3" rows="1" class="txtNota" :id="'nota'+[[alumno.id]]"></textarea>/[[ejercicio.nota_maxima]]</td>
+            
+            <td><textarea cols="3" rows="1" class="txtNota" :id="'nota'+[[alumno.id]]">[[get_entrega(alumno).nota]]</textarea>/[[ejercicio.nota_maxima]]</td>
 
             <td><textarea cols="15" rows="2" :id="'comentario'+[[alumno.id]]">[[get_entrega(alumno).comentario_profesor]]</textarea></td>
 

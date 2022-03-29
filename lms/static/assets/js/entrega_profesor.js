@@ -108,7 +108,7 @@ const app = Vue.createApp({
             alumnos.forEach(alumno => {
                 let entrega = this.entregas.find(entrega => entrega.autor_id == alumno.id)
                 if (entrega) {
-                    if (entrega.nota) {
+                    if (entrega.nota || entrega.nota == 0) {
                         alumno.estado = 2;
                     } else {
                         alumno.estado = 0;
@@ -183,7 +183,7 @@ const app = Vue.createApp({
 
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
-            if (!this.get_entrega(alumno).nota) {
+            if (!this.get_entrega(alumno)) {
 
                 var raw = JSON.stringify({
                     "new_note": document.getElementById("nota"+alumno.id).value,
@@ -197,7 +197,7 @@ const app = Vue.createApp({
                     body: raw      
                 };
 
-                fetch(`/api/entrega_nueva_cal/${ejercicio.id}/`, requestOptions)
+                fetch(`/api/entrega_nueva_cal/${this.ejercicio.id}/`, requestOptions)
                 .then(respuesta => respuesta.json())
                 .then((res) => {
                     console.log('res:', res)
@@ -214,6 +214,8 @@ const app = Vue.createApp({
 
             } else {
 
+                let entrega = this.get_entrega(alumno);
+
                 var raw = JSON.stringify({
                     "new_note": document.getElementById("nota"+alumno.id).value,
                     "comment_prof": document.getElementById("comentario"+alumno.id).value,
@@ -225,7 +227,7 @@ const app = Vue.createApp({
                     body: raw      
                 };
 
-                fetch(`/api/entrega/${id}`, requestOptions)
+                fetch(`/api/entrega/${entrega.id}`, requestOptions)
                 .then(respuesta => respuesta.json())
                 .then((res) => {
                     console.log('res:', res)
@@ -235,12 +237,13 @@ const app = Vue.createApp({
                     setTimeout(
                         function() {
                             alerta.fadeOut( () => alerta.remove())
-                        }, 2000);
-                    })
-                    .catch(error => console.log(error));
-                    this.get_entregas()
-                }
-            }  
+                    }, 2000);
+                })
+                .catch(error => console.log(error));
+
+                this.get_entregas()
+            }
+        }  
     },
     mounted() {
 
