@@ -2,19 +2,13 @@ from enum import auto
 from django.http import JsonResponse
 from django.http import Http404
 from vroom.models import *
-from django.contrib.auth.models import User, Group
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
-from rest_framework.authentication import TokenAuthentication, SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
-from rest_framework import serializers, status
-from rest_framework.response import Response
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+
+
 
 def ping(request):
     if (request.method=='GET'):
@@ -22,6 +16,7 @@ def ping(request):
             'ping': 'pong'
         })
 
+<<<<<<< HEAD
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -127,6 +122,8 @@ def logout_usuario(request):
     }
     return Response(content)
 
+=======
+>>>>>>> parent of 18096dd... loguearse y desloguearse del token
 @login_required
 def usuario(request, id_usuario):
     if (request.method=='GET'):
@@ -152,7 +149,6 @@ def usuario(request, id_usuario):
         return JsonResponse({
             'data': list(usuario)
         })
-
 
 @login_required
 def cursos(request, id_centro):
