@@ -1,4 +1,3 @@
-from enum import auto
 from django.http import JsonResponse
 from django.http import Http404
 from vroom.models import *
@@ -15,6 +14,38 @@ def ping(request):
         return JsonResponse({
             'ping': 'pong'
         })
+
+
+def get_course_details(request):
+    return Response(content)
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_courses(request):
+    cursos = Curso.objects.all().values()
+    content = {
+        'course_list': list(cursos)
+    }
+    return Response(content)
+
+#Api de deslogueo
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def logout_usuario(request):
+    message = 'Session successfully closed.'
+    status = 'OK'
+
+    request.user.auth_token.delete()
+
+    ##logout(request)
+    
+    content = {
+        message: message,
+        status: status,
+    }
+    return Response(content)
 
 @login_required
 def usuario(request, id_usuario):
