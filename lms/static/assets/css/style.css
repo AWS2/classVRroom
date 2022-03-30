@@ -353,6 +353,14 @@ input, textarea {
   padding-bottom: 1em;
 }
 
+.header-container .container {
+  max-width: 1320px;
+}
+
+.header-container ul {
+  padding-left: 40px;
+}
+
 .header-container.shrink .brand-logo img {
   width: 40px;
   height: auto;

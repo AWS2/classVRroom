@@ -8,18 +8,20 @@
       </div>
       <ul class="d-flex align-center gap-header">
         <li class="nav__item"><a href="{% url 'home' %}" class="nav__link">Inicio</a></li>
+        
+      {% if user.is_authenticated %}
         <li class="nav__item"><a href="{% url 'tablero' %}" class="nav__link">Tablero</a></li>
-        <li class="nav__item"><a href="{% url 'entrega' %}" class="nav__link">Entrega</a></li>
+      {% endif %}
       </ul>
     </div>
     <div>
       {% if user.is_authenticated %}
-      <span class="username">
-        {{user}} - <a href="/logout">logout</a>
-      </span>
-    {% else %}
-      <a href="{% url 'login' %}">login</a>
-    {% endif %}
+        <span class="username">
+          {{user}} - <a href="/logout">logout</a>
+        </span>
+      {% else %}
+        <a href="{% url 'login' %}">login</a>
+      {% endif %}
     </div>
 </div>
 </nav>

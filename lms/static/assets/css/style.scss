@@ -336,6 +336,15 @@ input,textarea{
 
 
 .header-container{
+
+    .container {
+        max-width: 1320px;
+    }
+
+    ul {
+        padding-left: 40px;
+    }
+
     background-color: $primary;
     position:sticky;
 
