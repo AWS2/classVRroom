@@ -132,6 +132,7 @@ def entregas(request, id_ejercicio):
         })
 
 @login_required
+@csrf_exempt
 def entrega(request, id_entrega):
     if (request.method=='GET'):
         
@@ -201,6 +202,7 @@ def entrega(request, id_entrega):
         })
 
 @csrf_exempt
+@login_required
 def entrega_nueva_cal(request, ejercicio_id):
     if (request.method=='POST'):
 
@@ -217,7 +219,6 @@ def entrega_nueva_cal(request, ejercicio_id):
 
         nota = float(body['new_note'])
         nota_maxima = Ejercicio.objects.get(id = ejercicio_id).nota_maxima
-        print(nota)
 
         if nota>nota_maxima:
             return JsonResponse({"msg": "La nota no puede superar la nota máxima", "tipo": "danger"})
@@ -229,7 +230,39 @@ def entrega_nueva_cal(request, ejercicio_id):
         else:
             return JsonResponse({"msg": "Faltan datos", "tipo": "danger"})
 
+@csrf_exempt
+def entrega_alumno(request, ejercicio_id):
+    print(request.POST)
+    if (request.method=='POST'):
+
+        #proteccion: ser alumno en el curso del ejercicio o ser el super
+        ejercicio = Ejercicio.objects.get(id = ejercicio_id)
+        curso = ejercicio.curso
+        try:
+            alumno = Usuario_Curso.objects.get(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Alumno"))
+        except:
+            raise PermissionDenied()
+        #fin proteccion
+
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+
+        comentario = str(body['comentario'])
+        entrega = Entrega.objects.filter(ejercicio = ejercicio_id, autor_id = request.user.id).values()
+        if (len(entrega) == 0):
+            Entrega.objects.create(ejercicio = ejercicio, autor = request.user, comentario_alumno = comentario, fecha_publicacion = timezone.now(), fecha_edicion = timezone.now(), nota = None)
+            return JsonResponse({"msg": "Entrega creada", "tipo": "success"})
         
+        else:
+            entrega.update(comentario_alumno = comentario)
+            entrega.update(fecha_edicion = timezone.now())
+            return JsonResponse({"msg": "Entrega actualizada", "tipo": "success"})
+
+        return JsonResponse({"msg": "Algo ha ido mal", "tipo": "danger"})
+
+    
+
+
 @login_required
 def tipo_ejercicio(request, id_tipo):
     if (request.method=='GET'):

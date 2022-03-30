@@ -40,7 +40,7 @@
         <div v-if="entrega">
 
             <p>Última modificación: [[formato_fecha(entrega.fecha_edicion)]]</p>
-            <p>Comentario: <textarea cols="30" rows="1">[[entrega.comentario_alumno]]</textarea></p>
+            <p>Comentario: <textarea cols="30" rows="1" v-model="comentario">[[entrega.comentario_alumno]]</textarea></p>
 
             <div v-if="ejercicio.tipo == 'vr'">
                 <p v-if="entrega.archivo">
@@ -77,12 +77,12 @@
                 <p><button class="btn">Subir archivo</button></p>
             </div>
             
-            <p>Comentario: <textarea cols="30" rows="1"></textarea></p>
+            <p>Comentario: <textarea cols="30" rows="1" v-model="comentario"></textarea></p>
             
         </div>
         
         <br>
-        <button id="btnGuardar" class="btn">Guardar</button>
+        <button id="btnGuardar" class="btn" @click="guardar()">Guardar</button>
     </div>
 </div> 
 <script src="{% static 'assets/js/entrega_alumno.js' %}"></script>

@@ -11,7 +11,7 @@ class EjercicioInline(admin.TabularInline):
  
 class EntregaInline(admin.TabularInline):
     model = Entrega
-    fields = ('autor', 'archivo', 'nota', 'fecha_edicion')
+    fields = ('autor', 'archivo','comentario_alumno', 'nota', 'comentario_profesor','fecha_edicion')
     extra = 0
  
 class LinkInline(admin.TabularInline):
