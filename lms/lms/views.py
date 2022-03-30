@@ -131,7 +131,6 @@ def entregas(request, id_ejercicio):
             'data': list(entregas)
         })
 
-@csrf_exempt
 @login_required
 def entrega(request, id_entrega):
     if (request.method=='GET'):

@@ -30,7 +30,6 @@ const app = Vue.createApp({
           ejercicio: '',
           enunciado: '',
           tipo_ejercicio: '',
-          icono_ejercicio: '',
           nombre: '',
           correo: '',
           archivo: '',

@@ -103,7 +103,6 @@ class Documento(models.Model):
 
 class Tipo_Ejercicio(models.Model):
     nombre = models.CharField(max_length=30)
-    icono = models.ImageField(upload_to='static/assets/archivos')
 
     def __str__(self):
         return self.nombre

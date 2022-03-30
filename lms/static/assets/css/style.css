@@ -156,6 +156,11 @@ input, textarea {
   width: 30px;
 }
 
+.entrega-vista-completa #app .header .left button {
+  -webkit-margin-after: 16px;
+          margin-block-end: 16px;
+}
+
 .entrega-vista-completa #app .body {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -167,9 +172,6 @@ input, textarea {
 
 .entrega-vista-completa #app .body .content {
   width: 70%;
-  background-image: url("/static/assets/img/alt-entrega.png");
-  background-position: center;
-  background-repeat: no-repeat;
 }
 
 .entrega-vista-completa #app .body .content embed {

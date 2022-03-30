@@ -53,7 +53,7 @@
             <td v-else-if="get_entrega(alumno)" class="porCalificar">Por calificar</td>
             <td v-else class="noEntregado">No entregado</td>
 
-            <td><a :href="'/'+[[get_entrega(alumno).archivo]]" target="_blank   ">[[nombre_archivo(get_entrega(alumno).archivo)]]</a></td>
+            <td><a v-if="get_entrega(alumno)" :href="'/'+[[get_entrega(alumno).archivo]]" target="_blank   ">[[nombre_archivo(get_entrega(alumno).archivo)]]</a></td>
 
             <td>[[get_entrega(alumno).comentario_alumno]]</td>
 

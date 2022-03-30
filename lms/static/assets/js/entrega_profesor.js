@@ -100,7 +100,6 @@ const app = Vue.createApp({
             })
 
             this.alumnos = alumnos;
-            console.log(alumnos)
         },
         ordenar_estado() {
             let alumnos = this.alumnos;
@@ -139,7 +138,6 @@ const app = Vue.createApp({
             })
 
             this.alumnos = alumnos;
-            console.log(alumnos)
         },
         filtrar_nombre() {
 
@@ -167,7 +165,7 @@ const app = Vue.createApp({
                     this.entregas = entregas;
                     console.log(this.entregas)
                 })
-                .catch(error => console.log('error', error));
+                .catch(error => this.entregas=[]);
         },
         get_entrega(alumno) {
             
@@ -200,7 +198,6 @@ const app = Vue.createApp({
                 fetch(`/api/entrega_nueva_cal/${this.ejercicio.id}/`, requestOptions)
                 .then(respuesta => respuesta.json())
                 .then((res) => {
-                    console.log('res:', res)
                     let alerta = $(`<div class='alert alert-${res.tipo}' role='alert'>${res.msg}</div>`);
                     alerta.appendTo($('body'));
                     alerta.fadeIn();
@@ -230,7 +227,6 @@ const app = Vue.createApp({
                 fetch(`/api/entrega/${entrega.id}`, requestOptions)
                 .then(respuesta => respuesta.json())
                 .then((res) => {
-                    console.log('res:', res)
                     let alerta = $(`<div class='alert alert-${res.tipo}' role='alert'>${res.msg}</div>`);
                     alerta.appendTo($('body'));
                     alerta.fadeIn();

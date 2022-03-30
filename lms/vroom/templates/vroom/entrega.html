@@ -34,7 +34,7 @@
         <div class="header">
             <div class="left">
                 <p>Curso: [[curso]]</p>
-                <p>Ejercicio: [[ejercicio]] <img :src=[[icono_ejercicio]] :alt=[[tipo_ejercicio]]></p>
+                <p>Ejercicio [[tipo_ejercicio]]: [[ejercicio]]</p>
                 <button class="btn" onclick="document.getElementById('enlaceEjercicio').submit()">Visualiza todas las entregas</button>
             </div>
             <div class="middle">
@@ -55,7 +55,12 @@
             <div class="content" v-html="vista_archivo"></div>
             <div class="details">
                 <div class="detalles_alumno">
-                    <p v-if="[[archivo]] != '/'">Archivo:<a :href=[[archivo]] target="_blank">descarga</a></p>
+                    <div v-if="[[tipo_ejercicio]] == 'vr'">
+                        <p v-if="[[archivo]] != '/'">Metadatos:<a :href=[[archivo]] target="_blank">descarga</a></p>
+                    </div>
+                    <div v-else>
+                        <p v-if="[[archivo]] != '/'">Archivo:<a :href=[[archivo]] target="_blank">descarga</a></p>
+                    </div>
                     
                     <p v-if="[[comentario_alumno]] != ''">Comentario del alumno:</p> 
                     <p v-if="[[comentario_alumno]] != ''">[[comentario_alumno]]</p>
