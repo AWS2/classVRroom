@@ -1,25 +1,25 @@
 {% load static %}
-<nav class="navbar navbar-expand-lg navbar-light bg-primary header-container">
-  <div class="container">
-    <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'assets/img/logo.png' %}" alt="" width="35" height="35"></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link active" aria-current="page" href="{% url 'tablero' %}">Tablero</a>
-        <a class="nav-link active" aria-current="page" href="{% url 'entrega' %}">Entrega</a>
+<nav class="header-container">
+<div class="container">
 
-
+    <div class="d-flex align-center gap-header">
+      <div class="brand-logo">
+        <a href="{% url 'home' %}"><img src="{% static 'assets/img/logo.png' %}" alt="" width="35" height="35"></a>
       </div>
+      <ul class="d-flex align-center gap-header">
+        <li class="nav__item"><a href="{% url 'home' %}" class="nav__link">Inicio</a></li>
+        <li class="nav__item"><a href="{% url 'tablero' %}" class="nav__link">Tablero</a></li>
+        <li class="nav__item"><a href="{% url 'entrega' %}" class="nav__link">Entrega</a></li>
+      </ul>
     </div>
-    
-    {% if user.is_authenticated %}
+    <div>
+      {% if user.is_authenticated %}
       <span class="username">
-        {{user}} - <a href="/logout">logout</a></span>
+        {{user}} - <a href="/logout">logout</a>
       </span>
     {% else %}
       <a href="{% url 'login' %}">login</a>
     {% endif %}
-  </div>
+    </div>
+</div>
 </nav>
