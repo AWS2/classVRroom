@@ -49,6 +49,7 @@ class Ejercicio(models.Model):
     nota_maxima = models.FloatField()
     tipo_ejercicio = models.ForeignKey('Tipo_Ejercicio',on_delete=models.DO_NOTHING,default=True)
     fecha_publicacion = models.DateTimeField(default=timezone.now)
+    min_exercise_version = models.FloatField(default=1.0, null=True, blank=True)
 
     def __str__(self):
         return self.titulo
@@ -122,3 +123,8 @@ class Invitacion(models.Model):
     email = models.EmailField(max_length=100)
     curso = models.ForeignKey('Curso',on_delete=models.CASCADE)
     tipo_subscripcion = models.ForeignKey('Tipo_Subscripcion',on_delete=models.CASCADE)
+
+class Pin(models.Model):
+    pin = models.CharField(max_length=4, default=None, unique=True, null=False)
+    ejercicio = models.ForeignKey('Ejercicio',on_delete=models.DO_NOTHING,null=False)
+    usuario = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=True)

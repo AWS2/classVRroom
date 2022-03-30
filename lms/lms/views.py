@@ -1,4 +1,5 @@
 from enum import auto
+from webbrowser import get
 from django.http import JsonResponse
 from django.http import Http404
 from vroom.models import *
@@ -16,12 +17,166 @@ from rest_framework.authtoken.models import Token
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
+import random
+import json
 
 def ping(request):
     if (request.method=='GET'):
         return JsonResponse({
             'ping': 'pong'
         })
+
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def start_vr_exercise(request):
+    getpin=request.GET.get('pin')
+    
+    
+    try:
+        pin = Pin.objects.get(pin=getpin)
+    except:
+        
+        return Response({
+            'status': 'ERROR',
+            'message': 'Pin no encontrado.'
+        })
+    
+
+    user = pin.usuario
+    vr_exerciseid = pin.ejercicio.pk
+    minVer = Ejercicio.objects.get(pk=vr_exerciseid).min_exercise_version
+    if (minVer == None):
+        minVer = None
+    return Response({
+        "status" : "OK",
+        "username": user.first_name+" "+user.last_name,
+        "VRexerciseID" :  vr_exerciseid,
+        "minExerciseVersion" : minVer,
+    })
+
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def finish_vr_exercise(request):
+    getpin=request.GET.get('pin')
+    autograde=request.GET.get('autograde')
+    VRexerciseID=request.GET.get('VRexerciseID')
+    exerciseVersionID=request.GET.get('exerciseVersionID')
+
+    if getpin==None or autograde==None or VRexerciseID==None or exerciseVersionID==None:
+        return Response({
+            'status': 'ERROR',
+            'message': 'Faltan parametros.'
+        })
+
+    try:
+        pin = Pin.objects.get(pin=getpin)
+    except:
+        
+        return Response({
+            'status': 'ERROR',
+            'message': 'Pin no encontrado.'
+        })
+
+    try:
+        ejercicio = Ejercicio.objects.get(pk=VRexerciseID, min_exercise_version=exerciseVersionID)
+    except:
+  
+        return Response({
+            'status': 'ERROR',
+            'message': 'Ejercicio no encontrado.'
+        })
+    
+    try:
+        entrega = Entrega.objects.get(autor=request.user,ejercicio=ejercicio)
+
+    except:
+
+        entrega = Entrega.objects.create(
+            autor=request.user,
+            fecha_publicacion=timezone.now(),
+            fecha_edicion=timezone.now(),
+            ejercicio=ejercicio,
+        )
+
+
+
+    
+
+    autograde = json.loads(autograde)
+
+    print(autograde)
+
+    ejercicio.nota_maxima=autograde['total_items']
+
+    ejercicio.save()
+
+    entrega.nota=autograde['passed_items']
+    
+    entrega.save()
+
+    pin.delete()
+
+    return Response({
+        'status': 'OK',
+        'message': 'Exercise data successfully stored.'
+    })
+
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def pin_request(request):
+
+    VRtaskID = request.GET.get('VRtaskID')
+
+    print(VRtaskID)
+
+    try:
+        ejercicio = Ejercicio.objects.get(id=VRtaskID)
+    except:
+        return Response({
+            "status" : "ERROR",
+            "message" : "Ejercicio no encontrado",
+        })
+
+    while True:
+        randomnum = random.randint(1000,9999)
+
+        try:
+            if(Pin.objects.filter(ejercicio=ejercicio, usuario=request.user).exists()):
+                return Response({
+                    "status" : "ERROR",
+                    "message" : "Ya existe un pin para este usuario",
+                })
+            Pin.objects.get(pin=randomnum)
+
+        except:
+            break
+
+
+
+
+    new_pin = Pin.objects.create(
+        pin = randomnum,
+        ejercicio = ejercicio,
+        usuario = request.user
+    )
+
+    new_pin.save()
+
+    return Response({
+        'status':'OK',
+        'message': 'VRtaskID is required',
+        'PIN': new_pin.pin
+    })
+
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -75,33 +230,33 @@ def get_course_details(request):
 @permission_classes([IsAuthenticated])
 def get_courses(request):
 
-        cursos = Curso.objects.all()
+    cursos = Curso.objects.all()
 
-        content = []
-        subscripcion_profesor = Tipo_Subscripcion.objects.get(nombre = "Profesor")
-        subscripcion_alumno = Tipo_Subscripcion.objects.get(nombre = "Alumno")
+    content = []
+    subscripcion_profesor = Tipo_Subscripcion.objects.get(nombre = "Profesor")
+    subscripcion_alumno = Tipo_Subscripcion.objects.get(nombre = "Alumno")
 
-        for icurso in cursos:
-            curso_item ={"courseID": icurso.pk, "title": icurso.titulo, "description": icurso.descripcion, "status": icurso.estado,"center": icurso.centro.pk,'subscribers':{'teachers':[],'students':[]}}      
-            profesor_curso = Usuario_Curso.objects.get( curso = icurso, tipo_subscripcion = subscripcion_profesor)
+    for icurso in cursos:
+        curso_item ={"courseID": icurso.pk, "title": icurso.titulo, "description": icurso.descripcion, "status": icurso.estado,"center": icurso.centro.pk,'subscribers':{'teachers':[],'students':[]}}      
+        profesor_curso = Usuario_Curso.objects.get( curso = icurso, tipo_subscripcion = subscripcion_profesor)
 
-            print(profesor_curso)
-            if(not profesor_curso == None):    
-                curso_item['subscribers']['teachers'].append({"UserID": profesor_curso.usuario.pk, "username": profesor_curso.usuario.username, "email":profesor_curso.usuario.email})
-            alumnos_curso = Usuario_Curso.objects.filter( curso = icurso, tipo_subscripcion = subscripcion_alumno).all()
-            alumno_item_list = []
-            if(not alumnos_curso == None):
-                for alumno in alumnos_curso:
-                    alumno_item_list.append({"UserID": alumno.usuario.pk,"username":alumno.usuario.username, "email":alumno.usuario.email})
+        print(profesor_curso)
+        if(not profesor_curso == None):    
+            curso_item['subscribers']['teachers'].append({"UserID": profesor_curso.usuario.pk, "username": profesor_curso.usuario.username, "email":profesor_curso.usuario.email})
+        alumnos_curso = Usuario_Curso.objects.filter( curso = icurso, tipo_subscripcion = subscripcion_alumno).all()
+        alumno_item_list = []
+        if(not alumnos_curso == None):
+            for alumno in alumnos_curso:
+                alumno_item_list.append({"UserID": alumno.usuario.pk,"username":alumno.usuario.username, "email":alumno.usuario.email})
 
-                curso_item['subscribers']['students'] = alumno_item_list
-            content.append(curso_item)
+            curso_item['subscribers']['students'] = alumno_item_list
+        content.append(curso_item)
+        
             
-                
-        return Response({
-            "status" : 'OK',
-            "course_list": content
-            })
+    return Response({
+        "status" : 'OK',
+        "course_list": content
+        })
     
     ##except:
         #return Response({

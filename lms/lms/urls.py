@@ -59,4 +59,7 @@ urlpatterns += [
     path('api/logout', views.logout_usuario,  name='logout_usuario'),
     path('api/get_courses', views.get_courses, name='get_courses'),
     path('api/get_course_details', views.get_course_details, name='get_courses_details'),
+    path('api/pin_request',views.pin_request, name="pin_request"),
+    path('api/start_vr_exercise',views.start_vr_exercise, name="start_vr_exercise"),
+    path('api/finish_vr_exercise',views.finish_vr_exercise, name="finish_vr_exercise"),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
