@@ -1,0 +1,81 @@
+{% extends 'vroom/components/base.html' %}
+
+{% block title %}{{ejercicio.titulo}}{% endblock %}
+
+{% block extraclass %}ejercicio_profesor{% endblock %}
+
+{% load static %}
+
+{% block content %}
+
+
+<form action={% url 'curso' %} method="POST" id="enlaceCurso">
+    {% csrf_token %}
+    <input type="hidden" name="curso" value={{ejercicio.curso}}>
+</form>
+
+<section class="container" id="breadcrumbs">
+    <div class="innerBread">
+        <p>/<a href={% url 'tablero' %}>tablero</a>/<a href="#" onclick="document.getElementById('enlaceCurso').submit()">{{ejercicio.curso_nombre}}</a>/{{ejercicio.titulo}}</p>
+    </div>
+</section>
+
+<div id="app">
+    {{ alumnos|json_script:"alumnos" }}
+    {{ ejercicio|json_script:"ejercicio" }}
+
+    <div class="container">
+        <h2>[[ejercicio.titulo]]</h2>
+        
+        <input type="text" id="buscador" placeholder="busca por nombre" v-model="filtro_nombre">
+    </div>
+
+    <table>
+        <tr>
+            <th class="clicable" @click="cambiarOrden_nombre()">[[usuario_th]]</th>
+            <th>Correo</th>
+            <th class="clicable" @click="cambiarOrden_estado()">[[estado_th]]</th>
+            <th v-if="ejercicio.tipo == 'vr'">Metadatos</th>
+            <th v-else>Archivo</th>
+            <th>Comentario del alumno</th>
+            <th>Última modificación (entrega)</th>
+            <th>Calificación</th>
+            <th>Comentario del profesor</th>
+            <th>Última modificación (calificación)</th>
+        </tr>
+        <tr v-if="alumnos.length == 0"><td colspan="9">No hay alumnos</td></tr>
+        <tr v-else v-for="alumno in alumnos">
+
+            <td>[[alumno.first_name]] [[alumno.last_name]]</td>
+            <td>[[alumno.email]]</td>
+            
+            <td v-if="get_entrega(alumno).nota || get_entrega(alumno).nota == 0" class="calificado">Calificado</td>
+            <td v-else-if="get_entrega(alumno)" class="porCalificar">Por calificar</td>
+            <td v-else class="noEntregado">No entregado</td>
+
+            <td><a :href="'/'+[[get_entrega(alumno).archivo]]" target="_blank   ">[[nombre_archivo(get_entrega(alumno).archivo)]]</a></td>
+
+            <td>[[get_entrega(alumno).comentario_alumno]]</td>
+
+            <td>[[formato_fecha(get_entrega(alumno).fecha_edicion)]]</td>
+            
+            <td><textarea cols="3" rows="1" class="txtNota" :id="'nota'+[[alumno.id]]">[[get_entrega(alumno).nota]]</textarea>/[[ejercicio.nota_maxima]]</td>
+
+            <td><textarea cols="15" rows="2" :id="'comentario'+[[alumno.id]]">[[get_entrega(alumno).comentario_profesor]]</textarea></td>
+
+            <td>[[formato_fecha(get_entrega(alumno).fecha_calificacion)]]</td>
+
+            <td @click="guardar(alumno)"><button class="btn">Guardar</button></td>
+            <td v-if="get_entrega(alumno)" :onclick="'document.getElementById(\'enlaceEntrega'+[[get_entrega(alumno).id]]+'\').submit()'">
+                <form action={% url 'entrega' %} method="POST" :id="'enlaceEntrega'+[[get_entrega(alumno).id]]">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" :value="[[get_entrega(alumno).id]]" />
+                </form>
+                <button class="btn">Ver</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<script src="{% static 'assets/js/entrega_profesor.js' %}"></script>
+
+{% endblock %}

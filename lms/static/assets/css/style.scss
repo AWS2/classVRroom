@@ -135,6 +135,18 @@ input,textarea{
     p {
         margin: 0 !important;
     }
+
+    .curso {
+        input {
+            display: none;
+        }
+        label {
+            all: unset;
+            color: #0d6efd;
+            text-decoration: underline;
+            cursor:pointer;
+        }
+    }
 }
 
 .text-justify{
@@ -191,15 +203,131 @@ input,textarea{
 }
 
 #breadcrumbs {
-    text-align: left;
-    width: fit-content;
-    background-color: #8EC6FF !important;
-    border: 1px solid grey;
-    border-radius: 20px;
+    padding: 0.5em 1em;
+    border-radius: 0.4em;
+    color: #000;
+    font-size: 1.2em;
+    text-align: center;
+    transition: all 1s;
+    max-width: 1320px;    
+    margin: auto;
     margin-bottom: 20px;
-    margin-left: 50px;
+
+    .innerBread {
+        text-align: left;
+        width: fit-content;
+        background-color: #8EC6FF !important;
+        border: 1px solid grey;
+        border-radius: 20px;
+        padding: 5px 10px;
+        * {
+            display: inline;
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
+    }
+
     p {
         margin: 0;
+    }
+}
+
+.curso {
+    .detalles {
+        max-width: 1320px;
+        margin: auto;
+        h1 {
+            display: inline;
+        }
+    }
+    .contenidos {
+        max-width: 1320px;
+        margin: auto;
+        .contenido {
+            p {
+                display: inline;
+            }
+            border-top: 0;
+            &:not(:first-of-type) {
+                border-top: 1px solid black;
+            }
+            &:nth-child(2n) {
+                background-color: #dedede;
+            }
+            &:hover {
+                p {
+                    text-decoration: underline;
+                    a {
+                        text-decoration-color: black;
+                    }
+                }
+            }
+            margin: auto;
+            padding: 20px;
+            cursor: pointer;
+            img {
+                width: 30px;
+            }
+        }
+    }
+}
+
+.ejercicio_alumno {
+    #app {
+        max-width: 1320px;
+        margin: auto;
+    }
+    h4 {
+        margin-top: 10px;
+    }
+    p {
+        padding: 20px;
+        margin: 0;
+        border-top: 1px solid black;
+        display: flex;
+        align-items: center;
+        
+        textarea {
+            resize: both;
+        }
+    }
+    .entrega p {
+        &:nth-child(2n - 1) {
+            background-color: #f0f0f0;
+        }
+        &:nth-child(2n) {
+            background-color: #dedede;
+        }
+    }
+}
+
+.ejercicio_profesor{
+    table {
+        max-width: 1320px;
+        margin: auto;
+    }
+    th, td {
+        padding: 5px 20px;
+    }
+    td {
+        border-top: 1px solid black;
+    }
+    .clicable {
+        color: #0d6efd;
+        cursor: pointer;
+    }
+    .noEntregado {
+        background-color: lightcoral;
+    }
+    .porCalificar {
+        background-color: lightyellow;
+    }
+    .calificado {
+        background-color: lightgreen;
+    }
+    .txtNota {
+        resize: none;
     }
 }
 
@@ -503,12 +631,4 @@ a.btn,button.btn{
     }
 }
 
-#breadcrumbs{
-    padding: 0.5em 1em;
-    border-radius: 0.4em;
-    background-color: #f5f5f5;
-    color: #000;
-    font-size: 1.2em;
-    text-align: center;
-    transition: all 1s;
-}
+
