@@ -58,7 +58,6 @@ const app = Vue.createApp({
     },
     methods: {
         nombre_archivo(archivo) {
-            // return archivo
             return archivo.split("/").slice(-1).pop();
         },
         formato_fecha(fecha) {
@@ -244,6 +243,10 @@ const app = Vue.createApp({
 
                 this.get_entregas()
             }
+        },
+        ver(alumno) {
+            id = alumno.id;
+            
         }  
     },
     mounted() {

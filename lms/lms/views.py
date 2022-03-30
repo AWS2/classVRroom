@@ -187,6 +187,7 @@ def entrega(request, id_entrega):
                 if note <0:
                     return JsonResponse({"msg": "La nota no puede ser negativa", "tipo": "danger"})
                 elif note <= max_note:
+                    entrega.update(profesor = request.user)
                     entrega.update(nota=note)
                     entrega.update(comentario_profesor=comment)
                     entrega.update(fecha_calificacion=timezone.now())
@@ -224,7 +225,7 @@ def entrega_nueva_cal(request, ejercicio_id):
         elif nota>=0:
             comentario = str(body['comment_prof'])
             autor = str(body['autor'])
-            entrega = Entrega.objects.create(ejercicio = Ejercicio.objects.get(id=ejercicio_id), autor_id = autor, nota = nota, comentario_profesor = comentario, fecha_calificacion = timezone.now())
+            entrega = Entrega.objects.create(ejercicio = Ejercicio.objects.get(id=ejercicio_id), autor_id = autor, profesor = request.user, nota = nota, comentario_profesor = comentario, fecha_calificacion = timezone.now())
             return JsonResponse({"msg": "Calificación creada", "tipo": "success"})
         else:
             return JsonResponse({"msg": "Faltan datos", "tipo": "danger"})

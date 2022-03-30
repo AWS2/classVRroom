@@ -24,6 +24,7 @@ const app = Vue.createApp({
       return {
           id_entrega: '',
           id_ejercicio: '',
+          id_curso: '',
 
           curso: '',
           ejercicio: '',
@@ -112,6 +113,7 @@ const app = Vue.createApp({
               this.enunciado = ejercicio.enunciado;
               this.id_ejercicio = ejercicio.id;
               this.nota_maxima = ejercicio.nota_maxima;
+              this.id_curso = ejercicio.curso_id;
 
               fetch(`/api/tipo_ejercicio/${ejercicio.tipo_ejercicio_id}`, {method: 'GET'})
                 .then(response => response.json())
@@ -138,6 +140,7 @@ const app = Vue.createApp({
     },
 
     set_entrega(id_entrega) {
+      console.log(id_entrega)
       this.id_entrega = id_entrega;
     },
 
@@ -232,7 +235,7 @@ const app = Vue.createApp({
 
   },
   mounted() {
-    this.set_entrega(1);
+    this.set_entrega(id);
   }
 });
 const root = app.mount('#app');

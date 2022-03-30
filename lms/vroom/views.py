@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 
 from .models import *
@@ -11,6 +12,14 @@ def index(request):
 
 @login_required
 def entrega(request):
+    print(request.POST)
+    if(request.POST.get('id')):
+        print('post recogido')
+        contexto = {
+            "id": request.POST.get('id'),
+        }
+        return render(request, 'vroom/entrega.html', contexto)
+    print('NO post recogido')
     return render(request, 'vroom/entrega.html')
 
 @login_required
@@ -59,17 +68,24 @@ def ejercicio(request):
 
         ejercicio_dict = model_to_dict(ejercicio)
         ejercicio_dict["tipo"] = ejercicio.tipo_ejercicio.nombre
+        ejercicio_dict["curso_nombre"]= ejercicio.curso.titulo
 
         rol = Usuario_Curso.objects.get(usuario = request.user, curso = ejercicio.curso).tipo_subscripcion
 
         if (rol.nombre == "Alumno"):
             try:
-                entrega = Entrega.objects.get(ejercicio = ejercicio.id, autor = request.user.id)
+                entrega = (Entrega.objects.filter(ejercicio = ejercicio.id, autor = request.user).values())
+                entrega = list(entrega)[0]
+                try:
+                    profesor = Usuario.objects.get(id = entrega["profesor_id"])
+                    entrega["profesor"] = profesor.first_name + " " + profesor.last_name
+                except:
+                    entrega["profesor"] = False
             except:
                 entrega = False
 
             contexto = {
-                "ejercicio": ejercicio,
+                "ejercicio": ejercicio_dict,
                 "entrega": entrega
             }
 

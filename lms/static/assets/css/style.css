@@ -198,6 +198,12 @@ body:not(.login) .main-content-container {
 }
 
 #breadcrumbs {
+  max-width: 1320px;
+  margin: auto;
+  margin-bottom: 20px;
+}
+
+#breadcrumbs .innerBread {
   text-align: left;
   width: -webkit-fit-content;
   width: -moz-fit-content;
@@ -205,8 +211,14 @@ body:not(.login) .main-content-container {
   background-color: #8EC6FF !important;
   border: 1px solid grey;
   border-radius: 20px;
-  margin-bottom: 20px;
-  margin-left: 50px;
+  padding: 5px 10px;
+}
+
+#breadcrumbs .innerBread * {
+  display: inline;
+  border: none;
+  margin: 0;
+  padding: 0;
 }
 
 #breadcrumbs p {
@@ -259,8 +271,19 @@ body:not(.login) .main-content-container {
   width: 30px;
 }
 
+.ejercicio_alumno #app {
+  max-width: 1320px;
+  margin: auto;
+}
+
+.ejercicio_alumno h4 {
+  margin-top: 10px;
+}
+
 .ejercicio_alumno p {
+  padding: 20px;
   margin: 0;
+  border-top: 1px solid black;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -269,64 +292,49 @@ body:not(.login) .main-content-container {
           align-items: center;
 }
 
-.ejercicio_alumno .ejercicio, .ejercicio_alumno .entrega {
-  margin: auto;
-  max-width: 1320px;
+.ejercicio_alumno p textarea {
+  resize: both;
 }
 
-.ejercicio_alumno .ejercicio {
-  border-bottom: 1px solid black;
+.ejercicio_alumno .entrega p:nth-child(2n - 1) {
+  background-color: #f0f0f0;
 }
 
-.ejercicio_alumno .entrega > * {
-  padding: 20px 0;
-  border-top: 0;
+.ejercicio_alumno .entrega p:nth-child(2n) {
+  background-color: #dedede;
 }
 
-.ejercicio_alumno .entrega > *:not(:first-of-type) {
-  border-top: 1px solid black;
-}
-
-.ejercicio_alumno .entrega #pGuardar {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: end;
-      -ms-flex-pack: end;
-          justify-content: flex-end;
-}
-
-.ejercicio_alumno table {
+.ejercicio_profesor table {
   max-width: 1320px;
   margin: auto;
 }
 
-.ejercicio_alumno th, .ejercicio_alumno td {
+.ejercicio_profesor th, .ejercicio_profesor td {
   padding: 5px 20px;
 }
 
-.ejercicio_alumno td {
+.ejercicio_profesor td {
   border-top: 1px solid black;
 }
 
-.ejercicio_alumno .clicable {
+.ejercicio_profesor .clicable {
   color: #0d6efd;
   cursor: pointer;
 }
 
-.ejercicio_alumno .noEntregado {
+.ejercicio_profesor .noEntregado {
   background-color: lightcoral;
 }
 
-.ejercicio_alumno .porCalificar {
+.ejercicio_profesor .porCalificar {
   background-color: lightyellow;
 }
 
-.ejercicio_alumno .calificado {
+.ejercicio_profesor .calificado {
   background-color: lightgreen;
 }
 
-.ejercicio_alumno .txtNota {
+.ejercicio_profesor .txtNota {
   resize: none;
 }
 /*# sourceMappingURL=style.css.map */

@@ -63,6 +63,7 @@ class Entrega(models.Model):
     comentario_profesor = models.CharField(max_length=500,default=None, blank=True, null=True)
     ejercicio = models.ForeignKey('Ejercicio',on_delete=models.DO_NOTHING,null=False) 
     nota = models.FloatField(null=True,blank=True,default=True)
+    profesor = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=None, blank=True, null=True, related_name='profesor')
 
     def nombre_archivo(self):
         return os.path.basename(self.archivo.name)

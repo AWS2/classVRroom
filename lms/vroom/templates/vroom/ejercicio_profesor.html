@@ -2,11 +2,23 @@
 
 {% block title %}{{ejercicio.titulo}}{% endblock %}
 
-{% block extraclass %}ejercicio_alumno{% endblock %}
+{% block extraclass %}ejercicio_profesor{% endblock %}
 
 {% load static %}
 
 {% block content %}
+
+
+<form action={% url 'curso' %} method="POST" id="enlaceCurso">
+    {% csrf_token %}
+    <input type="hidden" name="curso" value={{ejercicio.curso}}>
+</form>
+
+<section class="container" id="breadcrumbs">
+    <div class="innerBread">
+        <p>/<a href={% url 'tablero' %}>tablero</a>/<a href="#" onclick="document.getElementById('enlaceCurso').submit()">{{ejercicio.curso_nombre}}</a>/{{ejercicio.titulo}}</p>
+    </div>
+</section>
 
 <div id="app">
     {{ alumnos|json_script:"alumnos" }}
@@ -54,7 +66,13 @@
             <td>[[formato_fecha(get_entrega(alumno).fecha_calificacion)]]</td>
 
             <td @click="guardar(alumno)"><button class="btn">Guardar</button></td>
-            <td @click="ver(alumno)"><button class="btn">Ver</button></td>
+            <td v-if="get_entrega(alumno)" :onclick="'document.getElementById(\'enlaceEntrega'+[[get_entrega(alumno).id]]+'\').submit()'">
+                <form action={% url 'entrega' %} method="POST" :id="'enlaceEntrega'+[[get_entrega(alumno).id]]">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" :value="[[get_entrega(alumno).id]]" />
+                </form>
+                <button class="btn">Ver</button>
+            </td>
         </tr>
     </table>
 </div>

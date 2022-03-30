@@ -1,6 +1,6 @@
 {% extends 'vroom/components/base.html' %}
 
-{% block title %}{{ejercicio}}{% endblock %}
+{% block title %}{{ejercicio.titulo}}{% endblock %}
 
 {% block extraclass %}ejercicio_alumno{% endblock %}
 
@@ -8,53 +8,83 @@
 
 {% block content %}
 
+{{ ejercicio|json_script:"ejercicio" }}
+{{ entrega|json_script:"entrega" }}
+
+<form action={% url 'curso' %} method="POST" id="enlaceCurso">
+    {% csrf_token %}
+    <input type="hidden" name="curso" value={{ejercicio.curso}}>
+</form>
+
+<section class="container" id="breadcrumbs">
+    <div class="innerBread">
+        <p>/<a href={% url 'tablero' %}>tablero</a>/<a href="#" onclick="document.getElementById('enlaceCurso').submit()">{{ejercicio.curso_nombre}}</a>/{{ejercicio.titulo}}</p>
+    </div>
+</section>
 
 <div id="app">
+
     <div class="ejercicio">
-        <h1>{{ejercicio.titulo}}</h1>
-        {% if ejercicio.descripcion %}
-            <p>{{ejercicio.descripcion}}</p>
-        {% endif %}
-        {% if ejercicio.enunciado %}
+        <h1>[[ejercicio.titulo]]</h1>
+        <p v-if="ejercicio.descripcion">[[ejercicio.descripcion]]</p>
+        <div v-if="ejercicio.enunciado">
             <h4>Enunciado</h4>
-            <p>{{ejercicio.enunciado}}</p>
-        {% endif %}
+            <p>[[ejercicio.enunciado]]</p>
+        </div>
     </div>
+
     <div class="entrega">
-        <h2>Estado de la entrega</h2>
-        {% if entrega %}
-            <p>Última modificación: {{ entrega.fecha_edicion|date:"d/m/Y-H/m" }}</p>
-            <p>Comentario: <textarea cols="30" rows="1">{{entrega.comentario_alumno}}</textarea></p>
-            {% if ejercicio.tipo_ejercicio.nombre == "vr" %}
-                <p>Metadatos: {{entrega.nombre_archivo}}</p>
-            {% else %}
-                {% if not entrega.archivo %}
-                    <p><button>Subir archivo</button></p>
-                {% else %}
-                    <p>Archivo: {{entrega.nombre_archivo}} <button>modificar</button> </p>
-                {% endif %}
-            {% endif %}
-            {% if entrega.nota %}
-                <p>Calificación: {{entrega.nota}}/{{ejercicio.nota_maxima}}</p>
-            {% else %}
-                <p>En espera de calificación</p>
-            {% endif %}
-        {% else %}
-            <h5>Entrega pendiente</h5>
-            {% if ejercicio.tipo_ejercicio.nombre == "vr" %}
+
+        <h4>Estado de la entrega</h4>
+        
+        <div v-if="entrega">
+
+            <p>Última modificación: [[formato_fecha(entrega.fecha_edicion)]]</p>
+            <p>Comentario: <textarea cols="30" rows="1">[[entrega.comentario_alumno]]</textarea></p>
+
+            <div v-if="ejercicio.tipo == 'vr'">
+                <p v-if="entrega.archivo">
+                    Metadatos: <a :href="'/'+[[entrega.archivo]]" target="_blank">Descargar</a>
+                </p>
+                <p v-else>No hay metadatos</p>
+            </div>
+            <div v-else>
+                <p v-if="entrega.archivo">
+                    Archivo: <a :href="'/'+[[entrega.archivo]]" target="_blank">[[nombre_archivo()]]</a> <button>modificar</button>
+                <p v-else>
+                    <button>Subir archivo</button>
+                </p>
+            </div>
+
+            <div v-if="entrega.nota || entrega.nota==0">
+                <h4>Calificacion</h4>
+                <p>Calificación: [[entrega.nota]]/[[ejercicio.nota_maxima]]</p>
+                <p v-if="entrega.comentario_profesor">Comentario: [[entrega.comentario_profesor]]</p>
+                <p>Calificado el: [[formato_fecha(entrega.fecha_calificacion)]]</p>
+                <p>Calificado por: [[entrega.profesor]]</p>
+            </div>
+            <div v-else>
+                <h4>En espera de calificación</h4>
+            </div>
+
+        </div>
+        <div v-else >
+            <p>Entrega pendiente</p>
+            <div v-if="ejercicio.tipo == 'vr'">
                 <p>Los metadatos se subiran automaticamente al finalizar el ejercicio</p>
-            {% else %}
+            </div>
+            <div v-else>
                 <p><button>Subir archivo</button></p>
-            {% endif %}
+            </div>
+            
             <p>Comentario: <textarea cols="30" rows="1"></textarea></p>
-        {% endif %}
-        {% if entrega.comentario_profesor %}
-            <p>Comentario del profesor: {{entrega.comentario_profesor}}</p>
-        {% endif %}
-        <p id="pGuardar"><button id="btnGuardar">Guardar</button></p>
+            
+        </div>
+        
+        <br>
+        <button id="btnGuardar">Guardar</button>
     </div>
 </div> 
-
-{% comment %} <script src="{% static 'assets/js/ejercicio.js' %}"></script> {% endcomment %}
+<script src="{% static 'assets/js/entrega_alumno.js' %}"></script>
 
 {% endblock %}

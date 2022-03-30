@@ -9,11 +9,27 @@
 
 {% block content %}
 
+    <script>
+        var id = {{id}}
+    </script>
+
     <div id="app">
 
+        <form action={% url 'curso' %} method="POST" id="enlaceCurso">
+            {% csrf_token %}
+            <input type="hidden" name="curso" :value="[[id_curso]]">
+        </form>
+        <form action={% url 'ejercicio' %} method="POST" id="enlaceEjercicio">
+            {% csrf_token %}
+            <input type="hidden" name="id" :value="[[id_ejercicio]]">
+        </form>
+
         <section class="container" id="breadcrumbs">
-            <p><a href="{% url 'tablero' %}">/tablero</a>/Enfermeria/Incorporar al paciente/entrega/[[nombre]]</p>
+            <div class="innerBread">
+                <p>/<a href={% url 'tablero' %}>tablero</a>/<a href="#" onclick="document.getElementById('enlaceCurso').submit()">[[curso]]</a>/<a href="#" onclick="document.getElementById('enlaceEjercicio').submit()">[[ejercicio]]</a>/[[nombre]]</p>
+            </div>
         </section>
+
 
         <div class="header">
             <div class="left">
