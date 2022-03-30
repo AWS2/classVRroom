@@ -1,20 +1,128 @@
+from enum import auto
 from django.http import JsonResponse
 from django.http import Http404
 from vroom.models import *
+from django.contrib.auth.models import User, Group
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.utils import timezone
-
-
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework import serializers, status
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 def ping(request):
     if (request.method=='GET'):
         return JsonResponse({
             'ping': 'pong'
         })
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_course_details(request):
+
+    id_curso=request.GET.get('courseID')
+    subscripcion_profesor = Tipo_Subscripcion.objects.get(nombre = "Profesor")
+    curso = Curso.objects.get( pk = id_curso)
+    content = {"title": curso.titulo,"description": curso.descripcion,"courseID": curso.pk,"institutionID": curso.centro.pk,"status": curso.estado,'elements':{'links':[],'texts':[],'documents':[],'tasks':[]} }
+    if(id_curso == None):
+        return Response({
+        "status" : 'ERROR',
+        "message" : 'courseID is required'
+    })
+        
+
+
+    links = Link.objects.filter(pk = id_curso)
+    links_items = []
+    for link in links:
+        links_items.append({"linkID": link.pk, "title": link.titulo, "link": link.link})   
+    content['elements']['links'] = links_items
+    
+    textos = Texto.objects.filter(pk = id_curso)
+    textos_items = []
+    for texto in textos:
+        textos_items.append({"textID": texto.pk, "autorID":texto.autor.id, "title": texto.titulo, "texto": texto.texto})
+    content['elements']['texts'] = textos_items
+    
+    documents = Documento.objects.filter(pk = id_curso)
+    documents_items = []
+    for document in documents:
+        documents_items.append({"documentID": document.pk, "autorID":document.autor.id, "file":document.archivo.url})
+    content['elements']['documents'] = documents_items
+    
+    tasks = Ejercicio.objects.filter(pk = id_curso)
+    tasks_items = []
+    for task in tasks:
+        tasks_items.append({"taskID": task.pk, "title": task.titulo, "description": task.descripcion, "quote": task.enunciado, "maxQualification": task.nota_maxima, "task_type": task.tipo_ejercicio.nombre})
+    content['elements']['tasks'] = tasks_items
+          
+               
+    return Response({
+        "status" : 'OK',
+        "course_list": content
+    })
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_courses(request):
+
+        cursos = Curso.objects.all()
+
+        content = []
+        subscripcion_profesor = Tipo_Subscripcion.objects.get(nombre = "Profesor")
+        subscripcion_alumno = Tipo_Subscripcion.objects.get(nombre = "Alumno")
+
+        for icurso in cursos:
+            curso_item ={"courseID": icurso.pk, "title": icurso.titulo, "description": icurso.descripcion, "status": icurso.estado,"center": icurso.centro.pk,'subscribers':{'teachers':[],'students':[]}}      
+            profesor_curso = Usuario_Curso.objects.get( curso = icurso, tipo_subscripcion = subscripcion_profesor)
+
+            print(profesor_curso)
+            if(not profesor_curso == None):    
+                curso_item['subscribers']['teachers'].append({"UserID": profesor_curso.usuario.pk, "username": profesor_curso.usuario.username, "email":profesor_curso.usuario.email})
+            alumnos_curso = Usuario_Curso.objects.filter( curso = icurso, tipo_subscripcion = subscripcion_alumno).all()
+            alumno_item_list = []
+            if(not alumnos_curso == None):
+                for alumno in alumnos_curso:
+                    alumno_item_list.append({"UserID": alumno.usuario.pk,"username":alumno.usuario.username, "email":alumno.usuario.email})
+
+                curso_item['subscribers']['students'] = alumno_item_list
+            content.append(curso_item)
+            
+                
+        return Response({
+            "status" : 'OK',
+            "course_list": content
+            })
+    
+    ##except:
+        #return Response({
+         #   "status" : 'ERROR',
+          #  "message": 'session_token is required'
+           # })
+
+
+#Api de deslogueo
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def logout_usuario(request):
+
+    request.user.auth_token.delete()
+    
+    content = {
+        'status': 'OK',
+        'message': 'Session successfully closed.',
+    }
+    return Response(content)
 
 @login_required
 def usuario(request, id_usuario):
@@ -41,6 +149,7 @@ def usuario(request, id_usuario):
         return JsonResponse({
             'data': list(usuario)
         })
+
 
 @login_required
 def cursos(request, id_centro):
@@ -303,3 +412,5 @@ def usuario_cursos(request, id_usuario):
         return JsonResponse({
             'data': list(cursos)
         })
+
+
