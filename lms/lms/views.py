@@ -185,7 +185,15 @@ def get_course_details(request):
 
     id_curso=request.GET.get('courseID')
     subscripcion_profesor = Tipo_Subscripcion.objects.get(nombre = "Profesor")
-    curso = Curso.objects.get( pk = id_curso)
+    
+    try:
+        curso = Curso.objects.get( pk = id_curso)
+    except:
+        return Response({
+            "status" : "ERROR",
+            "message" : "Curso no encontrado",
+        })
+
     content = {"title": curso.titulo,"description": curso.descripcion,"courseID": curso.pk,"institutionID": curso.centro.pk,"status": curso.estado,'elements':{'links':[],'texts':[],'documents':[],'tasks':[]} }
     if(id_curso == None):
         return Response({
