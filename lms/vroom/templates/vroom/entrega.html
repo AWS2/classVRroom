@@ -35,7 +35,7 @@
             <div class="left">
                 <p>Curso: [[curso]]</p>
                 <p>Ejercicio: [[ejercicio]] <img :src=[[icono_ejercicio]] :alt=[[tipo_ejercicio]]></p>
-                <button class="btn">Visualiza todas las entregas</button>
+                <button class="btn" onclick="document.getElementById('enlaceEjercicio').submit()">Visualiza todas las entregas</button>
             </div>
             <div class="middle">
                 <p>Alumno: [[nombre]]</p>
@@ -55,10 +55,10 @@
             <div class="content" v-html="vista_archivo"></div>
             <div class="details">
                 <div class="detalles_alumno">
-                    <p>Archivo:<a :href=[[archivo]] target="_blank">descarga</a></p>
+                    <p v-if="[[archivo]] != '/'">Archivo:<a :href=[[archivo]] target="_blank">descarga</a></p>
                     
-                    <p>Comentario del alumno:</p> 
-                    <p>[[comentario_alumno]]</p>
+                    <p v-if="[[comentario_alumno]] != ''">Comentario del alumno:</p> 
+                    <p v-if="[[comentario_alumno]] != ''">[[comentario_alumno]]</p>
                 </div>
                         
                 <h3>Calificación</h3>

@@ -50,9 +50,9 @@
             </div>
             <div v-else>
                 <p v-if="entrega.archivo">
-                    Archivo: <a :href="'/'+[[entrega.archivo]]" target="_blank">[[nombre_archivo()]]</a> <button>modificar</button>
+                    Archivo: <a :href="'/'+[[entrega.archivo]]" target="_blank" style="margin-right: 5px;">[[nombre_archivo()]]</a> <button class="btn">modificar</button>
                 <p v-else>
-                    <button>Subir archivo</button>
+                    <button class="btn">Subir archivo</button>
                 </p>
             </div>
 
@@ -74,7 +74,7 @@
                 <p>Los metadatos se subiran automaticamente al finalizar el ejercicio</p>
             </div>
             <div v-else>
-                <p><button>Subir archivo</button></p>
+                <p><button class="btn">Subir archivo</button></p>
             </div>
             
             <p>Comentario: <textarea cols="30" rows="1"></textarea></p>
@@ -82,7 +82,7 @@
         </div>
         
         <br>
-        <button id="btnGuardar">Guardar</button>
+        <button id="btnGuardar" class="btn">Guardar</button>
     </div>
 </div> 
 <script src="{% static 'assets/js/entrega_alumno.js' %}"></script>

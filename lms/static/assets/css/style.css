@@ -197,6 +197,13 @@ input, textarea {
 }
 
 #breadcrumbs {
+  padding: 0.5em 1em;
+  border-radius: 0.4em;
+  color: #000;
+  font-size: 1.2em;
+  text-align: center;
+  -webkit-transition: all 1s;
+  transition: all 1s;
   max-width: 1320px;
   margin: auto;
   margin-bottom: 20px;
@@ -727,16 +734,5 @@ a.btn:hover, button.btn:hover {
   100% {
     background-position: 0% 50%;
   }
-}
-
-#breadcrumbs {
-  padding: 0.5em 1em;
-  border-radius: 0.4em;
-  background-color: #f5f5f5;
-  color: #000;
-  font-size: 1.2em;
-  text-align: center;
-  -webkit-transition: all 1s;
-  transition: all 1s;
 }
 /*# sourceMappingURL=style.css.map */
