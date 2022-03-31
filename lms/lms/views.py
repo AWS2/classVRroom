@@ -203,25 +203,25 @@ def get_course_details(request):
         
 
 
-    links = Link.objects.filter(pk = id_curso)
+    links = Link.objects.filter(curso_id = id_curso)
     links_items = []
     for link in links:
         links_items.append({"linkID": link.pk, "title": link.titulo, "link": link.link})   
     content['elements']['links'] = links_items
     
-    textos = Texto.objects.filter(pk = id_curso)
+    textos = Texto.objects.filter(curso_id = id_curso)
     textos_items = []
     for texto in textos:
         textos_items.append({"textID": texto.pk, "autorID":texto.autor.id, "title": texto.titulo, "texto": texto.texto})
     content['elements']['texts'] = textos_items
     
-    documents = Documento.objects.filter(pk = id_curso)
+    documents = Documento.objects.filter(curso_id = id_curso)
     documents_items = []
     for document in documents:
         documents_items.append({"documentID": document.pk, "autorID":document.autor.id, "file":document.archivo.url})
     content['elements']['documents'] = documents_items
     
-    tasks = Ejercicio.objects.filter(pk = id_curso)
+    tasks = Ejercicio.objects.filter(curso_id = id_curso)
     tasks_items = []
     for task in tasks:
         tasks_items.append({"taskID": task.pk, "title": task.titulo, "description": task.descripcion, "quote": task.enunciado, "maxQualification": task.nota_maxima, "task_type": task.tipo_ejercicio.nombre})
@@ -245,19 +245,14 @@ def get_courses(request):
     subscripcion_alumno = Tipo_Subscripcion.objects.get(nombre = "Alumno")
 
     for icurso in cursos:
-        curso_item ={"courseID": icurso.pk, "title": icurso.titulo, "description": icurso.descripcion, "status": icurso.estado,"center": icurso.centro.pk,'subscribers':{'teachers':[],'students':[]}}      
-        profesor_curso = Usuario_Curso.objects.get( curso = icurso, tipo_subscripcion = subscripcion_profesor)
+        curso_item ={"courseID": icurso.pk, "title": icurso.titulo, "description": icurso.descripcion, "status": icurso.estado,"center": icurso.centro.pk,'subscribers':{'teachers':[]}}      
+        profesor_curso = Usuario_Curso.objects.filter( curso = icurso, tipo_subscripcion = subscripcion_profesor).all()
 
         print(profesor_curso)
-        if(not profesor_curso == None):    
-            curso_item['subscribers']['teachers'].append({"UserID": profesor_curso.usuario.pk, "username": profesor_curso.usuario.username, "email":profesor_curso.usuario.email})
-        alumnos_curso = Usuario_Curso.objects.filter( curso = icurso, tipo_subscripcion = subscripcion_alumno).all()
-        alumno_item_list = []
-        if(not alumnos_curso == None):
-            for alumno in alumnos_curso:
-                alumno_item_list.append({"UserID": alumno.usuario.pk,"username":alumno.usuario.username, "email":alumno.usuario.email})
+        if(not profesor_curso == None):   
+            for profesor in profesor_curso: 
+                curso_item['subscribers']['teachers'].append({"UserID": profesor.usuario.pk, "username": profesor.usuario.username, "email":profesor.usuario.email})
 
-            curso_item['subscribers']['students'] = alumno_item_list
         content.append(curso_item)
         
             
