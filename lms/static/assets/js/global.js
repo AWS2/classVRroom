@@ -5,15 +5,18 @@ $(document).ready(()=>{
     $(document).scroll(()=>{
 
         var scrollTop = $(document).scrollTop();
-        
-        
+
         if(scrollTop>100){
             $header.addClass('shrink');
         }else if(scrollTop<50){
             $header.removeClass('shrink');
         }
-
-
     });
 
+
 });
+
+
+window.onload = function() {
+    $('body').removeClass('loading');
+};

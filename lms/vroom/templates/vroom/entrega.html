@@ -9,17 +9,33 @@
 
 {% block content %}
 
+    <script>
+        var id = {{id}}
+    </script>
+
     <div id="app">
 
+        <form action={% url 'curso' %} method="POST" id="enlaceCurso">
+            {% csrf_token %}
+            <input type="hidden" name="curso" :value="[[id_curso]]">
+        </form>
+        <form action={% url 'ejercicio' %} method="POST" id="enlaceEjercicio">
+            {% csrf_token %}
+            <input type="hidden" name="id" :value="[[id_ejercicio]]">
+        </form>
+
         <section class="container" id="breadcrumbs">
-            <p><a href="{% url 'tablero' %}">/tablero</a>/Enfermeria/Incorporar al paciente/entrega/[[nombre]]</p>
+            <div class="innerBread">
+                <p>/<a href={% url 'tablero' %}>tablero</a>/<a href="#" onclick="document.getElementById('enlaceCurso').submit()">[[curso]]</a>/<a href="#" onclick="document.getElementById('enlaceEjercicio').submit()">[[ejercicio]]</a>/[[nombre]]</p>
+            </div>
         </section>
+
 
         <div class="header">
             <div class="left">
                 <p>Curso: [[curso]]</p>
-                <p>Ejercicio: [[ejercicio]] <img :src=[[icono_ejercicio]] :alt=[[tipo_ejercicio]]></p>
-                <button>Visualiza todas las entregas</button>
+                <p>Ejercicio [[tipo_ejercicio]]: [[ejercicio]]</p>
+                <button class="btn" onclick="document.getElementById('enlaceEjercicio').submit()">Visualiza todas las entregas</button>
             </div>
             <div class="middle">
                 <p>Alumno: [[nombre]]</p>
@@ -27,11 +43,11 @@
                 <p>Fecha de publicación: [[fecha_publicacion]]</p>
             </div>
             <div class="right">
-                <p>
-                    <button @click="set_anterior()"><img src="{% static 'assets/img/left-arrow.png' %}" alt="flecha izquierda"></button>
+                <div class="d-flex align-center gap-10">
+                    <button @click="set_anterior()" class="btn" ><img src="{% static 'assets/img/left-arrow.png' %}" alt="flecha izquierda"></button>
                     Cambia de alumno
-                    <button @click="set_siguiente()"><img src="{% static 'assets/img/right-arrow.png' %}" alt="flecha derecha"></button>
-                </p>        
+                    <button @click="set_siguiente()" class="btn" ><img src="{% static 'assets/img/right-arrow.png' %}" alt="flecha derecha"></button>
+                </div>        
             </div>
         </div>
                 
@@ -39,10 +55,15 @@
             <div class="content" v-html="vista_archivo"></div>
             <div class="details">
                 <div class="detalles_alumno">
-                    <p>Archivo:<a :href=[[archivo]] target="_blank">descarga</a></p>
+                    <div v-if="[[tipo_ejercicio]] == 'vr'">
+                        <p v-if="[[archivo]] != '/'">Metadatos:<a :href=[[archivo]] target="_blank">descarga</a></p>
+                    </div>
+                    <div v-else>
+                        <p v-if="[[archivo]] != '/'">Archivo:<a :href=[[archivo]] target="_blank">descarga</a></p>
+                    </div>
                     
-                    <p>Comentario del alumno:</p> 
-                    <p>[[comentario_alumno]]</p>
+                    <p v-if="[[comentario_alumno]] != ''">Comentario del alumno:</p> 
+                    <p v-if="[[comentario_alumno]] != ''">[[comentario_alumno]]</p>
                 </div>
                         
                 <h3>Calificación</h3>
@@ -52,11 +73,13 @@
                 <p>Comentario del profesor:</p>
                 <p><textarea v-model="comentario_profesor"></textarea></p>
                     
-                <p><input type="checkbox" id="ckbNotificacion"><label for="ckbNotificacion">Notificar al alumno</label><button @click="save_nota_and_comment()">Guardar</button></p>
+                <p><input type="checkbox" id="ckbNotificacion"><label for="ckbNotificacion">Notificar al alumno</label><button @click="save_nota_and_comment()" class="btn">Guardar</button></p>
             </div>
         </div>
     </div>
 
     <script src="{% static 'assets/js/entrega.js' %}"></script>
+
+    
 
 {% endblock %}
