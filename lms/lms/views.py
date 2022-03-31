@@ -29,8 +29,6 @@ def ping(request):
 
 
 @api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def start_vr_exercise(request):
     getpin=request.GET.get('pin')
     
@@ -41,7 +39,7 @@ def start_vr_exercise(request):
         
         return Response({
             'status': 'ERROR',
-            'message': 'Pin no encontrado.'
+            'message': 'Pin no encontrado'
         })
     
 
@@ -58,10 +56,9 @@ def start_vr_exercise(request):
     })
 
 
+from django.core.files.base import ContentFile
 
 @api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def finish_vr_exercise(request):
     getpin=request.GET.get('pin')
     autograde=request.GET.get('autograde')
@@ -91,40 +88,30 @@ def finish_vr_exercise(request):
             'status': 'ERROR',
             'message': 'Ejercicio no encontrado.'
         })
-    
+
     try:
-        entrega = Entrega.objects.get(autor=request.user,ejercicio=ejercicio)
-
+        entrega = Entrega.objects.get(autor = pin.usuario, ejercicio = ejercicio).delete()
     except:
-
-        entrega = Entrega.objects.create(
-            autor=request.user,
-            fecha_publicacion=timezone.now(),
-            fecha_edicion=timezone.now(),
-            ejercicio=ejercicio,
-        )
-
-
-
+        pass
     
-
-    autograde = json.loads(autograde)
-
-    print(autograde)
-
-    ejercicio.nota_maxima=autograde['total_items']
-
-    ejercicio.save()
-
-    entrega.nota=autograde['passed_items']
-    
-    entrega.save()
+    metadatos = open('./static/assets/archivos/metadatos-' + str(pin.usuario.id) + str(ejercicio.id) + '.json', 'w+')
+    metadatos.write(autograde)
+    metadatos.close()
+   
+    entrega = Entrega.objects.create(
+        autor = pin.usuario,
+        ejercicio = ejercicio,
+        fecha_publicacion = timezone.now(),
+        fecha_edicion = timezone.now(),
+        archivo = '/static/assets/archivos/metadatos-' + str(pin.usuario.id) + str(ejercicio.id) + '.json',
+        nota = None,
+    )
 
     pin.delete()
 
     return Response({
         'status': 'OK',
-        'message': 'Exercise data successfully stored.'
+        'message': 'Entrega guardada'
     })
 
 
@@ -144,6 +131,12 @@ def pin_request(request):
         return Response({
             "status" : "ERROR",
             "message" : "Ejercicio no encontrado",
+        })
+
+    if ejercicio.tipo_ejercicio.nombre != "vr":
+        return Response({
+            "status" : "ERROR",
+            "message" : "Ejercicio no es de tipo VR",
         })
 
     while True:
@@ -173,7 +166,7 @@ def pin_request(request):
 
     return Response({
         'status':'OK',
-        'message': 'VRtaskID is required',
+        'message': 'Pin generado',
         'PIN': new_pin.pin
     })
 
@@ -199,7 +192,15 @@ def get_course_details(request):
         return Response({
         "status" : 'ERROR',
         "message" : 'courseID is required'
-    })
+        })
+
+    try:
+        usuario = Usuario_Curso.objects.get(usuario = request.user, curso_id = id_curso)
+    except:
+        return Response({
+            "status" : "ERROR",
+            "message" : "Usuario no inscrito en el curso",
+        })
         
 
 
@@ -278,7 +279,7 @@ def logout_usuario(request):
     
     content = {
         'status': 'OK',
-        'message': 'Session successfully closed.',
+        'message': 'Sesión cerrada',
     }
     return Response(content)
 
