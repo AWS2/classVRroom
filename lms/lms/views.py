@@ -1,19 +1,287 @@
+from enum import auto
+from webbrowser import get
 from django.http import JsonResponse
 from django.http import Http404
 from vroom.models import *
+from django.contrib.auth.models import User, Group
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
-
-
+from django.utils import timezone
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework import serializers, status
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+import random
+import json
 
 def ping(request):
     if (request.method=='GET'):
         return JsonResponse({
             'ping': 'pong'
         })
+
+
+
+@api_view(['GET'])
+def start_vr_exercise(request):
+    getpin=request.GET.get('pin')
+    
+    
+    try:
+        pin = Pin.objects.get(pin=getpin)
+    except:
+        
+        return Response({
+            'status': 'ERROR',
+            'message': 'Pin no encontrado'
+        })
+    
+
+    user = pin.usuario
+    vr_exerciseid = pin.ejercicio.pk
+    minVer = Ejercicio.objects.get(pk=vr_exerciseid).min_exercise_version
+    if (minVer == None):
+        minVer = None
+    return Response({
+        "status" : "OK",
+        "username": user.first_name+" "+user.last_name,
+        "VRexerciseID" :  vr_exerciseid,
+        "minExerciseVersion" : minVer,
+    })
+
+
+from django.core.files.base import ContentFile
+
+@api_view(['GET'])
+def finish_vr_exercise(request):
+    getpin=request.GET.get('pin')
+    autograde=request.GET.get('autograde')
+    VRexerciseID=request.GET.get('VRexerciseID')
+    exerciseVersionID=request.GET.get('exerciseVersionID')
+
+    if getpin==None or autograde==None or VRexerciseID==None or exerciseVersionID==None:
+        return Response({
+            'status': 'ERROR',
+            'message': 'Faltan parametros.'
+        })
+
+    try:
+        pin = Pin.objects.get(pin=getpin)
+    except:
+        
+        return Response({
+            'status': 'ERROR',
+            'message': 'Pin no encontrado.'
+        })
+
+    try:
+        ejercicio = Ejercicio.objects.get(pk=VRexerciseID, min_exercise_version=exerciseVersionID)
+    except:
+  
+        return Response({
+            'status': 'ERROR',
+            'message': 'Ejercicio no encontrado.'
+        })
+
+    try:
+        entrega = Entrega.objects.get(autor = pin.usuario, ejercicio = ejercicio).delete()
+    except:
+        pass
+    
+    metadatos = open('./static/assets/archivos/metadatos-' + str(pin.usuario.id) + str(ejercicio.id) + '.json', 'w+')
+    metadatos.write(autograde)
+    metadatos.close()
+   
+    entrega = Entrega.objects.create(
+        autor = pin.usuario,
+        ejercicio = ejercicio,
+        fecha_publicacion = timezone.now(),
+        fecha_edicion = timezone.now(),
+        archivo = '/static/assets/archivos/metadatos-' + str(pin.usuario.id) + str(ejercicio.id) + '.json',
+        nota = None,
+    )
+
+    pin.delete()
+
+    return Response({
+        'status': 'OK',
+        'message': 'Entrega guardada'
+    })
+
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def pin_request(request):
+
+    VRtaskID = request.GET.get('VRtaskID')
+
+    print(VRtaskID)
+
+    try:
+        ejercicio = Ejercicio.objects.get(id=VRtaskID)
+    except:
+        return Response({
+            "status" : "ERROR",
+            "message" : "Ejercicio no encontrado",
+        })
+
+    if ejercicio.tipo_ejercicio.nombre != "vr":
+        return Response({
+            "status" : "ERROR",
+            "message" : "Ejercicio no es de tipo VR",
+        })
+
+    while True:
+        randomnum = random.randint(1000,9999)
+
+        try:
+            if(Pin.objects.filter(ejercicio=ejercicio, usuario=request.user).exists()):
+                return Response({
+                    "status" : "ERROR",
+                    "message" : "Ya existe un pin para este usuario",
+                })
+            Pin.objects.get(pin=randomnum)
+
+        except:
+            break
+
+
+
+
+    new_pin = Pin.objects.create(
+        pin = randomnum,
+        ejercicio = ejercicio,
+        usuario = request.user
+    )
+
+    new_pin.save()
+
+    return Response({
+        'status':'OK',
+        'message': 'Pin generado',
+        'PIN': new_pin.pin
+    })
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_course_details(request):
+
+    id_curso=request.GET.get('courseID')
+    subscripcion_profesor = Tipo_Subscripcion.objects.get(nombre = "Profesor")
+    
+    try:
+        curso = Curso.objects.get( pk = id_curso)
+    except:
+        return Response({
+            "status" : "ERROR",
+            "message" : "Curso no encontrado",
+        })
+
+    content = {"title": curso.titulo,"description": curso.descripcion,"courseID": curso.pk,"institutionID": curso.centro.pk,"status": curso.estado,'elements':{'links':[],'texts':[],'documents':[],'tasks':[]} }
+    if(id_curso == None):
+        return Response({
+        "status" : 'ERROR',
+        "message" : 'courseID is required'
+        })
+
+    try:
+        usuario = Usuario_Curso.objects.get(usuario = request.user, curso_id = id_curso)
+    except:
+        return Response({
+            "status" : "ERROR",
+            "message" : "Usuario no inscrito en el curso",
+        })
+        
+
+
+    links = Link.objects.filter(curso_id = id_curso)
+    links_items = []
+    for link in links:
+        links_items.append({"linkID": link.pk, "title": link.titulo, "link": link.link})   
+    content['elements']['links'] = links_items
+    
+    textos = Texto.objects.filter(curso_id = id_curso)
+    textos_items = []
+    for texto in textos:
+        textos_items.append({"textID": texto.pk, "autorID":texto.autor.id, "title": texto.titulo, "texto": texto.texto})
+    content['elements']['texts'] = textos_items
+    
+    documents = Documento.objects.filter(curso_id = id_curso)
+    documents_items = []
+    for document in documents:
+        documents_items.append({"documentID": document.pk, "autorID":document.autor.id, "file":document.archivo.url})
+    content['elements']['documents'] = documents_items
+    
+    tasks = Ejercicio.objects.filter(curso_id = id_curso)
+    tasks_items = []
+    for task in tasks:
+        tasks_items.append({"taskID": task.pk, "title": task.titulo, "description": task.descripcion, "quote": task.enunciado, "maxQualification": task.nota_maxima, "task_type": task.tipo_ejercicio.nombre})
+    content['elements']['tasks'] = tasks_items
+          
+               
+    return Response({
+        "status" : 'OK',
+        "course_list": content
+    })
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_courses(request):
+
+    cursos = Curso.objects.all()
+
+    content = []
+    subscripcion_profesor = Tipo_Subscripcion.objects.get(nombre = "Profesor")
+    subscripcion_alumno = Tipo_Subscripcion.objects.get(nombre = "Alumno")
+
+    for icurso in cursos:
+        curso_item ={"courseID": icurso.pk, "title": icurso.titulo, "description": icurso.descripcion, "status": icurso.estado,"center": icurso.centro.pk,'subscribers':{'teachers':[]}}      
+        profesor_curso = Usuario_Curso.objects.filter( curso = icurso, tipo_subscripcion = subscripcion_profesor).all()
+
+        print(profesor_curso)
+        if(not profesor_curso == None):   
+            for profesor in profesor_curso: 
+                curso_item['subscribers']['teachers'].append({"UserID": profesor.usuario.pk, "username": profesor.usuario.username, "email":profesor.usuario.email})
+
+        content.append(curso_item)
+        
+            
+    return Response({
+        "status" : 'OK',
+        "course_list": content
+        })
+    
+    ##except:
+        #return Response({
+         #   "status" : 'ERROR',
+          #  "message": 'session_token is required'
+           # })
+
+
+#Api de deslogueo
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def logout_usuario(request):
+
+    request.user.auth_token.delete()
+    
+    content = {
+        'status': 'OK',
+        'message': 'Sesión cerrada',
+    }
+    return Response(content)
 
 @login_required
 def usuario(request, id_usuario):
@@ -40,6 +308,7 @@ def usuario(request, id_usuario):
         return JsonResponse({
             'data': list(usuario)
         })
+
 
 @login_required
 def cursos(request, id_centro):
@@ -130,8 +399,8 @@ def entregas(request, id_ejercicio):
             'data': list(entregas)
         })
 
-@csrf_exempt
 @login_required
+@csrf_exempt
 def entrega(request, id_entrega):
     if (request.method=='GET'):
         
@@ -175,7 +444,7 @@ def entrega(request, id_entrega):
 
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-        
+        print(body)
         if 'new_note' in body and 'comment_prof' in body:
             max_note = ejercicio.nota_maxima
             note = float(body['new_note'])
@@ -186,16 +455,82 @@ def entrega(request, id_entrega):
                 if note <0:
                     return JsonResponse({"msg": "La nota no puede ser negativa", "tipo": "danger"})
                 elif note <= max_note:
+                    entrega.update(profesor = request.user)
                     entrega.update(nota=note)
                     entrega.update(comentario_profesor=comment)
-                    return JsonResponse({"msg": "Nota actualizada", "tipo": "success"})  
+                    entrega.update(fecha_calificacion=timezone.now())
+                    return JsonResponse({"msg": "Calificación actualizada", "tipo": "success"})  
                 else :
                     return JsonResponse({"msg": "La nota no puede superar la nota máxima", "tipo": "danger"})
+            else:
+                return JsonResponse({"msg": "Faltan datos", "tipo": "danger"})
 
         return JsonResponse({
             'data': list(entrega) 
         })
+
+@csrf_exempt
+@login_required
+def entrega_nueva_cal(request, ejercicio_id):
+    if (request.method=='POST'):
+
+        #proteccion: ser subscriptor del curso, ser el admin del centro o ser el super
+        curso = Curso.objects.get(id = Ejercicio.objects.get(id = ejercicio_id).curso.id)
+        profesor = Usuario_Curso.objects.filter(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))
+        admin = Curso.objects.filter(centro__in = Centro.objects.filter(administrador = request.user.id), id = curso.id)
+
+        if (len(profesor) == 0 and len(admin) == 0 and not request.user.is_superuser):
+            raise PermissionDenied()
+        #fin proteccion
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+
+        nota = float(body['new_note'])
+        nota_maxima = Ejercicio.objects.get(id = ejercicio_id).nota_maxima
+
+        if nota>nota_maxima:
+            return JsonResponse({"msg": "La nota no puede superar la nota máxima", "tipo": "danger"})
+        elif nota>=0:
+            comentario = str(body['comment_prof'])
+            autor = str(body['autor'])
+            entrega = Entrega.objects.create(ejercicio = Ejercicio.objects.get(id=ejercicio_id), autor_id = autor, profesor = request.user, nota = nota, comentario_profesor = comentario, fecha_calificacion = timezone.now())
+            return JsonResponse({"msg": "Calificación creada", "tipo": "success"})
+        else:
+            return JsonResponse({"msg": "Faltan datos", "tipo": "danger"})
+
+@csrf_exempt
+def entrega_alumno(request, ejercicio_id):
+    print(request.POST)
+    if (request.method=='POST'):
+
+        #proteccion: ser alumno en el curso del ejercicio o ser el super
+        ejercicio = Ejercicio.objects.get(id = ejercicio_id)
+        curso = ejercicio.curso
+        try:
+            alumno = Usuario_Curso.objects.get(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Alumno"))
+        except:
+            raise PermissionDenied()
+        #fin proteccion
+
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+
+        comentario = str(body['comentario'])
+        entrega = Entrega.objects.filter(ejercicio = ejercicio_id, autor_id = request.user.id).values()
+        if (len(entrega) == 0):
+            Entrega.objects.create(ejercicio = ejercicio, autor = request.user, comentario_alumno = comentario, fecha_publicacion = timezone.now(), fecha_edicion = timezone.now(), nota = None)
+            return JsonResponse({"msg": "Entrega creada", "tipo": "success"})
         
+        else:
+            entrega.update(comentario_alumno = comentario)
+            entrega.update(fecha_edicion = timezone.now())
+            return JsonResponse({"msg": "Entrega actualizada", "tipo": "success"})
+
+        return JsonResponse({"msg": "Algo ha ido mal", "tipo": "danger"})
+
+    
+
+
 @login_required
 def tipo_ejercicio(request, id_tipo):
     if (request.method=='GET'):
@@ -236,3 +571,5 @@ def usuario_cursos(request, id_usuario):
         return JsonResponse({
             'data': list(cursos)
         })
+
+

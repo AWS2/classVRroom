@@ -6,27 +6,27 @@ from .models import *
  
 class EjercicioInline(admin.TabularInline):
     model = Ejercicio
-    fields = ('id', 'autor','titulo','enunciado','nota_maxima','tipo_ejercicio')  
+    fields = ('id', 'autor','titulo','enunciado','nota_maxima','tipo_ejercicio', 'fecha_publicacion')  
     extra = 0
  
 class EntregaInline(admin.TabularInline):
     model = Entrega
-    fields = ('autor','fecha_publicacion','ejercicio')
+    fields = ('autor', 'archivo','comentario_alumno', 'nota', 'comentario_profesor','fecha_edicion')
     extra = 0
  
 class LinkInline(admin.TabularInline):
     model = Link
-    fields = ('autor','titulo','link')
+    fields = ('autor','titulo','link', 'fecha_publicacion')
     extra = 0
  
 class TextoInline(admin.TabularInline):
     model = Texto
-    fields = ('autor','titulo','texto')
+    fields = ('autor','titulo','texto', 'fecha_publicacion')
     extra = 0
  
 class DocumentoInline(admin.TabularInline):
     model = Documento
-    fields = ('autor','titulo','archivo')
+    fields = ('autor','titulo','archivo', 'fecha_publicacion')
     extra = 0
  
 class Usuario_CursoInline(admin.TabularInline):
@@ -95,3 +95,4 @@ admin.site.register(Usuario, UserAdmin)
 admin.site.register(Termino)
 admin.site.register(Entrega)
 admin.site.register(Usuario_Curso)
+admin.site.register(Pin)
