@@ -64,7 +64,13 @@ class CursoAdmin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(centro=Centro.objects.get(administrador=request.user))
+        elif request.user.groups.filter(name='profesor').exists(): 
+            subProf = Tipo_Subscripcion.objects.get(nombre='Profesor')
+            print(qs)
+            return qs.filter(id__in = (Usuario_Curso.objects.filter(usuario=request.user,tipo_subscripcion=subProf.id)).values('curso'))
+        else:
+            return qs.filter(centro=Centro.objects.get(administrador=request.user))
+
     inlines = [LinkInline, TextoInline ,DocumentoInline, EjercicioInline, Usuario_CursoInline ]
 
 from django.contrib.auth.forms import UserCreationForm
