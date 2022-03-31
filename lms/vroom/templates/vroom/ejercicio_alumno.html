@@ -44,13 +44,13 @@
 
             <div v-if="ejercicio.tipo == 'vr'">
                 <p v-if="entrega.archivo">
-                    Metadatos: <a :href="'/'+[[entrega.archivo]]" target="_blank">Descargar</a>
+                    Metadatos: <a :href="[[entrega.archivo]]" target="_blank">Descargar</a>
                 </p>
                 <p v-else>No hay metadatos</p>
             </div>
             <div v-else>
                 <p v-if="entrega.archivo">
-                    Archivo: <a :href="'/'+[[entrega.archivo]]" target="_blank" style="margin-right: 5px;">[[nombre_archivo()]]</a> <button class="btn">modificar</button>
+                    Archivo: <a :href="[[entrega.archivo]]" target="_blank" style="margin-right: 5px;">[[nombre_archivo()]]</a> <button class="btn">modificar</button>
                 <p v-else>
                     <button class="btn">Subir archivo</button>
                 </p>
