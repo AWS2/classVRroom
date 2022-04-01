@@ -33,6 +33,6 @@
 
 *   [Pin Request](./endpoints/pinRequest.md) : `GET /api/pin_request`
 
-*   [Start Vr Exercise](./endpoints/startVrExercise.md.md) : `GET /api/start_vr_exercise`
+*   [Start Vr Exercise](./endpoints/startVrExercise.md) : `GET /api/start_vr_exercise`
 
-*   [Finish Vr Exercise](./endpoints/finishVrExercise.md.md) : `POST /api/finish_vr_exercise`
+*   [Finish Vr Exercise](./endpoints/finishVrExercise.md) : `POST /api/finish_vr_exercise`
