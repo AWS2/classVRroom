@@ -35,4 +35,4 @@
 
 *   [Start Vr Exercise](./endpoints/startVrExercise.md.md) : `GET /api/start_vr_exercise`
 
-*   [Finish Vr Exercise](./endpoints/startVrExercise.md.md) : `POST /api/finish_vr_exercise`
+*   [Finish Vr Exercise](./endpoints/finishVrExercise.md.md) : `POST /api/finish_vr_exercise`
