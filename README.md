@@ -1,6 +1,6 @@
 # VRoom
 
-Un lms para ejercicios de vr
+Un lms para tareas de vr
 
 ## Descripcion
 
@@ -41,7 +41,7 @@ Para cualquier duda contactar con los autores
 ### Admin Centro
 - Curso: añadir, borrar, modificar y ver.
 - Documento: añadir, borrar, modificar y ver. 
-- Ejercicio: añadir, borrar, modificar y ver.
+- Tarea: añadir, borrar, modificar y ver.
 - Entrega: añadir, borrar, modificar y ver.
 - Invitacion: añadir, borrar, modificar y ver.
 - Link: añadir, borrar, modificar y ver.
@@ -50,7 +50,7 @@ Para cualquier duda contactar con los autores
 
 ### Profesor
 - Documento: añadir, borrar, modificar y ver. 
-- Ejercicio: añadir, borrar, modificar y ver.
+- Tarea: añadir, borrar, modificar y ver.
 - Entrega: modificar y ver.
 - Invitacion: añadir, borrar, modificar y ver.
 - Link: añadir, borrar, modificar y ver.

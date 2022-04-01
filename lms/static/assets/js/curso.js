@@ -19,7 +19,7 @@
 //     });
 // });
 
-function goToEjercicio(id_ejercicio){
-    console.log(`#ejercicio-${id_ejercicio}`)
-    $(`#ejercicio-${id_ejercicio}`).submit();
+function goToTarea(id_tarea){
+    console.log(`#tarea-${id_tarea}`)
+    $(`#tarea-${id_tarea}`).submit();
 }

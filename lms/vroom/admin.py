@@ -4,9 +4,9 @@ from .models import *
  
 # Register your models here.
  
-class EjercicioInline(admin.TabularInline):
-    model = Ejercicio
-    fields = ('id', 'autor','titulo','enunciado','nota_maxima','tipo_ejercicio', 'fecha_publicacion')  
+class TareaInline(admin.TabularInline):
+    model = Tarea
+    fields = ('id', 'autor','titulo','enunciado','nota_maxima', 'fecha_publicacion')  
     extra = 0
  
 class EntregaInline(admin.TabularInline):
@@ -37,7 +37,7 @@ class Usuario_CursoInline(admin.TabularInline):
     extra = 0
  
  
-class EjercicioAdmin(admin.ModelAdmin):
+class TareaAdmin(admin.ModelAdmin):
     list_display= ('titulo','get_Curso',)
  
     def get_Curso(self,obj):
@@ -46,11 +46,11 @@ class EjercicioAdmin(admin.ModelAdmin):
     inlines = [EntregaInline]
  
 class EntregaAdmin(admin.ModelAdmin):
-    list_display= ('id','get_Ejercicio','get_Autor')
+    list_display= ('id','get_Tarea','get_Autor')
    
-    def get_Ejercicio(self,obj):
-        return obj.ejercicio.titulo
-    get_Ejercicio.short_description = 'Ejercicio'
+    def get_Tarea(self,obj):
+        return obj.tarea.titulo
+    get_Tarea.short_description = 'Tarea'
  
     def get_Autor(self,obj):
         print(obj.autor.username)
@@ -71,7 +71,7 @@ class CursoAdmin(admin.ModelAdmin):
         else:
             return qs.filter(centro=Centro.objects.get(administrador=request.user))
 
-    inlines = [LinkInline, TextoInline ,DocumentoInline, EjercicioInline, Usuario_CursoInline ]
+    inlines = [LinkInline, TextoInline ,DocumentoInline, TareaInline, Usuario_CursoInline ]
 
 from django.contrib.auth.forms import UserCreationForm
 class UserCreateForm(UserCreationForm):
@@ -94,11 +94,11 @@ class UserAdmin(UserAdmin):
 
 admin.site.register(Centro)
 admin.site.register(Curso, CursoAdmin)
-admin.site.register(Ejercicio, EjercicioAdmin)
-admin.site.register(Tipo_Ejercicio)
+admin.site.register(Tarea, TareaAdmin)
 admin.site.register(Tipo_Subscripcion)
 admin.site.register(Usuario, UserAdmin)
 admin.site.register(Termino)
 admin.site.register(Entrega)
 admin.site.register(Usuario_Curso)
 admin.site.register(Pin)
+admin.site.register(Calificacion)

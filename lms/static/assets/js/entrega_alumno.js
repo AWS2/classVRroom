@@ -1,12 +1,12 @@
 const entrega = JSON.parse(document.getElementById('entrega').textContent);
-const ejercicio = JSON.parse(document.getElementById('ejercicio').textContent);
+const tarea = JSON.parse(document.getElementById('tarea').textContent);
 
 
 const app = Vue.createApp({
     delimiters: ['[[', ']]'],
     data() {
         return {
-            ejercicio: {},
+            tarea: {},
             entrega: {},
             test: 'hola',
             comentario: '',
@@ -38,7 +38,7 @@ const app = Vue.createApp({
                 headers: myHeaders,
                 body: raw      
             };
-            fetch(`/api/entrega_alumno/${this.ejercicio.id}/`, requestOptions)
+            fetch(`/api/entrega_alumno/${this.tarea.id}/`, requestOptions)
             .then(respuesta => respuesta.json())
             .then((res) => {
                 let alerta = $(`<div class='alert alert-${res.tipo}' role='alert'>${res.msg}</div>`);
@@ -54,8 +54,8 @@ const app = Vue.createApp({
     },
     mounted() {
         console.log("mounted")
-        this.ejercicio = ejercicio;
-        console.log(this.ejercicio);
+        this.tarea = tarea;
+        console.log(this.tarea);
         this.entrega = entrega;
         console.log(this.entrega);
         this.comentario = entrega.comentario_alumno;

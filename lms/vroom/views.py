@@ -33,9 +33,9 @@ def curso(request):
 
         curso = Curso.objects.get(id = id_curso)
 
-        ejercicios = list(Ejercicio.objects.filter(curso = id_curso).values())
-        for ejercicio in ejercicios:
-            ejercicio["tipo"] = "ejercicio"
+        tareas = list(Tarea.objects.filter(curso = id_curso).values())
+        for tarea in tareas:
+            tarea["tipo"] = "tarea"
         links = list(Link.objects.filter(curso = id_curso).values())
         for link in links:
             link["tipo"] = "link"
@@ -46,7 +46,7 @@ def curso(request):
         for documento in documentos:
             documento["tipo"] = "documento"
         
-        contenidos = ejercicios+links+textos+documentos   
+        contenidos = tareas+links+textos+documentos   
         contenidos = sorted(contenidos, key=lambda contenido: contenido.get("fecha_publicacion"))
 
         rol = Usuario_Curso.objects.get(usuario = request.user.id, curso = id_curso).tipo_subscripcion.nombre
@@ -62,19 +62,18 @@ def curso(request):
 from django.forms.models import model_to_dict
 
 @login_required
-def ejercicio(request):
+def tarea(request):
     if (request.POST.get('id')):
-        ejercicio = Ejercicio.objects.get(id = request.POST.get('id'))
+        tarea = Tarea.objects.get(id = request.POST.get('id'))
 
-        ejercicio_dict = model_to_dict(ejercicio)
-        ejercicio_dict["tipo"] = ejercicio.tipo_ejercicio.nombre
-        ejercicio_dict["curso_nombre"]= ejercicio.curso.titulo
+        tarea_dict = model_to_dict(tarea)
+        tarea_dict["curso_nombre"]= tarea.curso.titulo
 
-        rol = Usuario_Curso.objects.get(usuario = request.user, curso = ejercicio.curso).tipo_subscripcion
+        rol = Usuario_Curso.objects.get(usuario = request.user, curso = tarea.curso).tipo_subscripcion
 
         if (rol.nombre == "Alumno"):
             try:
-                entrega = (Entrega.objects.filter(ejercicio = ejercicio.id, autor = request.user).values())
+                entrega = (Entrega.objects.filter(tarea = tarea.id, autor = request.user).values())
                 entrega = list(entrega)[0]
                 try:
                     profesor = Usuario.objects.get(id = entrega["profesor_id"])
@@ -85,24 +84,30 @@ def ejercicio(request):
                 entrega = False
 
             contexto = {
-                "ejercicio": ejercicio_dict,
+                "tarea": tarea_dict,
                 "entrega": entrega
             }
 
-            return render(request, 'vroom/ejercicio_alumno.html', contexto)
+            return render(request, 'vroom/tarea_alumno.html', contexto)
 
         else:
             
-            alumnos_curso = list(Usuario_Curso.objects.filter(curso = ejercicio.curso, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Alumno").id).values())
+            alumnos_curso = list(Usuario_Curso.objects.filter(curso = tarea.curso, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Alumno").id).values())
 
             alumnos = []
             for alumno in alumnos_curso:
+                try:
+                    ultima_entrega = (Entrega.objects.filter(tarea = tarea.id, autor = alumno["usuario_id"]).latest('fecha_edicion')).fecha_edicion
+                except:
+                    ultima_entrega = False
                 id_alumno = alumno["usuario_id"]
-                alumnos.append(model_to_dict(Usuario.objects.get(id = id_alumno)))
+                dict_alumno = model_to_dict(Usuario.objects.get(id = id_alumno))
+                dict_alumno["ultima_entrega"] = ultima_entrega
+                alumnos.append(dict_alumno)
                 
             contexto = {
-                "ejercicio": ejercicio_dict,
+                "tarea": tarea_dict,
                 "alumnos": list(alumnos)
             }
 
-            return render(request, 'vroom/ejercicio_profesor.html', contexto)
+            return render(request, 'vroom/tarea_profesor.html', contexto)

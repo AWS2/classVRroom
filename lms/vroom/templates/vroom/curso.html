@@ -21,9 +21,9 @@
     </div>
     <div class="contenidos">    
         {% for contenido in contenidos %}
-            {% if contenido.tipo == "ejercicio" %}                
-                <div class="contenido" onclick="goToEjercicio('{{contenido.id}}')">
-                    <form action="{% url 'ejercicio' %}" id="ejercicio-{{contenido.id}}" method="POST">
+            {% if contenido.tipo == "tarea" %}                
+                <div class="contenido" onclick="goToTarea('{{contenido.id}}')">
+                    <form action="{% url 'tarea' %}" id="tarea-{{contenido.id}}" method="POST">
                         {% csrf_token %}
                         <input type="hidden" name="id" value="{{contenido.id}}">
                     </form>
