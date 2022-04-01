@@ -1,3 +1,5 @@
+[:arrow_left: Atras](../documentacion.md)
+
 # Logout
 
 Usado para deslogear un usuario y eliminar el token de la base de datos

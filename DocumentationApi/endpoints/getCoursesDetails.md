@@ -1,3 +1,5 @@
+[:arrow_left: Atras](../documentacion.md)
+
 # Get Courses
 
 Usado para cojer informacion de un curso por id, si el usuario esta subscrito al curso

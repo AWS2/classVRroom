@@ -1,3 +1,5 @@
+[:arrow_left: Atras](../documentacion.md)
+
 # Login
 
 Usado para cojer el Token asignado a un usuario registrado.
