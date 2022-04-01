@@ -28,6 +28,8 @@ def ping(request):
         })
 
 @api_view(['GET'])
+@authentication_classes([])
+@permission_classes([])
 def start_vr_exercise(request):
     getpin=request.GET.get('pin')
     
@@ -41,8 +43,8 @@ def start_vr_exercise(request):
         })
 
     user = pin.usuario
-    vr_exerciseid = pin.tarea.pk
-    minVer = Tarea.objects.get(pk=vr_exerciseid).min_exercise_version
+    vr_exerciseid = pin.tarea.id
+    minVer = Tarea.objects.get(id=vr_exerciseid).min_exercise_version
     if (minVer == None):
         minVer = None
     return Response({
@@ -52,13 +54,31 @@ def start_vr_exercise(request):
         "minExerciseVersion" : minVer,
     })
 
-@api_view(['GET'])
+
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
 def finish_vr_exercise(request):
-    getpin=request.GET.get('pin')
-    autograde=request.GET.get('autograde')
-    VRexerciseID=request.GET.get('VRexerciseID')
-    exerciseVersionID=request.GET.get('exerciseVersionID')
-    performance_data = request.GET.get('performance_data')
+
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+
+    getpin=int(body['pin'])
+    autograde=body['autograde']
+    VRexerciseID=int(body['VRexerciseID'])
+    exerciseVersionID=float(body['exerciseVersionID'])
+    performance_data = body['performance_data']
+
+
+    # Comprueba que el pin existe
+    try:
+        pin = Pin.objects.get(pin=getpin)
+    except:
+        return Response({
+            'status': 'ERROR',
+            'message': 'Pin no encontrado.'
+        })
+
 
     # Comprueba que estan todos los parametros
     if getpin==None or autograde==None or VRexerciseID==None or exerciseVersionID==None or performance_data==None:
@@ -76,11 +96,11 @@ def finish_vr_exercise(request):
                 'message': 'Autograde: No se han pasado "passed_items".'
             })
         
-        autograde_total_items = int(autograde['total_items'])
-        if not autograde_total_items:
+        autograde_failed_items = int(autograde['failed_items'])
+        if not autograde_failed_items:
             return Response({
                 'status': 'ERROR',
-                'message': 'Autograde: No se han pasado "total_items".'
+                'message': 'Autograde: No se han pasado "failed_items".'
             })
 
         autograde_score = float(autograde['score'])
@@ -97,17 +117,8 @@ def finish_vr_exercise(request):
         })
 
 
-    # Comprueba que el pin existe
     try:
-        pin = Pin.objects.get(pin=getpin)
-    except:
-        return Response({
-            'status': 'ERROR',
-            'message': 'Pin no encontrado.'
-        })
-
-    try:
-        tarea = Tarea.objects.get(pk=VRexerciseID, min_exercise_version=exerciseVersionID)
+        tarea = Tarea.objects.get(id=VRexerciseID, min_exercise_version=exerciseVersionID)
     except:
   
         return Response({
@@ -115,26 +126,36 @@ def finish_vr_exercise(request):
             'message': 'Tarea no encontrado.'
         })
 
-    # Si existe una entrega anterior, la borra y crea una nueva con los datos buenos
+
     try:
-        entrega = Entrega.objects.get(autor = pin.usuario, tarea = tarea).delete()
+
+        workpath = os.path.dirname(os.path.abspath(__file__)) #Returns the Path your .py file is in
+        if not os.path.exists(os.path.join(workpath,'../static/assets/archivos/')):
+            os.makedirs(os.path.join(workpath,'../static/assets/archivos/'))
+        performance_data_file = open(os.path.join(workpath,'../static/assets/archivos/performance_data-' + str(pin.usuario.id) + str(tarea.id) + '.json'), 'w+')
+        performance_data_file.write(json.dumps(performance_data))
+        performance_data_file.close()
+
     except:
-        pass
+        return Response({
+            'status': 'ERROR',
+            'message': 'Error al guardar performance_data.'
+        })
 
 
-
-    performance_data_file = open('./static/assets/archivos/performance_data-' + str(pin.usuario.id) + str(ejercicio.id) + '.json', 'w+')
-   
-    metadatos = open('./static/assets/archivos/metadatos-' + str(pin.usuario.id) + str(tarea.id) + '.json', 'w+')
-    metadatos.write(autograde)
-    metadatos.close()
+    auto_puntuacion = Auto_Puntuacion.objects.create(
+        passed_items = autograde_passed_items,
+        failed_items = autograde_failed_items,
+        score = autograde_score,
+    )
    
     entrega = Entrega.objects.create(
         autor = pin.usuario,
         tarea = tarea,
         fecha_publicacion = timezone.now(),
         fecha_edicion = timezone.now(),
-        archivo = '/static/assets/archivos/metadatos-' + str(pin.usuario.id) + str(tarea.id) + '.json',
+        archivo = os.path.join(workpath,'../static/assets/archivos/performance_data-' + str(pin.usuario.id) + str(tarea.id) + '.json'),
+        auto_puntuacion = auto_puntuacion,
         nota = None,
     )
 
@@ -203,54 +224,57 @@ def get_course_details(request):
 
     id_curso=request.GET.get('courseID')
     subscripcion_profesor = Tipo_Subscripcion.objects.get(nombre = "Profesor")
+
+
     
     try:
-        curso = Curso.objects.get( pk = id_curso)
+        curso = Curso.objects.get( id = id_curso)
     except:
         return Response({
             "status" : "ERROR",
             "message" : "Curso no encontrado.",
         })
 
-    content = {"title": curso.titulo,"description": curso.descripcion,"courseID": curso.pk,"institutionID": curso.centro.pk,"status": curso.estado,'elements':{'links':[],'texts':[],'documents':[],'tasks':[]} }
+    content = {"title": curso.titulo,"description": curso.descripcion,"courseID": curso.id,"institutionID": curso.centro.id,"status": curso.estado,'elements':{'links':[],'texts':[],'documents':[],'tasks':[]} }
     if(id_curso == None):
         return Response({
         "status" : 'ERROR',
         "message" : 'courseID is required.'
         })
 
-    try:
-        usuario = Usuario_Curso.objects.get(usuario = request.user, curso_id = id_curso)
-    except:
-        return Response({
-            "status" : "ERROR",
-            "message" : "Usuario no inscrito en el curso.",
-        })
+    if(not request.user.is_superuser):        
+        try:
+            usuario = Usuario_Curso.objects.get(usuario = request.user, curso_id = id_curso)
+        except:
+            return Response({
+                "status" : "ERROR",
+                "message" : "Usuario no inscrito en el curso.",
+            })
         
 
 
     links = Link.objects.filter(curso_id = id_curso)
     links_items = []
     for link in links:
-        links_items.append({"linkID": link.pk, "title": link.titulo, "link": link.link})   
+        links_items.append({"linkID": link.id, "title": link.titulo, "link": link.link})   
     content['elements']['links'] = links_items
     
     textos = Texto.objects.filter(curso_id = id_curso)
     textos_items = []
     for texto in textos:
-        textos_items.append({"textID": texto.pk, "autorID":texto.autor.id, "title": texto.titulo, "texto": texto.texto})
+        textos_items.append({"textID": texto.id, "autorID":texto.autor.id, "title": texto.titulo, "texto": texto.texto})
     content['elements']['texts'] = textos_items
     
     documents = Documento.objects.filter(curso_id = id_curso)
     documents_items = []
     for document in documents:
-        documents_items.append({"documentID": document.pk, "autorID":document.autor.id, "file":document.archivo.url})
+        documents_items.append({"documentID": document.id, "autorID":document.autor.id, "file":document.archivo.url})
     content['elements']['documents'] = documents_items
     
-    tasks = Tarea.objects.filter(curso_id = id_curso)
+    tasks = Tarea.objects.filter(curso_id = id_curso).all()
     tasks_items = []
     for task in tasks:
-        tasks_items.append({"taskID": task.pk, "title": task.titulo, "description": task.descripcion, "quote": task.enunciado, "maxQualification": task.nota_maxima})
+        tasks_items.append({"taskID": task.id, "title": task.titulo, "enunciado": task.enunciado, "maxQualification": task.nota_maxima})
     content['elements']['tasks'] = tasks_items
           
                
@@ -271,13 +295,13 @@ def get_courses(request):
     subscripcion_alumno = Tipo_Subscripcion.objects.get(nombre = "Alumno")
 
     for icurso in cursos:
-        curso_item ={"courseID": icurso.pk, "title": icurso.titulo, "description": icurso.descripcion, "status": icurso.estado,"center": icurso.centro.pk,'subscribers':{'teachers':[]}}      
+        curso_item ={"courseID": icurso.id, "title": icurso.titulo, "description": icurso.descripcion, "status": icurso.estado,"center": icurso.centro.id,'subscribers':{'teachers':[]}}      
         profesor_curso = Usuario_Curso.objects.filter( curso = icurso, tipo_subscripcion = subscripcion_profesor).all()
 
         print(profesor_curso)
         if(not profesor_curso == None):   
             for profesor in profesor_curso: 
-                curso_item['subscribers']['teachers'].append({"UserID": profesor.usuario.pk, "username": profesor.usuario.username, "email":profesor.usuario.email})
+                curso_item['subscribers']['teachers'].append({"UserID": profesor.usuario.id, "username": profesor.usuario.username, "email":profesor.usuario.email})
 
         content.append(curso_item)
         

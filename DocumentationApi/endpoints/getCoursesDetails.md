@@ -79,7 +79,20 @@ Usado para cojer informacion de un curso por id, si el usuario esta subscrito al
 }
 ```
 
-## Error Response
+## Not Subscribed Response 
+
+**Condition** : Si el usuario no esta subscrito al curso que intenta acceder
+
+**Content** :
+
+```json
+{
+    "status": "ERROR",
+    "message": "Usuario no inscrito en el curso."
+}
+```
+
+## Curso Not Found Response
 
 **Condition** : Si el curso no existe
 

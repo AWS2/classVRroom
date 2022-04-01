@@ -21,6 +21,8 @@
 ```
 
 
+*   [Ping](./endpoints/ping.md) : `GET /api/ping`
+
 *   [Login](./endpoints/login.md) : `GET /api/login`
 
 *   [Logout](./endpoints/logout.md) : `GET /api/logout`
@@ -29,3 +31,6 @@
 
 *   [Get Courses Details](./endpoints/getCourses.md) : `GET /api/get_courses`
 
+*   [Pin Request](./endpoints/pinRequest.md) : `GET /api/pin_request`
+
+*   [Start Vr Exercise](./endpoints/startVrExercise.md.md) : `GET /api/start_vr_exercise`
