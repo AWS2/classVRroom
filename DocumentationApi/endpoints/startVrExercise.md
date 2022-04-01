@@ -10,6 +10,23 @@ Te devuelve todos los cursos de todos los centros
 
 **Token required** : NO
 
+**Data constraints**
+
+```json
+{
+    "pin": "[valid pin]"
+}
+```
+
+**Data example**
+
+```json
+{
+    "VRtaskID": "3050"
+}
+```
+
+
 ## Success Response
 
 **Content example**
@@ -17,7 +34,7 @@ Te devuelve todos los cursos de todos los centros
 ```json
 {
     "status": "OK",
-    "username": " ",
+    "username": "Antonio Calvo",
     "VRexerciseID": 1,
     "minExerciseVersion": 1.0
 }
