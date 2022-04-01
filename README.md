@@ -28,6 +28,10 @@ python3 manage.py initvroom
 python manage.py runserver
 ```
 
+## Api
+
+[Docuemtacion de la api](./DocumentationApi/documentacion.md)
+
 ## Ayuda
 
 Para cualquier duda contactar con los autores

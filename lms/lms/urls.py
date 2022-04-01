@@ -29,9 +29,9 @@ class CustomAuthToken(ObtainAuthToken):
 
         token, created = Token.objects.get_or_create(user=user)
         return Response({
-            'token': token.key,
             'status': 'OK',
-            'message': 'Exercise data successfully stored.'
+            'message': 'Autenticado con éxito.',
+            'token': token.key,
         })
 
 
@@ -54,7 +54,6 @@ urlpatterns += [
     path('api/entrega_alumno/<int:ejercicio_id>/', views.entrega_alumno, name='entrega alumno'),
     path('api/tipo_ejercicio/<int:id_tipo>', views.tipo_ejercicio, name='tipo_ejercicio'),
     path('api/usuario_cursos/<int:id_usuario>', views.usuario_cursos, name='usuario_cursos'),
-    path('api/login_usuario', apiviews.obtain_auth_token, name='login_usuario'),
     path('api/login',CustomAuthToken.as_view(),name="login_api"),
     path('api/logout', views.logout_usuario,  name='logout_usuario'),
     path('api/get_courses', views.get_courses, name='get_courses'),

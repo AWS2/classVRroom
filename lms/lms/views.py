@@ -23,15 +23,13 @@ import json
 def ping(request):
     if (request.method=='GET'):
         return JsonResponse({
-            'ping': 'pong'
+            'status': 'OK',
+            'message': 'Conexión exitosa.',
         })
-
-
 
 @api_view(['GET'])
 def start_vr_exercise(request):
     getpin=request.GET.get('pin')
-    
     
     try:
         pin = Pin.objects.get(pin=getpin)
@@ -39,12 +37,11 @@ def start_vr_exercise(request):
         
         return Response({
             'status': 'ERROR',
-            'message': 'Pin no encontrado'
+            'message': 'Pin no encontrado.'
         })
-    
 
     user = pin.usuario
-    vr_exerciseid = pin.ejercicio.pk
+    vr_exerciseid = pin.ejercicio.pkz
     minVer = Ejercicio.objects.get(pk=vr_exerciseid).min_exercise_version
     if (minVer == None):
         minVer = None
@@ -55,26 +52,55 @@ def start_vr_exercise(request):
         "minExerciseVersion" : minVer,
     })
 
-
-from django.core.files.base import ContentFile
-
 @api_view(['GET'])
 def finish_vr_exercise(request):
     getpin=request.GET.get('pin')
     autograde=request.GET.get('autograde')
     VRexerciseID=request.GET.get('VRexerciseID')
     exerciseVersionID=request.GET.get('exerciseVersionID')
+    performance_data = request.GET.get('performance_data')
 
-    if getpin==None or autograde==None or VRexerciseID==None or exerciseVersionID==None:
+    # Comprueba que estan todos los parametros
+    if getpin==None or autograde==None or VRexerciseID==None or exerciseVersionID==None or performance_data==None:
         return Response({
             'status': 'ERROR',
             'message': 'Faltan parametros.'
         })
 
+    # Comprueba que el autograde es correcto
+    try:
+        autograde_passed_items = int(autograde['passed_items'])
+        if not autograde_passed_items:
+            return Response({
+                'status': 'ERROR',
+                'message': 'Autograde: No se han pasado "passed_items".'
+            })
+        
+        autograde_total_items = int(autograde['total_items'])
+        if not autograde_total_items:
+            return Response({
+                'status': 'ERROR',
+                'message': 'Autograde: No se han pasado "total_items".'
+            })
+
+        autograde_score = float(autograde['score'])
+        if not autograde_score:
+            return Response({
+                'status': 'ERROR',
+                'message': 'Autograde: No se ha pasado "score".'
+            })    
+        
+    except:
+        return Response({
+            'status': 'ERROR',
+            'message': 'Autograde: Parametros incorrectos.'
+        })
+
+
+    # Comprueba que el pin existe
     try:
         pin = Pin.objects.get(pin=getpin)
     except:
-        
         return Response({
             'status': 'ERROR',
             'message': 'Pin no encontrado.'
@@ -89,11 +115,16 @@ def finish_vr_exercise(request):
             'message': 'Ejercicio no encontrado.'
         })
 
+    # Si existe una entrega anterior, la borra y crea una nueva con los datos buenos
     try:
         entrega = Entrega.objects.get(autor = pin.usuario, ejercicio = ejercicio).delete()
     except:
         pass
-    
+
+
+
+    performance_data_file = open('./static/assets/archivos/performance_data-' + str(pin.usuario.id) + str(ejercicio.id) + '.json', 'w+')
+
     metadatos = open('./static/assets/archivos/metadatos-' + str(pin.usuario.id) + str(ejercicio.id) + '.json', 'w+')
     metadatos.write(autograde)
     metadatos.close()
@@ -107,11 +138,12 @@ def finish_vr_exercise(request):
         nota = None,
     )
 
+    # Se borra el pin
     pin.delete()
 
     return Response({
         'status': 'OK',
-        'message': 'Entrega guardada'
+        'message': 'Entrega guardada.'
     })
 
 
@@ -123,20 +155,18 @@ def pin_request(request):
 
     VRtaskID = request.GET.get('VRtaskID')
 
-    print(VRtaskID)
-
     try:
         ejercicio = Ejercicio.objects.get(id=VRtaskID)
     except:
         return Response({
             "status" : "ERROR",
-            "message" : "Ejercicio no encontrado",
+            "message" : "Ejercicio no encontrado.",
         })
 
     if ejercicio.tipo_ejercicio.nombre != "vr":
         return Response({
             "status" : "ERROR",
-            "message" : "Ejercicio no es de tipo VR",
+            "message" : "Ejercicio no es de tipo VR.",
         })
 
     while True:
@@ -146,7 +176,7 @@ def pin_request(request):
             if(Pin.objects.filter(ejercicio=ejercicio, usuario=request.user).exists()):
                 return Response({
                     "status" : "ERROR",
-                    "message" : "Ya existe un pin para este usuario",
+                    "message" : "Ya existe un pin para este usuario.",
                 })
             Pin.objects.get(pin=randomnum)
 
@@ -166,7 +196,7 @@ def pin_request(request):
 
     return Response({
         'status':'OK',
-        'message': 'Pin generado',
+        'message': 'Pin generado.',
         'PIN': new_pin.pin
     })
 
@@ -184,14 +214,14 @@ def get_course_details(request):
     except:
         return Response({
             "status" : "ERROR",
-            "message" : "Curso no encontrado",
+            "message" : "Curso no encontrado.",
         })
 
     content = {"title": curso.titulo,"description": curso.descripcion,"courseID": curso.pk,"institutionID": curso.centro.pk,"status": curso.estado,'elements':{'links':[],'texts':[],'documents':[],'tasks':[]} }
     if(id_curso == None):
         return Response({
         "status" : 'ERROR',
-        "message" : 'courseID is required'
+        "message" : 'courseID is required.'
         })
 
     try:
@@ -199,7 +229,7 @@ def get_course_details(request):
     except:
         return Response({
             "status" : "ERROR",
-            "message" : "Usuario no inscrito en el curso",
+            "message" : "Usuario no inscrito en el curso.",
         })
         
 
@@ -279,7 +309,7 @@ def logout_usuario(request):
     
     content = {
         'status': 'OK',
-        'message': 'Sesión cerrada',
+        'message': 'Sesión cerrada.',
     }
     return Response(content)
 

@@ -128,3 +128,9 @@ class Pin(models.Model):
     pin = models.CharField(max_length=4, default=None, unique=True, null=False)
     ejercicio = models.ForeignKey('Ejercicio',on_delete=models.DO_NOTHING,null=False)
     usuario = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=True)
+
+class Auto_Puntuacion(models.Model):
+    passed_items = models.IntegerField(null=False,blank=False,default=0)
+    failed_items = models.IntegerField(null=False,blank=False,default=0)
+    score = models.IntegerField(null=False,blank=False,default=0)
+    comments = models.CharField(max_length=500,default=None, blank=True, null=True)
