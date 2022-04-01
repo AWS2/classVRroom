@@ -23,13 +23,12 @@ const app = Vue.createApp({
   data() {
       return {
           id_entrega: '',
-          id_ejercicio: '',
+          id_tarea: '',
           id_curso: '',
 
           curso: '',
-          ejercicio: '',
+          tarea: '',
           enunciado: '',
-          tipo_ejercicio: '',
           nombre: '',
           correo: '',
           archivo: '',
@@ -103,27 +102,18 @@ const app = Vue.createApp({
 
             });
 
-          fetch(`/api/ejercicio/${entrega.ejercicio_id}`, {method: 'GET'})
+          fetch(`/api/tarea/${entrega.tarea_id}`, {method: 'GET'})
             .then(response => response.json())
             .then((result) => {
-              let ejercicio = result.data[0];
+              let tarea = result.data[0];
 
-              this.ejercicio = ejercicio.titulo;
-              this.enunciado = ejercicio.enunciado;
-              this.id_ejercicio = ejercicio.id;
-              this.nota_maxima = ejercicio.nota_maxima;
-              this.id_curso = ejercicio.curso_id;
+              this.tarea = tarea.titulo;
+              this.enunciado = tarea.enunciado;
+              this.id_tarea = tarea.id;
+              this.nota_maxima = tarea.nota_maxima;
+              this.id_curso = tarea.curso_id;
 
-              fetch(`/api/tipo_ejercicio/${ejercicio.tipo_ejercicio_id}`, {method: 'GET'})
-                .then(response => response.json())
-                .then((result) => {
-                  let tipo_ejercicio = result.data[0];
-
-                  this.tipo_ejercicio = tipo_ejercicio.nombre;
-                  this.icono_ejercicio = '/'+tipo_ejercicio.icono;
-                })
-
-              fetch(`/api/curso/${ejercicio.curso_id}`, {method: 'GET'})
+              fetch(`/api/curso/${tarea.curso_id}`, {method: 'GET'})
                 .then(response => response.json())
                 .then((result) => {
                   let curso = result.data[0];
@@ -151,7 +141,7 @@ const app = Vue.createApp({
     },
 
     set_siguiente() {
-      fetch(`/api/entregas/${this.id_ejercicio}`, {method: 'GET'})
+      fetch(`/api/entregas/${this.id_tarea}`, {method: 'GET'})
         .then(response => response.json())
         .then((result) => {
           let entregas = result.data;
@@ -174,7 +164,7 @@ const app = Vue.createApp({
     },
 
     set_anterior() {
-      fetch(`/api/entregas/${this.id_ejercicio}`, {method: 'GET'})
+      fetch(`/api/entregas/${this.id_tarea}`, {method: 'GET'})
         .then(response => response.json())
         .then((result) => {
           let entregas = result.data;

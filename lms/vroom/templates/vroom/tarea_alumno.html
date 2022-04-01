@@ -1,35 +1,35 @@
 {% extends 'vroom/components/base.html' %}
 
-{% block title %}{{ejercicio.titulo}}{% endblock %}
+{% block title %}{{tarea.titulo}}{% endblock %}
 
-{% block extraclass %}ejercicio_alumno{% endblock %}
+{% block extraclass %}tarea_alumno{% endblock %}
 
 {% load static %}
 
 {% block content %}
 
-{{ ejercicio|json_script:"ejercicio" }}
+{{ tarea|json_script:"tarea" }}
 {{ entrega|json_script:"entrega" }}
 
 <form action={% url 'curso' %} method="POST" id="enlaceCurso">
     {% csrf_token %}
-    <input type="hidden" name="curso" value={{ejercicio.curso}}>
+    <input type="hidden" name="curso" value={{tarea.curso}}>
 </form>
 
 <section class="container" id="breadcrumbs">
     <div class="innerBread">
-        <p>/<a href={% url 'tablero' %}>tablero</a>/<a href="#" onclick="document.getElementById('enlaceCurso').submit()">{{ejercicio.curso_nombre}}</a>/{{ejercicio.titulo}}</p>
+        <p>/<a href={% url 'tablero' %}>tablero</a>/<a href="#" onclick="document.getElementById('enlaceCurso').submit()">{{tarea.curso_nombre}}</a>/{{tarea.titulo}}</p>
     </div>
 </section>
 
 <div id="app">
 
-    <div class="ejercicio">
-        <h1>[[ejercicio.titulo]]</h1>
-        <p v-if="ejercicio.descripcion">[[ejercicio.descripcion]]</p>
-        <div v-if="ejercicio.enunciado">
+    <div class="tarea">
+        <h1>[[tarea.titulo]]</h1>
+        <p v-if="tarea.descripcion">[[tarea.descripcion]]</p>
+        <div v-if="tarea.enunciado">
             <h4>Enunciado</h4>
-            <p>[[ejercicio.enunciado]]</p>
+            <p>[[tarea.enunciado]]</p>
         </div>
     </div>
 
@@ -42,7 +42,7 @@
             <p>Última modificación: [[formato_fecha(entrega.fecha_edicion)]]</p>
             <p>Comentario: <textarea cols="30" rows="1" v-model="comentario">[[entrega.comentario_alumno]]</textarea></p>
 
-            <div v-if="ejercicio.tipo == 'vr'">
+            <div v-if="tarea.tipo == 'vr'">
                 <p v-if="entrega.archivo">
                     Metadatos: <a :href="[[entrega.archivo]]" target="_blank">Descargar</a>
                 </p>
@@ -58,7 +58,7 @@
 
             <div v-if="entrega.nota || entrega.nota==0">
                 <h4>Calificacion</h4>
-                <p>Calificación: [[entrega.nota]]/[[ejercicio.nota_maxima]]</p>
+                <p>Calificación: [[entrega.nota]]/[[tarea.nota_maxima]]</p>
                 <p v-if="entrega.comentario_profesor">Comentario: [[entrega.comentario_profesor]]</p>
                 <p>Calificado el: [[formato_fecha(entrega.fecha_calificacion)]]</p>
                 <p>Calificado por: [[entrega.profesor]]</p>
@@ -70,8 +70,8 @@
         </div>
         <div v-else >
             <p>Entrega pendiente</p>
-            <div v-if="ejercicio.tipo == 'vr'">
-                <p>Los metadatos se subiran automaticamente al finalizar el ejercicio</p>
+            <div v-if="tarea.tipo == 'vr'">
+                <p>Los metadatos se subiran automaticamente al finalizar el tarea</p>
             </div>
             <div v-else>
                 <p><button class="btn">Subir archivo</button></p>

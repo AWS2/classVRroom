@@ -19,14 +19,14 @@
             {% csrf_token %}
             <input type="hidden" name="curso" :value="[[id_curso]]">
         </form>
-        <form action={% url 'ejercicio' %} method="POST" id="enlaceEjercicio">
+        <form action={% url 'tarea' %} method="POST" id="enlaceTarea">
             {% csrf_token %}
-            <input type="hidden" name="id" :value="[[id_ejercicio]]">
+            <input type="hidden" name="id" :value="[[id_tarea]]">
         </form>
 
         <section class="container" id="breadcrumbs">
             <div class="innerBread">
-                <p>/<a href={% url 'tablero' %}>tablero</a>/<a href="#" onclick="document.getElementById('enlaceCurso').submit()">[[curso]]</a>/<a href="#" onclick="document.getElementById('enlaceEjercicio').submit()">[[ejercicio]]</a>/[[nombre]]</p>
+                <p>/<a href={% url 'tablero' %}>tablero</a>/<a href="#" onclick="document.getElementById('enlaceCurso').submit()">[[curso]]</a>/<a href="#" onclick="document.getElementById('enlaceTarea').submit()">[[tarea]]</a>/[[nombre]]</p>
             </div>
         </section>
 
@@ -34,8 +34,7 @@
         <div class="header">
             <div class="left">
                 <p>Curso: [[curso]]</p>
-                <p>Ejercicio [[tipo_ejercicio]]: [[ejercicio]]</p>
-                <button class="btn" onclick="document.getElementById('enlaceEjercicio').submit()">Visualiza todas las entregas</button>
+                <button class="btn" onclick="document.getElementById('enlaceTarea').submit()">Visualiza todas las entregas</button>
             </div>
             <div class="middle">
                 <p>Alumno: [[nombre]]</p>
@@ -55,13 +54,8 @@
             <div class="content" v-html="vista_archivo"></div>
             <div class="details">
                 <div class="detalles_alumno">
-                    <div v-if="[[tipo_ejercicio]] == 'vr'">
-                        <p v-if="[[archivo]] != '/'">Metadatos:<a :href=[[archivo]] target="_blank">descarga</a></p>
-                    </div>
-                    <div v-else>
-                        <p v-if="[[archivo]] != '/'">Archivo:<a :href=[[archivo]] target="_blank">descarga</a></p>
-                    </div>
-                    
+ s                   <p v-if="[[archivo]] != '/'">Metadatos:<a :href=[[archivo]] target="_blank">descarga</a></p>
+                     
                     <p v-if="[[comentario_alumno]] != ''">Comentario del alumno:</p> 
                     <p v-if="[[comentario_alumno]] != ''">[[comentario_alumno]]</p>
                 </div>
