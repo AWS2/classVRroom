@@ -14,14 +14,17 @@ GROUPS = {
         "link" : ["add","delete","change","view"],
         "texto" : ["add","delete","change","view"],
         "user" : ["add","delete","change","view"],
+        "usuario_curso": ["add","delete","change","view"],
     },
     'profesor': {
+        "curso" : ["change","view"],
         "documento" : ["add","delete","change","view"],
         "ejercicio" : ["add","delete","change","view"],
         "entrega" : ["change","view"],
         "invitacion" : ["add","delete","change","view"],
         "link" : ["add","delete","change","view"],
         "texto" : ["add","delete","change","view"],
+        "usuario_curso": ["add","delete","change","view"],
     }
 }
 
