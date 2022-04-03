@@ -6,14 +6,19 @@ from .models import *
  
 class TareaInline(admin.TabularInline):
     model = Tarea
-    fields = ('id', 'autor','titulo','enunciado','nota_maxima', 'fecha_publicacion')  
+    fields = ('autor','titulo','enunciado','nota_maxima', 'fecha_publicacion')  
     extra = 0
  
 class EntregaInline(admin.TabularInline):
     model = Entrega
-    fields = ('autor', 'archivo','comentario_alumno', 'nota', 'comentario_profesor','fecha_edicion')
+    fields = ('autor', 'archivo','comentario_alumno', 'fecha_edicion')
     extra = 0
  
+class CalificacionInline(admin.TabularInline):
+    model = Calificacion
+    fields = ('alumno', 'nota', 'comentario', 'fecha_calificacion', 'profesor')	
+    extra = 0
+
 class LinkInline(admin.TabularInline):
     model = Link
     fields = ('autor','titulo','link', 'fecha_publicacion')
@@ -43,7 +48,7 @@ class TareaAdmin(admin.ModelAdmin):
     def get_Curso(self,obj):
         return obj.curso.titulo
     get_Curso.short_description = 'Curso'
-    inlines = [EntregaInline]
+    inlines = [EntregaInline, CalificacionInline]
  
 class EntregaAdmin(admin.ModelAdmin):
     list_display= ('id','get_Tarea','get_Autor')

@@ -1,5 +1,6 @@
 const alumnos = JSON.parse(document.getElementById('alumnos').textContent);
 const tarea = JSON.parse(document.getElementById('tarea').textContent);
+const entregas = JSON.parse(document.getElementById('entregas').textContent);
 
 
 const app = Vue.createApp({
@@ -10,6 +11,7 @@ const app = Vue.createApp({
             alumnos_copia: [],
             tarea: {},
             calificaciones: {},
+            entregas: {},
 
             orden_nombre: 'desc',
             filtro_nombre: '',
@@ -58,7 +60,7 @@ const app = Vue.createApp({
     },
     methods: {
         estado_td (alumno) {
-            id = alumno.id;
+            const id = alumno.id;
             if (this.calificaciones[id]){
                 return "<span class='calificado'> Calificado </span>"
             } else {
@@ -70,7 +72,7 @@ const app = Vue.createApp({
             }
         },
         calificacion_td (alumno) {
-            id = alumno.id;
+            const id = alumno.id;
             if (this.calificaciones[id] == null) {
                 return `<textarea cols='3' rows='1' class='txtNota' id='nota${id}'></textarea>/${this.tarea.nota_maxima}`
             } else {
@@ -78,7 +80,7 @@ const app = Vue.createApp({
             }
         },
         comentario_td (alumno) {
-            id = alumno.id;
+            const id = alumno.id;
             if (this.calificaciones[id] == null) {
                 return `<textarea cols='15' rows='2' class='txtComentario' id='comentario${id}'></textarea>`
             } else {
@@ -93,7 +95,7 @@ const app = Vue.createApp({
             }
         },
         fecha_calificacion_td (alumno) {
-            id = alumno.id;
+            const id = alumno.id;
             if (this.calificaciones.id == null) {
                 return `Sin fecha`
             } else {
@@ -179,8 +181,6 @@ const app = Vue.createApp({
         },
         filtrar_nombre() {
 
-            console.log("filtar nombre called")
-
             let alumnos = this.alumnos_copia;
             let filtrado = [];
 
@@ -202,13 +202,10 @@ const app = Vue.createApp({
                 .then(response => response.json())
                 .then((result) => {
                     let calificaciones = result.data;
-                    console.log("result data:", result.data)
                     for (let index = 0; index < calificaciones.length; index++) {
-                        console.log("reina monosa")                    
                         const calificacion = calificaciones[index];
                         this.calificaciones[calificacion.alumno_id] = calificacion;
                     }
-                    console.log('calificaciones:', this.calificaciones);
                 })
                 .catch(error => {
                     console.log(error);
@@ -234,7 +231,7 @@ const app = Vue.createApp({
             redirect: 'follow'
             };
 
-            fetch(`/api/calificar/${this.tarea.id}`, requestOptions)
+            fetch(`/api/calificacion/${this.tarea.id}`, requestOptions)
             .then(response => response.json())
             .then((res) => {
                 let alerta = $(`<div class='alert alert-${res.tipo}' role='alert'>${res.msg}</div>`);
@@ -249,19 +246,25 @@ const app = Vue.createApp({
 
             this.get_calificaciones();
         },
+        ver(alumno) {
+            window.location.href = window.location.href + '/entrega/' + alumno.id
+        }
     },
     mounted() {
 
-        //recojer tarea de la template
         this.tarea = tarea;
-        console.log(this.tarea)
-        //recojer alumnos de la template
         this.alumnos = alumnos;
-        this.alumnos_copia = alumnos
-        console.log('alumnos', this.alumnos)
-        //fetch entregas de los alumnos
+        this.alumnos_copia = alumnos;
+        this.entregas = entregas;
+
+        let mapa = {}
+        this.entregas.forEach(entrega => {
+            mapa[entrega.autor_id] = true;
+        });
+        this.entregas = mapa;
+        console.log(this.entregas)
+
         this.get_calificaciones();
-        //se ordena por primera vez
         this.ordenar_nombre();
 
     }

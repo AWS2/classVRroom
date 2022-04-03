@@ -1,230 +1,141 @@
-if (window.location.protocol == "https:") {
-  var ws_scheme = "wss://";
-} else {
-  var ws_scheme = "ws://"
-};
+// if (window.location.protocol == "https:") {
+//   var ws_scheme = "wss://";
+// } else {
+//   var ws_scheme = "ws://"
+// };
 
-var socket = new WebSocket(
-  ws_scheme+
-  window.location.host+
-  '/ws/entrega/'
-);
+// var socket = new WebSocket(
+//   ws_scheme+
+//   window.location.host+
+//   '/ws/entrega/'
+// );
 
-socket.onmessage = function(e) {
-  const data = JSON.parse(e.data);
-  console.log(`entrega con id=${data.id} ha sido editada`)
-  root.update_entrega(data.id)
-}
+// socket.onmessage = function(e) {
+//   const data = JSON.parse(e.data);
+//   console.log(`entrega con id=${data.id} ha sido editada`)
+//   root.update_entrega(data.id)
+// }
 
+// socket.send(JSON.stringify({
+//   'id': this.id_entrega
+// }))
 
+const entregas = JSON.parse(document.getElementById('entregas').textContent);
+const alumno = JSON.parse(document.getElementById('alumno').textContent);
+const tarea = JSON.parse(document.getElementById('tarea').textContent);
+const curso = JSON.parse(document.getElementById('curso').textContent);
+const lista_entregas = JSON.parse(document.getElementById('lista_entregas').textContent);
 
 const app = Vue.createApp({
   delimiters: ['[[', ']]'],
   data() {
       return {
-          id_entrega: '',
-          id_tarea: '',
-          id_curso: '',
+        id_alumno: '',
+        primera_carga: true,
 
-          curso: '',
-          tarea: '',
-          enunciado: '',
-          nombre: '',
-          correo: '',
-          archivo: '',
-          comentario_alumno: '',
-          comentario_profesor: '',
-          fecha_publicacion: '',
-          fecha_edicion: '',
-          nota: '',
-          nota_maxima: '',
-          enviar_notificacion: false
+        entregas: [],
+        alumno: {},
+        tarea: {},
+        curso: {},
+        calificacion: {},
+        lista_entregas: {},
       };
   },
   watch: {
-
-    id_entrega: {
+    id_alumno: {
       handler(id) {
-        this.get_data(id);
+        this.actualizar(id);
       }
     },
-
-  },
-  computed: {
-    vista_archivo: function () {
-      let extensiones_imagen = ['gif', 'jpg', 'jpeg', 'png'];
-      let extensiones_video = ['webm', 'ogg', 'mp4', 'avi'];
-      let extensiones_app = ['pdf'];
-      let extensiones_texto = ['csv', 'html'];
-
-      let extension = this.archivo.split(".").slice(-1)[0];
-
-      let tipo = '';
-      if (extensiones_imagen.includes(extension)) {
-        tipo += 'image/';
-      } else if (extensiones_video.includes(extension)) {
-        tipo += 'video/';
-      } else if (extensiones_app.includes(extension)) {
-        tipo += 'application/';
-      } else if (extensiones_texto.includes(extension)) {
-        tipo += 'text/';
-      } else {
-        return '';
-      }
-      tipo += extension;
-
-      return  `<embed type=${tipo} src=${this.archivo}>`;
-      
-    }
   },
   methods: {
-    get_data(id) {
-      
-      fetch(`/api/entrega/${id}`, {method: 'GET'})
+    get_alumno(id) {
+      return fetch(`/api/usuario/${id}`, {method: 'GET'})
         .then(response => response.json())
-        .then((result) => {
-          let entrega = result.data[0];
-
-          this.archivo = '/'+entrega.archivo;
-          this.comentario_alumno = entrega.comentario_alumno;
-          this.comentario_profesor = entrega.comentario_profesor;
-          this.fecha_publicacion = entrega.fecha_publicacion.split("T")[0].split("-").reverse().join('/') + ' - ' + entrega.fecha_publicacion.split("T")[1].slice(0, -1);
-          this.fecha_edicion = entrega.fecha_edicion.split("T")[0].split("-").reverse().join('/') + ' - ' + entrega.fecha_edicion.split("T")[1].slice(0, -1);
-          this.nota = entrega.nota;
-
-          fetch(`/api/usuario/${entrega.autor_id}`, {method: 'GET'})
-            .then(response => response.json())
-            .then((result) => {
-              let usuario = result.data[0];
-
-              this.nombre = `${usuario.first_name} ${usuario.last_name}`;
-              this.correo = usuario.email;
-
-            });
-
-          fetch(`/api/tarea/${entrega.tarea_id}`, {method: 'GET'})
-            .then(response => response.json())
-            .then((result) => {
-              let tarea = result.data[0];
-
-              this.tarea = tarea.titulo;
-              this.enunciado = tarea.enunciado;
-              this.id_tarea = tarea.id;
-              this.nota_maxima = tarea.nota_maxima;
-              this.id_curso = tarea.curso_id;
-
-              fetch(`/api/curso/${tarea.curso_id}`, {method: 'GET'})
-                .then(response => response.json())
-                .then((result) => {
-                  let curso = result.data[0];
-
-                  this.curso = curso.titulo;
-
-                })
-
-            })
-
+        .then((res) => {
+          this.alumno = res.data[0];
         })
-        .catch(error => console.log('error', error));
-    },
+        .catch(error => console.error(error));  
 
-    set_entrega(id_entrega) {
-      console.log(id_entrega)
-      this.id_entrega = id_entrega;
     },
+    get_entregas() {
 
-    update_entrega(id_entrega_cambiada) {
-      if (this.id_entrega == id_entrega_cambiada) {
-        console.log("actualizando")
-        this.get_data(this.id_entrega);
-      }
-    },
-
-    set_siguiente() {
-      fetch(`/api/entregas/${this.id_tarea}`, {method: 'GET'})
+      fetch(`/api/entregas/${this.tarea.id}?alumno=${this.alumno.id}`, {method: 'GET'})
         .then(response => response.json())
-        .then((result) => {
-          let entregas = result.data;
-          entregas.sort( (a, b) => a.id > b.id );
-
-          let siguiente_id;
-          for (var i = 0; i < entregas.length - 1; i++){
-            if (entregas[i].id == this.id_entrega){
-              siguiente_id = entregas[i+1].id; 
-              break;
-            }
-          }
-          if (!siguiente_id) {
-            siguiente_id = entregas[0].id;
-          }
-
-          this.set_entrega(siguiente_id);
+        .then((res) => {
+          this.entregas = res.data;
         })
-        .catch(error => console.log('error', error));
+        .catch(error => {
+          console.error(error)
+          this.entregas = [];
+        });
     },
+    get_calificacion() {
 
-    set_anterior() {
-      fetch(`/api/entregas/${this.id_tarea}`, {method: 'GET'})
-        .then(response => response.json())
-        .then((result) => {
-          let entregas = result.data;
-          entregas.sort( (a, b) => a.id > b.id );
-
-          let anterior_id;
-          for (var i = entregas.length -1; i > 0; i--){
-            if (entregas[i].id == this.id_entrega){
-              anterior_id = entregas[i-1].id; 
-              break;
-            }
-          }
-          if (!anterior_id) {
-            anterior_id = entregas[entregas.length-1].id;
-          }
-
-          this.set_entrega(anterior_id);
-        })
-        .catch(error => console.log('error', error));
-    },
-
-    save_nota_and_comment() {
-
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      var raw = JSON.stringify({
-        "new_note": this.nota,
-        "comment_prof": this.comentario_profesor
+      fetch(`/api/calificacion/${this.tarea.id}?alumno=${this.alumno.id}`, {methos: "GET"})
+      .then(response => response.json())
+      .then((res) => {
+        this.calificacion = res.data
+      })
+      .catch(error => {
+        console.error(error)
+        this.calificacion = false;
       });
 
-      var requestOptions = {
-        method: 'PUT',
-        headers: myHeaders,
-        body: raw      
-      };
+    },
+    actualizar(id) {
 
-      fetch(`/api/entrega/${this.id_entrega}`, requestOptions)
-        .then(respuesta => respuesta.json())
-        .then((res) => {
-          let alerta = $(`<div class='alert alert-${res.tipo}' role='alert'>${res.msg}</div>`);
-          alerta.appendTo($('body'));
-          alerta.fadeIn();
-          setTimeout(
-            function() {
-              alerta.fadeOut( () => alerta.remove())
-            }, 2000);
+      if (this.primera_carga) {
+        this.primera_carga = false;
+        return;
+      }
 
-          socket.send(JSON.stringify({
-              'id': this.id_entrega
-          }))
-        })
-        .catch(error => console.log(error));
+      console.log("actualizando id", id)
+      
+      this.get_alumno(id).then( () => {
+        this.get_entregas();
+        this.get_calificacion();
 
-    }
-    
+        let url = window.location.href
+        url = url.split("/")
+        url.pop()
+        url = url.join("/") + "/" + this.alumno.id
+        window.history.pushState(null, null, url);
+      })
+    },
+    set_anterior() {
 
+      let indice = this.lista_entregas.indexOf(this.id_alumno);
+      if (indice == 0) {
+        this.id_alumno = this.lista_entregas[this.lista_entregas.length - 1];
+      } else {
+        this.id_alumno = this.lista_entregas[indice - 1];
+      }
+
+    },
+    set_siguiente() {
+
+      let indice = this.lista_entregas.indexOf(this.id_alumno);
+      if (indice == this.lista_entregas.length - 1) {
+        this.id_alumno = this.lista_entregas[0];
+      } else {
+        this.id_alumno = this.lista_entregas[indice + 1];
+      }
+
+    },
   },
   mounted() {
-    this.set_entrega(id);
+
+    this.lista_entregas = lista_entregas  
+    console.log(this.lista_entregas)
+    this.entregas = entregas;
+    this.alumno = alumno;
+    this.id_alumno = this.alumno.id;
+    this.tarea = tarea;
+    this.curso = curso;
+    
+    this.get_calificacion();
+
   }
 });
 const root = app.mount('#app');

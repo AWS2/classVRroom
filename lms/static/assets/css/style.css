@@ -95,6 +95,8 @@ input, textarea {
 
 .entrega-vista-completa #app {
   text-align: center;
+  max-width: 1200px;
+  margin: auto;
 }
 
 .entrega-vista-completa .main-content-container {
@@ -102,8 +104,29 @@ input, textarea {
   padding-bottom: 25px;
 }
 
+.entrega-vista-completa .tarea {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  border-bottom: 1px solid lightgray;
+}
+
+.entrega-vista-completa .tarea .navegacion .btnNavegacion img {
+  width: 20px;
+}
+
+.entrega-vista-completa .tarea .info {
+  margin-bottom: 10px;
+}
+
 .dashboard .curso {
-  width: 50%;
+  max-width: 1200px;
   margin: 5px auto;
   padding: 20px;
   border-radius: 20px;
@@ -138,56 +161,6 @@ input, textarea {
   height: auto;
 }
 
-.entrega-vista-completa #app {
-  width: 100%;
-  height: 100%;
-}
-
-.entrega-vista-completa #app .header {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-pack: distribute;
-      justify-content: space-around;
-  border-bottom: 1px solid black;
-}
-
-.entrega-vista-completa #app .header img {
-  width: 30px;
-}
-
-.entrega-vista-completa #app .header .left button {
-  -webkit-margin-after: 16px;
-          margin-block-end: 16px;
-}
-
-.entrega-vista-completa #app .body {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-pack: distribute;
-      justify-content: space-around;
-  height: 600px;
-}
-
-.entrega-vista-completa #app .body .content {
-  width: 70%;
-}
-
-.entrega-vista-completa #app .body .content embed {
-  width: 100%;
-  height: 600px;
-}
-
-.entrega-vista-completa #app .body .details {
-  margin-top: 30px;
-}
-
-.entrega-vista-completa #app .body .details .detalles_alumno {
-  border-bottom: 1px solid darkgrey;
-  margin-bottom: 20px;
-}
-
 .alert {
   display: none;
   position: fixed;
@@ -206,7 +179,7 @@ input, textarea {
   text-align: center;
   -webkit-transition: all 1s;
   transition: all 1s;
-  max-width: 1320px;
+  max-width: 1200px;
   margin: auto;
   margin-bottom: 20px;
 }
@@ -234,7 +207,7 @@ input, textarea {
 }
 
 .curso .detalles {
-  max-width: 1320px;
+  max-width: 1200px;
   margin: auto;
 }
 
@@ -243,7 +216,7 @@ input, textarea {
 }
 
 .curso .contenidos {
-  max-width: 1320px;
+  max-width: 1200px;
   margin: auto;
 }
 
@@ -280,7 +253,7 @@ input, textarea {
 }
 
 .tarea_alumno #app {
-  max-width: 1320px;
+  max-width: 1200px;
   margin: auto;
 }
 
@@ -313,7 +286,7 @@ input, textarea {
 }
 
 .tarea_profesor table {
-  max-width: 1320px;
+  max-width: 1200px;
   margin: auto;
 }
 
@@ -356,7 +329,7 @@ input, textarea {
 }
 
 .header-container .container {
-  max-width: 1320px;
+  max-width: 1200px;
 }
 
 .header-container ul {

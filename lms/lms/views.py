@@ -4,7 +4,6 @@ from django.http import JsonResponse
 from django.http import Http404
 from vroom.models import *
 from django.contrib.auth.models import User, Group
-import json
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -19,6 +18,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 import random
 import json
+from django.forms.models import model_to_dict
+
 
 def ping(request):
     if (request.method=='GET'):
@@ -376,19 +377,18 @@ def tarea(request, id_tarea):
 def entregas(request, id_tarea):
     if (request.method=='GET'):
 
-        #proteccion: ser profesor del curso, ser el admin del centro o ser el super
+        alumno = Usuario.objects.get(id = request.GET.get("alumno"))
+
+        #proteccion: ser profesor del curso, el alumno, el admin del centro o el super
         curso = Curso.objects.get(id = Tarea.objects.get(id = id_tarea).curso.id)
         profesor = Usuario_Curso.objects.filter(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))
         admin = Curso.objects.filter(centro__in = Centro.objects.filter(administrador = request.user.id), id = curso.id)
 
-        if (len(profesor) == 0 and len(admin) == 0 and not request.user.is_superuser):
+        if (len(profesor) == 0 and not alumno == request.user and len(admin) == 0 and not request.user.is_superuser):
             raise PermissionDenied()
         #fin proteccion
 
-        entregas = Entrega.objects.filter(tarea = id_tarea).values()
-
-        if (len(entregas) == 0):
-            raise Http404()
+        entregas = Entrega.objects.filter(tarea = id_tarea, autor = alumno).values()
 
         return JsonResponse({
             'data': list(entregas)
@@ -505,7 +505,7 @@ import traceback
 
 @csrf_exempt
 @login_required
-def calificar(request, id_tarea):
+def calificacion(request, id_tarea):
     if (request.method=='POST'):
         try:
 
@@ -544,3 +544,27 @@ def calificar(request, id_tarea):
         except:
             traceback.print_exc()
             return JsonResponse({"msg": "Algo ha ido mal", "tipo": "danger"})
+    
+    elif (request.method=='GET'):
+
+        #proteccion: ser profesor del curso de la tarea o ser el super
+        tarea = Tarea.objects.get(id = id_tarea)
+        curso = tarea.curso
+        profesor = Usuario_Curso.objects.filter(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))
+        
+        if len(profesor) == 0 and not request.user.is_superuser:
+            raise PermissionDenied()
+        #fin proteccion
+
+        try:
+            alumno = Usuario.objects.get(id = request.GET.get('alumno'))
+            calificacion = model_to_dict(Calificacion.objects.get(tarea = tarea, alumno = alumno))
+            profesor = model_to_dict(Usuario.objects.get(id = calificacion['profesor']))
+            calificacion['profesor'] = profesor["first_name"] + " " + profesor["last_name"]
+        except:
+            traceback.print_exc()
+            calificacion = False
+
+        return JsonResponse({
+            'data': calificacion
+        })

@@ -9,20 +9,17 @@
 {% block content %}
 
 
-<form action={% url 'curso' %} method="POST" id="enlaceCurso">
-    {% csrf_token %}
-    <input type="hidden" name="curso" value={{tarea.curso}}>
-</form>
-
-<section class="container" id="breadcrumbs">
-    <div class="innerBread">
-        <p>/<a href={% url 'tablero' %}>tablero</a>/<a href="#" onclick="document.getElementById('enlaceCurso').submit()">{{tarea.curso_nombre}}</a>/{{tarea.titulo}}</p>
-    </div>
-</section>
-
 <div id="app">
+
+    <section class="container" id="breadcrumbs">
+        <div class="innerBread">
+            <p>/<a href={% url 'tablero' %}>tablero</a>/<a :href="'/curso/' + [[tarea.curso]]">{{tarea.curso_nombre}}</a>/{{tarea.titulo}}</p>
+        </div>
+    </section>
+
     {{ alumnos|json_script:"alumnos" }}
     {{ tarea|json_script:"tarea" }}
+    {{ entregas|json_script:"entregas" }}
 
     <div class="container">
         <h2>[[tarea.titulo]]</h2>
@@ -57,11 +54,9 @@
 
             <td v-html='fecha_calificacion_td(alumno)'></td>
 
-            <td @click="guardar(alumno)"><button class="btn">Guardar</button></td>
+            <td><button class="btn" @click="guardar(alumno)">Guardar</button></td>
             
-            <td>
-                <button class="btn">Ver</button>
-            </td>
+            <td v-if="entregas[alumno.id]"><button class="btn" @click="ver(alumno)">Ver entrega</button></td>
         </tr>
     </table>
 </div>

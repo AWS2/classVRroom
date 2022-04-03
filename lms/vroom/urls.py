@@ -4,9 +4,9 @@ from . import views
 urlpatterns = [
     path('', views.index, name="home"),
     path('tablero/', views.dashboard, name='tablero'),
-    path('curso/', views.curso, name='curso'),
-    path('entrega/', views.entrega, name='entrega'),
-    path('tarea/', views.tarea, name='tarea'),
+    path('curso/<int:id_curso>', views.curso, name='curso'),
+    path('curso/<int:id_curso>/tarea/<int:id_tarea>', views.tarea, name='tarea'),
+    path('curso/<int:id_curso>/tarea/<int:id_tarea>/entrega/<int:id_alumno>', views.entrega, name='entrega'),
 ]
 
 

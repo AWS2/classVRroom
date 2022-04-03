@@ -59,7 +59,6 @@ class Entrega(models.Model):
     fecha_edicion = models.DateTimeField(default=timezone.now)
     archivo = models.FileField(upload_to='static/assets/archivos',default=None, blank=True, null=True)
     comentario_alumno = models.CharField(max_length=500,default=None, blank=True, null=True)
-    comentario_profesor = models.CharField(max_length=500,default=None, blank=True, null=True)
     tarea = models.ForeignKey('Tarea',on_delete=models.DO_NOTHING,null=False) 
     nota = models.FloatField(null=True,blank=True,default=True)
 
