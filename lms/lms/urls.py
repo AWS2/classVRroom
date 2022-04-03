@@ -51,6 +51,7 @@ urlpatterns += [
     path('api/entregas/<int:id_tarea>', views.entregas, name='entregas'),
     path('api/entrega/<int:id_entrega>', views.entrega, name='entrega'),
     path('api/calificaciones/<int:id_tarea>', views.calificaciones, name='calificaciones'),
+    path('api/calificar/<int:id_tarea>', views.calificar, name='calificar'),
     path('api/entrega_alumno/<int:tarea_id>/', views.entrega_alumno, name='entrega alumno'),
     path('api/usuario_cursos/<int:id_usuario>', views.usuario_cursos, name='usuario_cursos'),
     path('api/login_usuario', apiviews.obtain_auth_token, name='login_usuario'),

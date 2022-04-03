@@ -501,22 +501,46 @@ def calificaciones(request, id_tarea):
             'data': list(calificaciones)
         })
 
+import traceback
+
 @csrf_exempt
 @login_required
-def calificar(request, id_entrega):
+def calificar(request, id_tarea):
     if (request.method=='POST'):
+        try:
 
-        #proteccion: ser profesor del curso del tarea o ser el super
-        entrega = Entrega.objects.get(id = id_entrega)
-        tarea = entrega.tarea
-        curso = tarea.curso
-        profesor = Usuario_Curso.objects.filter(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))
-        
-        if len(profesor) == 0 and not request.user.is_superuser:
-            raise PermissionDenied()
-        #fin proteccion
+            #proteccion: ser profesor del curso del tarea o ser el super
+            tarea = Tarea.objects.get(id = id_tarea)
+            curso = tarea.curso
+            profesor = Usuario_Curso.objects.filter(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))
+            
+            if len(profesor) == 0 and not request.user.is_superuser:
+                raise PermissionDenied()
+            #fin proteccion
 
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
+            body_unicode = request.body.decode('utf-8')
+            body = json.loads(body_unicode)
 
+            if (float(body['nota']) > tarea.nota_maxima):
+                return JsonResponse({"msg": "La nota no puede ser mayor que la nota máxima", "tipo": "warning"})
+            elif (float(body['nota']) < 0):
+                return JsonResponse({"msg": "La nota no puede ser menor que 0", "tipo": "warning"})
 
+            nueva = True
+
+            try:
+                calificacion = Calificacion.objects.get(tarea = tarea.id, alumno = Usuario.objects.get(id = body['alumno'])).delete()
+                nueva = False
+            except:
+                pass
+            
+            calificacion = Calificacion.objects.create(tarea = tarea, alumno = Usuario.objects.get(id = body['alumno']), nota = body['nota'], comentario = body['comentario'], fecha_calificacion = timezone.now(),  profesor = request.user)
+
+            if (nueva):
+                return JsonResponse({"msg": "Calificacion creada", "tipo": "success"})
+            else:
+                return JsonResponse({"msg": "Calificacion actualizada", "tipo": "success"})
+
+        except:
+            traceback.print_exc()
+            return JsonResponse({"msg": "Algo ha ido mal", "tipo": "danger"})

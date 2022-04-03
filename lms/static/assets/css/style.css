@@ -325,21 +325,21 @@ input, textarea {
   border-top: 1px solid black;
 }
 
-.tarea_profesor .clicable {
-  color: #0d6efd;
-  cursor: pointer;
-}
-
-.tarea_profesor .noEntregado {
+.tarea_profesor td .noEntregado {
   background-color: lightcoral;
 }
 
-.tarea_profesor .porCalificar {
+.tarea_profesor td .porCalificar {
   background-color: lightyellow;
 }
 
-.tarea_profesor .calificado {
+.tarea_profesor td .calificado {
   background-color: lightgreen;
+}
+
+.tarea_profesor .clicable {
+  color: #0d6efd;
+  cursor: pointer;
 }
 
 .tarea_profesor .txtNota {

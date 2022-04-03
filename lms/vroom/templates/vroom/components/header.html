@@ -11,6 +11,10 @@
         
       {% if user.is_authenticated %}
         <li class="nav__item"><a href="{% url 'tablero' %}" class="nav__link">Tablero</a></li>
+
+        {% if user.groups.all.0.name == "profesor" or user.groups.all.0.name == "admin centro" or user.is_superuser %}
+          <li class="nav__item"><a href="/admin" class="nav__link">Panel de administración</a></li>
+        {% endif %}
       {% endif %}
       </ul>
     </div>

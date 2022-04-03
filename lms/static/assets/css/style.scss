@@ -314,19 +314,21 @@ input,textarea{
     }
     td {
         border-top: 1px solid black;
+
+        .noEntregado {
+            background-color: lightcoral;
+        }
+        .porCalificar {
+            background-color: lightyellow;
+        }
+        .calificado {
+                background-color: lightgreen;
+        }
     }
+
     .clicable {
         color: #0d6efd;
         cursor: pointer;
-    }
-    .noEntregado {
-        background-color: lightcoral;
-    }
-    .porCalificar {
-        background-color: lightyellow;
-    }
-    .calificado {
-        background-color: lightgreen;
     }
     .txtNota {
         resize: none;
