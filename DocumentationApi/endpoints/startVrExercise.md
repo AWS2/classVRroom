@@ -22,7 +22,7 @@ Te devuelve todos los cursos de todos los centros
 
 ```json
 {
-    "VRtaskID": "3050"
+    "pin": "3050"
 }
 ```
 
