@@ -77,20 +77,24 @@ def tarea(request, id_tarea, id_curso):
     rol = Usuario_Curso.objects.get(usuario = request.user, curso = tarea.curso).tipo_subscripcion
 
     if (rol.nombre == "Alumno"):
+        
+        
+        entregas = list(Entrega.objects.filter(tarea = tarea.id, autor = request.user).values())
+        if len(entregas) == 0:
+            entregas = False
+            
         try:
-            entrega = (Entrega.objects.filter(tarea = tarea.id, autor = request.user).values())
-            entrega = list(entrega)[0]
-            try:
-                profesor = Usuario.objects.get(id = entrega["profesor_id"])
-                entrega["profesor"] = profesor.first_name + " " + profesor.last_name
-            except:
-                entrega["profesor"] = False
+            calificacion = model_to_dict(Calificacion.objects.get(tarea = tarea.id, alumno = request.user))
+            profe = Calificacion.objects.get(tarea = tarea.id, alumno = request.user).profesor
+            calificacion["profesor"] = profe.first_name + " " + profe.last_name
         except:
-            entrega = False
+            calificacion = False
+        
 
         contexto = {
             "tarea": tarea_dict,
-            "entrega": entrega
+            "entregas": entregas,
+            "calificacion": calificacion,
         }
 
         return render(request, 'vroom/tarea_alumno.html', contexto)

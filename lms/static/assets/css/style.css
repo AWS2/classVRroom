@@ -257,10 +257,6 @@ input, textarea {
   margin: auto;
 }
 
-.tarea_alumno h4 {
-  margin-top: 10px;
-}
-
 .tarea_alumno p {
   padding: 20px;
   margin: 0;
@@ -277,11 +273,46 @@ input, textarea {
   resize: both;
 }
 
-.tarea_alumno .entrega p:nth-child(2n - 1) {
+.tarea_alumno .cuerpo {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+}
+
+.tarea_alumno .cuerpo .entregas {
+  width: 70%;
+  padding-right: 10px;
+}
+
+.tarea_alumno .cuerpo .entregas div {
+  border-top: 1px solid black;
+}
+
+.tarea_alumno .cuerpo .entregas p:nth-child(2n - 1) {
   background-color: #f0f0f0;
 }
 
-.tarea_alumno .entrega p:nth-child(2n) {
+.tarea_alumno .cuerpo .entregas p:nth-child(2n) {
+  background-color: #dedede;
+}
+
+.tarea_alumno .cuerpo .calificacion {
+  width: 30%;
+  padding-left: 10px;
+}
+
+.tarea_alumno .cuerpo .calificacion div {
+  border-top: 1px solid black;
+}
+
+.tarea_alumno .cuerpo .calificacion p:nth-child(2n - 1) {
+  background-color: #f0f0f0;
+}
+
+.tarea_alumno .cuerpo .calificacion p:nth-child(2n) {
   background-color: #dedede;
 }
 

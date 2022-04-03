@@ -263,9 +263,6 @@ input,textarea{
         max-width: 1200px;
         margin: auto;
     }
-    h4 {
-        margin-top: 10px;
-    }
     p {
         padding: 20px;
         margin: 0;
@@ -277,12 +274,41 @@ input,textarea{
             resize: both;
         }
     }
-    .entrega p {
-        &:nth-child(2n - 1) {
-            background-color: #f0f0f0;
+    .cuerpo {
+        display: flex;
+        justify-content: space-evenly;
+        .entregas{
+            width: 70%;
+            padding-right: 10px;
+            div {
+                border-top: 1px solid black;
+            }
+    
+            p {
+                &:nth-child(2n - 1) {
+                    background-color: #f0f0f0;
+                }
+                &:nth-child(2n) {
+                    background-color: #dedede;
+                }
+            }
         }
-        &:nth-child(2n) {
-            background-color: #dedede;
+    
+        .calificacion{
+            width: 30%;
+            padding-left: 10px;
+            div {
+                border-top: 1px solid black;
+            }
+    
+            p {
+                &:nth-child(2n - 1) {
+                    background-color: #f0f0f0;
+                }
+                &:nth-child(2n) {
+                    background-color: #dedede;
+                }
+            }
         }
     }
 }

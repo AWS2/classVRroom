@@ -1,5 +1,6 @@
-const entrega = JSON.parse(document.getElementById('entrega').textContent);
+const entregas = JSON.parse(document.getElementById('entregas').textContent);
 const tarea = JSON.parse(document.getElementById('tarea').textContent);
+const calificacion = JSON.parse(document.getElementById('calificacion').textContent);
 
 
 const app = Vue.createApp({
@@ -7,9 +8,8 @@ const app = Vue.createApp({
     data() {
         return {
             tarea: {},
-            entrega: {},
-            test: 'hola',
-            comentario: '',
+            entregas: [],
+            calificacion: {},
         }
     },
     methods: {
@@ -25,12 +25,12 @@ const app = Vue.createApp({
                 return "No hay fecha"
             }
         },
-        guardar() {
+        guardar(id_entrega) {
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
 
             var raw = JSON.stringify({
-                "comentario": this.comentario,
+                "comentario": "placeholder", //COJER EL COMENTARIO POR DOM (comentario + id entrega)
             });
 
             var requestOptions = {
@@ -53,12 +53,12 @@ const app = Vue.createApp({
         }
     },
     mounted() {
-        console.log("mounted")
         this.tarea = tarea;
-        console.log(this.tarea);
-        this.entrega = entrega;
-        console.log(this.entrega);
-        this.comentario = entrega.comentario_alumno;
+        console.log(this.tarea)
+        this.entregas = entregas;
+        console.log(this.entregas)
+        this.calificacion = calificacion
+        console.log(this.calificacion)
     }
 });
 app.mount('#app');
