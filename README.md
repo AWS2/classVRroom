@@ -18,6 +18,12 @@ Una vez tengas python3 instalado haras los siguientes comandos:
 pip install -r requirements.txt
 ```
 
+- Para inicializar la base de datos:
+```
+python3 manage.py makemigrations
+python3 manage.py migrate
+```
+
 - Para crear los grupos y modelos necesarios:
 ```
 python3 manage.py initvroom
