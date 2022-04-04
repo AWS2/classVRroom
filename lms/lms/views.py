@@ -475,34 +475,32 @@ def entrega(request, id_entrega):
 
 
 @csrf_exempt
+@login_required
 def entrega_alumno(request, tarea_id):
-    print(request.POST)
     if (request.method=='POST'):
-
-        #proteccion: ser alumno en el curso del tarea o ser el super
-        tarea = Tarea.objects.get(id = tarea_id)
-        curso = tarea.curso
         try:
-            alumno = Usuario_Curso.objects.get(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Alumno"))
+            #proteccion: ser alumno en el curso del tarea o ser el super
+            tarea = Tarea.objects.get(id = tarea_id)
+            curso = tarea.curso
+            try:
+                alumno = Usuario_Curso.objects.get(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Alumno"))
+            except:
+                raise PermissionDenied()
+            #fin proteccion
+
+            body_unicode = request.body.decode('utf-8')
+            body = json.loads(body_unicode)
+
+            comentario = str(body['comentario'])
+            entrega_id = body['entrega_id']
+
+            entrega = Entrega.objects.get(id = entrega_id)
+            entrega.comentario_alumno = comentario
+            entrega.save()
+            return JsonResponse({"msg": "Comentario guardado", "tipo": "success"})
         except:
-            raise PermissionDenied()
-        #fin proteccion
+            return JsonResponse({"msg": "Error al guardar el comentario", "tipo": "warning"})
 
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-
-        comentario = str(body['comentario'])
-        entrega = Entrega.objects.filter(tarea = tarea_id, autor_id = request.user.id).values()
-        if (len(entrega) == 0):
-            Entrega.objects.create(tarea = tarea, autor = request.user, comentario_alumno = comentario, fecha_publicacion = timezone.now(), fecha_edicion = timezone.now(), nota = None)
-            return JsonResponse({"msg": "Entrega creada", "tipo": "success"})
-        
-        else:
-            entrega.update(comentario_alumno = comentario)
-            entrega.update(fecha_edicion = timezone.now())
-            return JsonResponse({"msg": "Entrega actualizada", "tipo": "success"})
-
-        return JsonResponse({"msg": "Algo ha ido mal", "tipo": "danger"})
 
     
 

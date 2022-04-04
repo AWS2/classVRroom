@@ -26,18 +26,24 @@ const app = Vue.createApp({
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
 
-            var raw = JSON.stringify({
-                "comentario": "placeholder", //COJER EL COMENTARIO POR DOM (comentario + id entrega)
-            });
+            console.log($(`#comentario${id_entrega}`).val())
 
+            var raw = JSON.stringify({
+                "comentario": $(`#comentario${id_entrega}`).val(),
+                "entrega_id": id_entrega,
+            });
+            
             var requestOptions = {
                 method: 'POST',
                 headers: myHeaders,
                 body: raw      
             };
+
+            console.log(requestOptions)
             fetch(`/api/entrega_alumno/${this.tarea.id}/`, requestOptions)
             .then(respuesta => respuesta.json())
             .then((res) => {
+                console.log(res)
                 let alerta = $(`<div class='alert alert-${res.tipo}' role='alert'>${res.msg}</div>`);
                 alerta.appendTo($('body'));
                 alerta.fadeIn();
