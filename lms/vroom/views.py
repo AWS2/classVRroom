@@ -23,6 +23,11 @@ def entrega(request, id_curso, id_tarea, id_alumno):
         if not entrega['autor_id'] in lista_entregas:
             lista_entregas.append(entrega['autor_id'])
 
+    for entrega in entregas:
+        auto_puntuacion = model_to_dict(Auto_Puntuacion.objects.get(id = entrega['auto_puntuacion_id']))
+        entrega['auto_puntuacion'] = auto_puntuacion
+
+
     contexto = {
         "alumno": model_to_dict(alumno),
         "tarea": model_to_dict(tarea),
@@ -82,6 +87,10 @@ def tarea(request, id_tarea, id_curso):
         entregas = list(Entrega.objects.filter(tarea = tarea.id, autor = request.user).values())
         if len(entregas) == 0:
             entregas = False
+        else:
+            for entrega in entregas:
+                auto_puntuacion = model_to_dict(Auto_Puntuacion.objects.get(id = entrega['auto_puntuacion_id']))
+                entrega['auto_puntuacion'] = auto_puntuacion
             
         try:
             calificacion = model_to_dict(Calificacion.objects.get(tarea = tarea.id, alumno = request.user))
@@ -115,6 +124,9 @@ def tarea(request, id_tarea, id_curso):
             alumnos.append(dict_alumno)
 
         entregas = Entrega.objects.filter(tarea = tarea.id).values()
+        for entrega in entregas:
+            auto_puntuacion = model_to_dict(Auto_Puntuacion.objects.get(id = entrega['auto_puntuacion_id']))
+            entrega['auto_puntuacion'] = auto_puntuacion
             
         contexto = {
             "tarea": tarea_dict,

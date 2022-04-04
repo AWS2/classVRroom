@@ -13,9 +13,6 @@ const app = Vue.createApp({
         }
     },
     methods: {
-        nombre_archivo() {
-            return this.entrega.archivo.split('/').pop();
-        },
         formato_fecha(fecha) {
             try {
                 let fecha2 = `${fecha.split("T")[0].split("-")[2]}/${fecha.split("T")[0].split("-")[1]}/${fecha.split("T")[0].split("-")[0]}`

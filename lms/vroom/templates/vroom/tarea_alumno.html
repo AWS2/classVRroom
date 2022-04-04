@@ -38,7 +38,10 @@
                 <h4>No hay entregas</h4>
             </div>
             <div class="entrega" v-else v-for="entrega in entregas">
-                [[entrega]]
+                <p>Fecha de entrega: [[formato_fecha(entrega.fecha_publicacion)]]</p>
+                <p>Datos de rendimiento:&nbsp<a :href="entrega.archivo">Ver</a></p>
+                <p>Auto-puntuación: [[entrega.auto_puntuacion.passed_items]]/[[entrega.auto_puntuacion.failed_items]], [[entrega.auto_puntuacion.score]]% <span v-if="entrega.auto_puntuacion.comments">&nbsp[[entrega.auto_puntuacion.comments]]</span></p>
+                <p>Comentario:&nbsp<textarea cols="70" rows="1">[[entrega.comments]]</textarea><button class='btn'>Guardar</button></p>
             </div>
         </div>
 

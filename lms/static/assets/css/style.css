@@ -280,11 +280,14 @@ input, textarea {
   -webkit-box-pack: space-evenly;
       -ms-flex-pack: space-evenly;
           justify-content: space-evenly;
+  max-height: 500px;
 }
 
 .tarea_alumno .cuerpo .entregas {
   width: 70%;
   padding-right: 10px;
+  max-height: 500px;
+  overflow-y: scroll;
 }
 
 .tarea_alumno .cuerpo .entregas div {
@@ -297,6 +300,14 @@ input, textarea {
 
 .tarea_alumno .cuerpo .entregas p:nth-child(2n) {
   background-color: #dedede;
+}
+
+.tarea_alumno .cuerpo .entregas .entrega textarea {
+  resize: vertical;
+}
+
+.tarea_alumno .cuerpo .entregas .entrega button {
+  margin-left: 40px;
 }
 
 .tarea_alumno .cuerpo .calificacion {

@@ -277,9 +277,12 @@ input,textarea{
     .cuerpo {
         display: flex;
         justify-content: space-evenly;
+        max-height: 500px;
         .entregas{
             width: 70%;
             padding-right: 10px;
+            max-height: 500px;
+            overflow-y: scroll;
             div {
                 border-top: 1px solid black;
             }
@@ -290,6 +293,14 @@ input,textarea{
                 }
                 &:nth-child(2n) {
                     background-color: #dedede;
+                }
+            }
+            .entrega {
+                textarea {
+                    resize: vertical;
+                }
+                button {
+                    margin-left: 40px;
                 }
             }
         }

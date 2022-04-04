@@ -11,6 +11,12 @@
 
 
     <div id="app">
+        <section class="container" id="breadcrumbs">
+            <div class="innerBread">
+                <p>/<a href={% url 'tablero' %}>tablero</a>/<a :href="'/curso/' + [[curso.id]]">[[curso.titulo]]</a>/<a :href="'/curso/' + [[curso.id]] + '/tarea/' + [[tarea.id]]">[[tarea.titulo]]</a>/[[alumno.first_name]] [[alumno.last_name]]</p>
+            </div>
+        </section>
+
         {{ entregas|json_script:"entregas" }}
         {{ alumno|json_script:"alumno" }}
         {{ tarea|json_script:"tarea"}}
