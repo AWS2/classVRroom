@@ -35,7 +35,7 @@ class CustomAuthToken(ObtainAuthToken):
         return Response({
             'status': 'OK',
             'message': 'Autenticado con éxito.',
-            'token': token.key,
+            'session_token': token.key,
         })
 
 
