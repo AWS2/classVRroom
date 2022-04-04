@@ -139,6 +139,73 @@ input,textarea{
 
         border-bottom: 1px solid lightgray;
     }
+
+    .cuerpo {
+        display: flex;
+        justify-content: space-evenly;
+        max-height: 600px;
+
+        p {
+            padding: 20px;
+            margin: 0;
+            border-top: 1px solid black;
+            display: flex;
+            align-items: center;
+            
+            textarea {
+                resize: both;
+            }
+        }
+
+        .entregas{
+            width: 70%;
+            padding-right: 10px;
+            max-height: 600px;
+            overflow-y: scroll;
+            div {
+                border-top: 1px solid black;
+            }
+    
+            p {
+                &:nth-child(2n - 1) {
+                    background-color: #f0f0f0;
+                }
+                &:nth-child(2n) {
+                    background-color: #dedede;
+                }
+            }
+            .entrega {
+                textarea {
+                    resize: vertical;
+                }
+                button {
+                    margin-left: 40px;
+                }
+            }
+        }
+    
+        .calificacion{
+            width: 30%;
+            padding-left: 10px;
+            div {
+                border-top: 1px solid black;
+            }
+    
+            p {
+                &:nth-child(2n - 1) {
+                    background-color: #f0f0f0;
+                }
+                &:nth-child(2n) {
+                    background-color: #dedede;
+                }
+                &:last-child {
+                    justify-content: flex-end;
+                    margin: 0;
+                    padding: 5px;
+                }
+            }
+        }
+    }
 }
 
 .dashboard{

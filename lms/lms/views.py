@@ -443,6 +443,9 @@ def entregas(request, id_tarea):
         #fin proteccion
 
         entregas = Entrega.objects.filter(tarea = id_tarea, autor = alumno).values()
+        for entrega in entregas:
+            auto_puntuacion = model_to_dict(Auto_Puntuacion.objects.get(id = entrega['auto_puntuacion_id']))
+            entrega['auto_puntuacion'] = auto_puntuacion
 
         return JsonResponse({
             'data': list(entregas)
