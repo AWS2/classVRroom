@@ -29,9 +29,9 @@ class CustomAuthToken(ObtainAuthToken):
 
         token, created = Token.objects.get_or_create(user=user)
         return Response({
-            'token': token.key,
             'status': 'OK',
-            'message': 'Exercise data successfully stored.'
+            'message': 'Autenticado con éxito.',
+            'token': token.key,
         })
 
 

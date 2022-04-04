@@ -58,6 +58,7 @@ class Entrega(models.Model):
     fecha_publicacion = models.DateTimeField(default=timezone.now)
     fecha_edicion = models.DateTimeField(default=timezone.now)
     archivo = models.FileField(upload_to='static/assets/archivos',default=None, blank=True, null=True)
+    auto_puntuacion = models.ForeignKey('Auto_Puntuacion',on_delete=models.DO_NOTHING,default=None,blank=True,null=True)
     comentario_alumno = models.CharField(max_length=500,default=None, blank=True, null=True)
     tarea = models.ForeignKey('Tarea',on_delete=models.DO_NOTHING,null=False) 
     nota = models.FloatField(null=True,blank=True,default=True)
@@ -69,7 +70,7 @@ class Entrega(models.Model):
         return str(self.id)
 
 class Calificacion(models.Model):
-    tarea = models.ForeignKey('Tarea',on_delete=models.DO_NOTHING,null=False)
+    tarea = models.ForeignKey('Tarea',on_delete=models.DO_NOTHING,null=False,default=False)
     alumno = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=True)
     nota = models.FloatField(null=True,blank=True,default=True)
     comentario = models.CharField(max_length=500,default=None, blank=True, null=True)
@@ -127,5 +128,12 @@ class Invitacion(models.Model):
 
 class Pin(models.Model):
     pin = models.CharField(max_length=4, default=None, unique=True, null=False)
-    tarea = models.ForeignKey('Tarea',on_delete=models.DO_NOTHING,null=False)
+    tarea = models.ForeignKey('Tarea',on_delete=models.DO_NOTHING,null=False,default=False)
     usuario = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=True)
+
+class Auto_Puntuacion(models.Model):
+    passed_items = models.IntegerField(null=False,blank=False,default=0)
+    failed_items = models.IntegerField(null=False,blank=False,default=0)
+    score = models.IntegerField(null=False,blank=False,default=0)
+    comments = models.CharField(max_length=500,default=None, blank=True, null=True)
+
