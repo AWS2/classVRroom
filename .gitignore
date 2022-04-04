@@ -5,4 +5,3 @@ env/
 __pycache__/
 local_settings.py
 lms/db.sqlite3
- 
