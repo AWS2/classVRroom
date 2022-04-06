@@ -16,6 +16,7 @@ GROUPS = {
         "texto" : ["add","delete","change","view"],
         "user" : ["add","delete","change","view"],
         "usuario_ curso" : ["add","delete","change","view"],
+        "ejercicio" : ["add","delete","change","view"],
     },
     'profesor': {
         "curso" : ["change","view"],
