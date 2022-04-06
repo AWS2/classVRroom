@@ -1,3 +1,4 @@
+import re
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework.authtoken import views as apiviews
@@ -15,9 +16,12 @@ from rest_framework.response import Response
 class CustomAuthToken(ObtainAuthToken):
 
     def get(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data,
+
+        serializer = self.serializer_class(data=request.GET,
                                            context={'request': request})
         serializer.is_valid(raise_exception=False)
+
+
 
         try:
             user = serializer.validated_data['user']
@@ -31,7 +35,7 @@ class CustomAuthToken(ObtainAuthToken):
         return Response({
             'status': 'OK',
             'message': 'Autenticado con éxito.',
-            'token': token.key,
+            'session_token': token.key,
         })
 
 
