@@ -91,21 +91,21 @@ def finish_vr_exercise(request):
     # Comprueba que el autograde es correcto
     try:
         autograde_passed_items = int(autograde['passed_items'])
-        if not autograde_passed_items:
+        if not autograde_passed_items and not autograde_passed_items == 0:
             return Response({
                 'status': 'ERROR',
                 'message': 'Autograde: No se han pasado "passed_items".'
             })
         
         autograde_failed_items = int(autograde['failed_items'])
-        if not autograde_failed_items:
+        if not autograde_failed_items and not autograde_failed_items == 0:
             return Response({
                 'status': 'ERROR',
                 'message': 'Autograde: No se han pasado "failed_items".'
             })
 
         autograde_score = float(autograde['score'])
-        if not autograde_score:
+        if not autograde_score and not autograde_score == 0:
             return Response({
                 'status': 'ERROR',
                 'message': 'Autograde: No se ha pasado "score".'
@@ -117,11 +117,16 @@ def finish_vr_exercise(request):
             'message': 'Autograde: Parametros incorrectos.'
         })
 
+    try:
+        comentario = str(autograde['comments'])
+    except:
+        comentario = ''
 
     auto_puntuacion = Auto_Puntuacion.objects.create(
         passed_items = autograde_passed_items,
         failed_items = autograde_failed_items,
         score = autograde_score,
+        comments = comentario,
     )
    
     entrega = Entrega.objects.create(
