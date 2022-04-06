@@ -125,6 +125,84 @@ input, textarea {
   margin-bottom: 10px;
 }
 
+.entrega-vista-completa .cuerpo {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  max-height: 600px;
+}
+
+.entrega-vista-completa .cuerpo p {
+  padding: 20px;
+  margin: 0;
+  border-top: 1px solid black;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.entrega-vista-completa .cuerpo p textarea {
+  resize: both;
+}
+
+.entrega-vista-completa .cuerpo .entregas {
+  width: 70%;
+  padding-right: 10px;
+  max-height: 600px;
+  overflow-y: scroll;
+}
+
+.entrega-vista-completa .cuerpo .entregas div {
+  border-top: 1px solid black;
+}
+
+.entrega-vista-completa .cuerpo .entregas p:nth-child(2n - 1) {
+  background-color: #f0f0f0;
+}
+
+.entrega-vista-completa .cuerpo .entregas p:nth-child(2n) {
+  background-color: #dedede;
+}
+
+.entrega-vista-completa .cuerpo .entregas .entrega textarea {
+  resize: vertical;
+}
+
+.entrega-vista-completa .cuerpo .entregas .entrega button {
+  margin-left: 40px;
+}
+
+.entrega-vista-completa .cuerpo .calificacion {
+  width: 30%;
+  padding-left: 10px;
+}
+
+.entrega-vista-completa .cuerpo .calificacion div {
+  border-top: 1px solid black;
+}
+
+.entrega-vista-completa .cuerpo .calificacion p:nth-child(2n - 1) {
+  background-color: #f0f0f0;
+}
+
+.entrega-vista-completa .cuerpo .calificacion p:nth-child(2n) {
+  background-color: #dedede;
+}
+
+.entrega-vista-completa .cuerpo .calificacion p:last-child {
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  margin: 0;
+  padding: 5px;
+}
+
 .dashboard .curso {
   max-width: 1200px;
   margin: 5px auto;

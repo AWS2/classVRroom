@@ -48,10 +48,19 @@ class Tarea(models.Model):
     enunciado = models.TextField()
     nota_maxima = models.FloatField()
     fecha_publicacion = models.DateTimeField(default=timezone.now)
-    min_exercise_version = models.FloatField(default=1.0, null=True, blank=True)
+    min_exercise_version = models.FloatField(default=0, null=True, blank=True)
+    ejercicio = models.ForeignKey('Ejercicio',on_delete=models.DO_NOTHING,default=True)
 
     def __str__(self):
         return self.titulo
+
+class Ejercicio(models.Model):
+    titulo = models.CharField(max_length=100,null=False,blank=False)
+    idVr = models.CharField(max_length=100,null=False,blank=False)
+
+    def __str__(self):
+        return self.titulo
+
 
 class Entrega(models.Model):
     autor = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=True)

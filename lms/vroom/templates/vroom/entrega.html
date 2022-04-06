@@ -27,7 +27,7 @@
             <div class="info">
                 <p>Curso: [[curso.titulo]]</p>
                 <p>Tarea: [[tarea.titulo]]</p>
-                <button class="btn">Vista general</button>
+                <button class="btn" @click="vistaGeneral('/curso/' + [[curso.id]] + '/tarea/' + [[tarea.id]])">Vista general</button>
             </div>
             <div class="alumno">
                 <p>[[alumno.first_name]] [[alumno.last_name]]</p>
@@ -42,14 +42,25 @@
             </div>
         </div>
 
-        <div class="container">
+        <div class="cuerpo">
             <div class="entregas">
                 <div class="entrega" v-for="entrega in entregas">
-                    [[entrega]]
+                    <p>Fecha de entrega: [[formato_fecha(entrega.fecha_publicacion)]]</p>
+                    <p>Datos de rendimiento:&nbsp<a :href="entrega.archivo" target="_blank">Ver</a></p>
+                    <p>Auto-puntuación: [[entrega.auto_puntuacion.passed_items]]/[[entrega.auto_puntuacion.failed_items + entrega.auto_puntuacion.passed_items]], [[entrega.auto_puntuacion.score]]% <span v-if="entrega.auto_puntuacion.comments">&nbsp[[entrega.auto_puntuacion.comments]]</span></p>
+                    <p>Comentario: [[entrega.comentario_alumno]]</p>
                 </div>
             </div>
             <div class="calificacion">
-                [[calificacion]]
+                <h4 v-if="calificacion">Calificada</h4>
+                <h4 v-else>Por calificar</h4>
+                <p>Calificación:&nbsp<textarea cols="3" rows="1" v-model="nota"></textarea>/[[tarea.nota_maxima]]</p>
+                <p>Comentario:&nbsp<textarea cols="20" rows="1" v-model="comentario"></textarea></p>
+                <p v-if="calificacion">Calificado el: [[formato_fecha(calificacion.fecha_calificacion)]]</p>
+                <p v-if="calificacion">Calificado por: [[calificacion.profesor]]</p>
+                <p>
+                    <button class="btn" @click="guardar()">Guardar</button>
+                </p>
             </div>
         </div>
 

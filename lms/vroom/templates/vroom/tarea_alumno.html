@@ -17,7 +17,7 @@
 
     <section class="container" id="breadcrumbs">
         <div class="innerBread">
-            <p>/<a href={% url 'tablero' %}>tablero</a>/<a href="#">{{tarea.curso_nombre}}</a>/{{tarea.titulo}}</p>
+            <p>/<a href={% url 'tablero' %}>tablero</a>/<a :href="'/curso/' + [[tarea.curso]]">{{tarea.curso_nombre}}</a>/{{tarea.titulo}}</p>
         </div>
     </section>
 
@@ -39,9 +39,9 @@
             </div>
             <div class="entrega" v-else v-for="entrega in entregas">
                 <p>Fecha de entrega: [[formato_fecha(entrega.fecha_publicacion)]]</p>
-                <p>Datos de rendimiento:&nbsp<a :href="entrega.archivo">Ver</a></p>
-                <p>Auto-puntuación: [[entrega.auto_puntuacion.passed_items]]/[[entrega.auto_puntuacion.failed_items]], [[entrega.auto_puntuacion.score]]% <span v-if="entrega.auto_puntuacion.comments">&nbsp[[entrega.auto_puntuacion.comments]]</span></p>
-                <p>Comentario:&nbsp<textarea cols="70" rows="1">[[entrega.comments]]</textarea><button class='btn'>Guardar</button></p>
+                <p>Datos de rendimiento:&nbsp<a :href="entrega.archivo" target="_blank">Ver</a></p>
+                <p>Auto-puntuación: [[entrega.auto_puntuacion.passed_items]]/[[entrega.auto_puntuacion.failed_items + entrega.auto_puntuacion.passed_items]], [[entrega.auto_puntuacion.score]]% <span v-if="entrega.auto_puntuacion.comments">&nbsp[[entrega.auto_puntuacion.comments]]</span></p>
+                <p>Comentario:&nbsp<textarea cols="70" rows="1" :id="'comentario' + [[entrega.id]]">[[entrega.comentario_alumno]]</textarea><button class='btn' @click="guardar(entrega.id)">Guardar</button></p>
             </div>
         </div>
 

@@ -6,7 +6,7 @@ from .models import *
  
 class TareaInline(admin.TabularInline):
     model = Tarea
-    fields = ('autor','titulo','enunciado','nota_maxima', 'fecha_publicacion')  
+    fields = ('autor','titulo','enunciado','nota_maxima', 'fecha_publicacion', 'ejercicio')  
     extra = 0
  
 class EntregaInline(admin.TabularInline):
@@ -108,3 +108,4 @@ admin.site.register(Usuario_Curso)
 admin.site.register(Pin)
 admin.site.register(Calificacion)
 admin.site.register(Auto_Puntuacion)
+admin.site.register(Ejercicio)

@@ -118,32 +118,6 @@ def finish_vr_exercise(request):
         })
 
 
-    try:
-        tarea = Tarea.objects.get(id=VRexerciseID, min_exercise_version=exerciseVersionID)
-    except:
-  
-        return Response({
-            'status': 'ERROR',
-            'message': 'Tarea no encontrado.'
-        })
-
-
-    try:
-
-        workpath = os.path.dirname(os.path.abspath(__file__)) #Returns the Path your .py file is in
-        if not os.path.exists(os.path.join(workpath,'../static/assets/archivos/')):
-            os.makedirs(os.path.join(workpath,'../static/assets/archivos/'))
-        performance_data_file = open(os.path.join(workpath,'../static/assets/archivos/performance_data-' + str(pin.usuario.id) + str(tarea.id) + '.json'), 'w+')
-        performance_data_file.write(json.dumps(performance_data))
-        performance_data_file.close()
-
-    except:
-        return Response({
-            'status': 'ERROR',
-            'message': 'Error al guardar performance_data.'
-        })
-
-
     auto_puntuacion = Auto_Puntuacion.objects.create(
         passed_items = autograde_passed_items,
         failed_items = autograde_failed_items,
@@ -152,13 +126,31 @@ def finish_vr_exercise(request):
    
     entrega = Entrega.objects.create(
         autor = pin.usuario,
-        tarea = tarea,
+        tarea = pin.tarea,
         fecha_publicacion = timezone.now(),
         fecha_edicion = timezone.now(),
-        archivo = os.path.join(workpath,'../static/assets/archivos/performance_data-' + str(pin.usuario.id) + str(tarea.id) + '.json'),
         auto_puntuacion = auto_puntuacion,
         nota = None,
     )
+    setattr(entrega, 'archivo', '/static/assets/archivos/performance_data-' + str(pin.usuario.id) + str(entrega.id) + '.json')
+    entrega.save()
+    try:
+
+        workpath = os.path.dirname(os.path.abspath(__file__)) #Returns the Path your .py file is in
+        performance_data_file = open(os.path.join(workpath,'../static/assets/archivos/performance_data-' + str(pin.usuario.id) + str(entrega.id) + '.json'), 'w+')
+        performance_data_file.write(json.dumps(performance_data))
+        performance_data_file.close()
+
+    except:
+        traceback.print_exc()
+        
+        entrega.delete()
+        
+        return Response({
+            'status': 'ERROR',
+            'message': 'Error al guardar performance_data.'
+        })
+
 
     # Se borra el pin
     pin.delete()
@@ -471,6 +463,9 @@ def entregas(request, id_tarea):
         #fin proteccion
 
         entregas = Entrega.objects.filter(tarea = id_tarea, autor = alumno).values()
+        for entrega in entregas:
+            auto_puntuacion = model_to_dict(Auto_Puntuacion.objects.get(id = entrega['auto_puntuacion_id']))
+            entrega['auto_puntuacion'] = auto_puntuacion
 
         return JsonResponse({
             'data': list(entregas)
@@ -503,34 +498,32 @@ def entrega(request, id_entrega):
 
 
 @csrf_exempt
+@login_required
 def entrega_alumno(request, tarea_id):
-    print(request.POST)
     if (request.method=='POST'):
-
-        #proteccion: ser alumno en el curso del tarea o ser el super
-        tarea = Tarea.objects.get(id = tarea_id)
-        curso = tarea.curso
         try:
-            alumno = Usuario_Curso.objects.get(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Alumno"))
+            #proteccion: ser alumno en el curso del tarea o ser el super
+            tarea = Tarea.objects.get(id = tarea_id)
+            curso = tarea.curso
+            try:
+                alumno = Usuario_Curso.objects.get(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Alumno"))
+            except:
+                raise PermissionDenied()
+            #fin proteccion
+
+            body_unicode = request.body.decode('utf-8')
+            body = json.loads(body_unicode)
+
+            comentario = str(body['comentario'])
+            entrega_id = body['entrega_id']
+
+            entrega = Entrega.objects.get(id = entrega_id)
+            entrega.comentario_alumno = comentario
+            entrega.save()
+            return JsonResponse({"msg": "Comentario guardado", "tipo": "success"})
         except:
-            raise PermissionDenied()
-        #fin proteccion
+            return JsonResponse({"msg": "Error al guardar el comentario", "tipo": "warning"})
 
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-
-        comentario = str(body['comentario'])
-        entrega = Entrega.objects.filter(tarea = tarea_id, autor_id = request.user.id).values()
-        if (len(entrega) == 0):
-            Entrega.objects.create(tarea = tarea, autor = request.user, comentario_alumno = comentario, fecha_publicacion = timezone.now(), fecha_edicion = timezone.now(), nota = None)
-            return JsonResponse({"msg": "Entrega creada", "tipo": "success"})
-        
-        else:
-            entrega.update(comentario_alumno = comentario)
-            entrega.update(fecha_edicion = timezone.now())
-            return JsonResponse({"msg": "Entrega actualizada", "tipo": "success"})
-
-        return JsonResponse({"msg": "Algo ha ido mal", "tipo": "danger"})
 
     
 

@@ -39,6 +39,9 @@ const app = Vue.createApp({
         curso: {},
         calificacion: {},
         lista_entregas: {},
+
+        nota: '',
+        comentario: '',
       };
   },
   watch: {
@@ -49,6 +52,19 @@ const app = Vue.createApp({
     },
   },
   methods: {
+    vistaGeneral(href) {
+      console.log("vista general");
+      window.location.href = href
+    },
+    formato_fecha(fecha) {
+      try {
+          let fecha2 = `${fecha.split("T")[0].split("-")[2]}/${fecha.split("T")[0].split("-")[1]}/${fecha.split("T")[0].split("-")[0]}`
+          let hora = `${fecha.split("T")[1].split("Z")[0].split(':')[0]}:${fecha.split("T")[1].split("Z")[0].split(':')[1]}`
+          return fecha2 + '-' + hora
+      } catch (error) {
+          return "No hay fecha"
+      }
+    },
     get_alumno(id) {
       return fetch(`/api/usuario/${id}`, {method: 'GET'})
         .then(response => response.json())
@@ -76,6 +92,10 @@ const app = Vue.createApp({
       .then(response => response.json())
       .then((res) => {
         this.calificacion = res.data
+
+        this.nota = this.calificacion.nota
+        this.comentario = this.calificacion.comentario
+
       })
       .catch(error => {
         console.error(error)
@@ -121,6 +141,38 @@ const app = Vue.createApp({
       } else {
         this.id_alumno = this.lista_entregas[indice + 1];
       }
+
+    },
+    guardar() {
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      var raw = JSON.stringify({
+          "alumno": this.alumno.id,
+          "nota": this.nota,
+          "comentario": this.comentario,
+      });
+
+      var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+      };
+
+      fetch(`/api/calificacion/${this.tarea.id}`, requestOptions)
+      .then(response => response.json())
+      .then((res) => {
+          console.log(res)
+          let alerta = $(`<div class='alert alert-${res.tipo}' role='alert'>${res.msg}</div>`);
+          alerta.appendTo($('#app'));
+          alerta.fadeIn();
+          setTimeout(
+              function() {
+                  alerta.fadeOut( () => alerta.remove())
+              }, 2000);
+          })
+      .catch(error => console.log('error', error));
 
     },
   },
