@@ -4,7 +4,6 @@ from django.http import JsonResponse
 from django.http import Http404
 from vroom.models import *
 from django.contrib.auth.models import User, Group
-import json
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -19,19 +18,21 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 import random
 import json
+from django.forms.models import model_to_dict
+
 
 def ping(request):
     if (request.method=='GET'):
         return JsonResponse({
-            'ping': 'pong'
+            'status': 'OK',
+            'message': 'Conexión exitosa.',
         })
 
-
-
 @api_view(['GET'])
+@authentication_classes([])
+@permission_classes([])
 def start_vr_exercise(request):
     getpin=request.GET.get('pin')
-    
     
     try:
         pin = Pin.objects.get(pin=getpin)
@@ -39,13 +40,12 @@ def start_vr_exercise(request):
         
         return Response({
             'status': 'ERROR',
-            'message': 'Pin no encontrado'
+            'message': 'Pin no encontrado.'
         })
-    
 
     user = pin.usuario
-    vr_exerciseid = pin.ejercicio.pk
-    minVer = Ejercicio.objects.get(pk=vr_exerciseid).min_exercise_version
+    vr_exerciseid = pin.tarea.id
+    minVer = Tarea.objects.get(id=vr_exerciseid).min_exercise_version
     if (minVer == None):
         minVer = None
     return Response({
@@ -56,62 +56,108 @@ def start_vr_exercise(request):
     })
 
 
-from django.core.files.base import ContentFile
-
-@api_view(['GET'])
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
 def finish_vr_exercise(request):
-    getpin=request.GET.get('pin')
-    autograde=request.GET.get('autograde')
-    VRexerciseID=request.GET.get('VRexerciseID')
-    exerciseVersionID=request.GET.get('exerciseVersionID')
 
-    if getpin==None or autograde==None or VRexerciseID==None or exerciseVersionID==None:
-        return Response({
-            'status': 'ERROR',
-            'message': 'Faltan parametros.'
-        })
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
 
+    getpin=int(body['pin'])
+    autograde=body['autograde']
+    VRexerciseID=int(body['VRexerciseID'])
+    exerciseVersionID=float(body['exerciseVersionID'])
+    performance_data = body['performance_data']
+
+
+    # Comprueba que el pin existe
     try:
         pin = Pin.objects.get(pin=getpin)
     except:
-        
         return Response({
             'status': 'ERROR',
             'message': 'Pin no encontrado.'
         })
 
-    try:
-        ejercicio = Ejercicio.objects.get(pk=VRexerciseID, min_exercise_version=exerciseVersionID)
-    except:
-  
+
+    # Comprueba que estan todos los parametros
+    if getpin==None or autograde==None or VRexerciseID==None or exerciseVersionID==None or performance_data==None:
         return Response({
             'status': 'ERROR',
-            'message': 'Ejercicio no encontrado.'
+            'message': 'Faltan parametros.'
         })
 
+    # Comprueba que el autograde es correcto
     try:
-        entrega = Entrega.objects.get(autor = pin.usuario, ejercicio = ejercicio).delete()
+        autograde_passed_items = int(autograde['passed_items'])
+        if not autograde_passed_items:
+            return Response({
+                'status': 'ERROR',
+                'message': 'Autograde: No se han pasado "passed_items".'
+            })
+        
+        autograde_failed_items = int(autograde['failed_items'])
+        if not autograde_failed_items:
+            return Response({
+                'status': 'ERROR',
+                'message': 'Autograde: No se han pasado "failed_items".'
+            })
+
+        autograde_score = float(autograde['score'])
+        if not autograde_score:
+            return Response({
+                'status': 'ERROR',
+                'message': 'Autograde: No se ha pasado "score".'
+            })    
+        
     except:
-        pass
-    
-    metadatos = open('./static/assets/archivos/metadatos-' + str(pin.usuario.id) + str(ejercicio.id) + '.json', 'w+')
-    metadatos.write(autograde)
-    metadatos.close()
+        return Response({
+            'status': 'ERROR',
+            'message': 'Autograde: Parametros incorrectos.'
+        })
+
+
+    auto_puntuacion = Auto_Puntuacion.objects.create(
+        passed_items = autograde_passed_items,
+        failed_items = autograde_failed_items,
+        score = autograde_score,
+    )
    
     entrega = Entrega.objects.create(
         autor = pin.usuario,
-        ejercicio = ejercicio,
+        tarea = pin.tarea,
         fecha_publicacion = timezone.now(),
         fecha_edicion = timezone.now(),
-        archivo = '/static/assets/archivos/metadatos-' + str(pin.usuario.id) + str(ejercicio.id) + '.json',
+        auto_puntuacion = auto_puntuacion,
         nota = None,
     )
+    setattr(entrega, 'archivo', '/static/assets/archivos/performance_data-' + str(pin.usuario.id) + str(entrega.id) + '.json')
+    entrega.save()
+    try:
 
+        workpath = os.path.dirname(os.path.abspath(__file__)) #Returns the Path your .py file is in
+        performance_data_file = open(os.path.join(workpath,'../static/assets/archivos/performance_data-' + str(pin.usuario.id) + str(entrega.id) + '.json'), 'w+')
+        performance_data_file.write(json.dumps(performance_data))
+        performance_data_file.close()
+
+    except:
+        traceback.print_exc()
+        
+        entrega.delete()
+        
+        return Response({
+            'status': 'ERROR',
+            'message': 'Error al guardar performance_data.'
+        })
+
+
+    # Se borra el pin
     pin.delete()
 
     return Response({
         'status': 'OK',
-        'message': 'Entrega guardada'
+        'message': 'Entrega guardada.'
     })
 
 
@@ -123,30 +169,23 @@ def pin_request(request):
 
     VRtaskID = request.GET.get('VRtaskID')
 
-    print(VRtaskID)
-
     try:
-        ejercicio = Ejercicio.objects.get(id=VRtaskID)
+        tarea = Tarea.objects.get(id=VRtaskID)
     except:
         return Response({
             "status" : "ERROR",
-            "message" : "Ejercicio no encontrado",
+            "message" : "Tarea no encontrado.",
         })
 
-    if ejercicio.tipo_ejercicio.nombre != "vr":
-        return Response({
-            "status" : "ERROR",
-            "message" : "Ejercicio no es de tipo VR",
-        })
 
     while True:
         randomnum = random.randint(1000,9999)
 
         try:
-            if(Pin.objects.filter(ejercicio=ejercicio, usuario=request.user).exists()):
+            if(Pin.objects.filter(tarea=tarea, usuario=request.user).exists()):
                 return Response({
                     "status" : "ERROR",
-                    "message" : "Ya existe un pin para este usuario",
+                    "message" : "Ya existe un pin para este usuario.",
                 })
             Pin.objects.get(pin=randomnum)
 
@@ -158,7 +197,7 @@ def pin_request(request):
 
     new_pin = Pin.objects.create(
         pin = randomnum,
-        ejercicio = ejercicio,
+        tarea = tarea,
         usuario = request.user
     )
 
@@ -166,7 +205,7 @@ def pin_request(request):
 
     return Response({
         'status':'OK',
-        'message': 'Pin generado',
+        'message': 'Pin generado.',
         'PIN': new_pin.pin
     })
 
@@ -178,54 +217,57 @@ def get_course_details(request):
 
     id_curso=request.GET.get('courseID')
     subscripcion_profesor = Tipo_Subscripcion.objects.get(nombre = "Profesor")
+
+
     
     try:
-        curso = Curso.objects.get( pk = id_curso)
+        curso = Curso.objects.get( id = id_curso)
     except:
         return Response({
             "status" : "ERROR",
-            "message" : "Curso no encontrado",
+            "message" : "Curso no encontrado.",
         })
 
-    content = {"title": curso.titulo,"description": curso.descripcion,"courseID": curso.pk,"institutionID": curso.centro.pk,"status": curso.estado,'elements':{'links':[],'texts':[],'documents':[],'tasks':[]} }
+    content = {"title": curso.titulo,"description": curso.descripcion,"courseID": curso.id,"institutionID": curso.centro.id,"status": curso.estado,'elements':{'links':[],'texts':[],'documents':[],'tasks':[]} }
     if(id_curso == None):
         return Response({
         "status" : 'ERROR',
-        "message" : 'courseID is required'
+        "message" : 'courseID is required.'
         })
 
-    try:
-        usuario = Usuario_Curso.objects.get(usuario = request.user, curso_id = id_curso)
-    except:
-        return Response({
-            "status" : "ERROR",
-            "message" : "Usuario no inscrito en el curso",
-        })
+    if(not request.user.is_superuser):        
+        try:
+            usuario = Usuario_Curso.objects.get(usuario = request.user, curso_id = id_curso)
+        except:
+            return Response({
+                "status" : "ERROR",
+                "message" : "Usuario no inscrito en el curso.",
+            })
         
 
 
     links = Link.objects.filter(curso_id = id_curso)
     links_items = []
     for link in links:
-        links_items.append({"linkID": link.pk, "title": link.titulo, "link": link.link})   
+        links_items.append({"linkID": link.id, "title": link.titulo, "link": link.link})   
     content['elements']['links'] = links_items
     
     textos = Texto.objects.filter(curso_id = id_curso)
     textos_items = []
     for texto in textos:
-        textos_items.append({"textID": texto.pk, "autorID":texto.autor.id, "title": texto.titulo, "texto": texto.texto})
+        textos_items.append({"textID": texto.id, "autorID":texto.autor.id, "title": texto.titulo, "texto": texto.texto})
     content['elements']['texts'] = textos_items
     
     documents = Documento.objects.filter(curso_id = id_curso)
     documents_items = []
     for document in documents:
-        documents_items.append({"documentID": document.pk, "autorID":document.autor.id, "file":document.archivo.url})
+        documents_items.append({"documentID": document.id, "autorID":document.autor.id, "file":document.archivo.url})
     content['elements']['documents'] = documents_items
     
-    tasks = Ejercicio.objects.filter(curso_id = id_curso)
+    tasks = Tarea.objects.filter(curso_id = id_curso).all()
     tasks_items = []
     for task in tasks:
-        tasks_items.append({"taskID": task.pk, "title": task.titulo, "description": task.descripcion, "quote": task.enunciado, "maxQualification": task.nota_maxima, "task_type": task.tipo_ejercicio.nombre})
+        tasks_items.append({"taskID": task.id, "title": task.titulo, "enunciado": task.enunciado, "maxQualification": task.nota_maxima})
     content['elements']['tasks'] = tasks_items
           
                
@@ -246,15 +288,43 @@ def get_courses(request):
     subscripcion_alumno = Tipo_Subscripcion.objects.get(nombre = "Alumno")
 
     for icurso in cursos:
-        curso_item ={"courseID": icurso.pk, "title": icurso.titulo, "description": icurso.descripcion, "status": icurso.estado,"center": icurso.centro.pk,'subscribers':{'teachers':[]}}      
-        profesor_curso = Usuario_Curso.objects.filter( curso = icurso, tipo_subscripcion = subscripcion_profesor).all()
 
-        print(profesor_curso)
-        if(not profesor_curso == None):   
-            for profesor in profesor_curso: 
-                curso_item['subscribers']['teachers'].append({"UserID": profesor.usuario.pk, "username": profesor.usuario.username, "email":profesor.usuario.email})
 
-        content.append(curso_item)
+
+        curso = Curso.objects.get(id = icurso.id)
+        centro = Centro.objects.get(id = curso.centro.id)
+
+        if (request.user == centro.administrador):
+
+            
+
+            curso_item ={"courseID": icurso.id, "title": icurso.titulo, "description": icurso.descripcion, "status": icurso.estado,"center": icurso.centro.id,'subscribers':{'teachers':[]}}      
+            profesor_curso = Usuario_Curso.objects.filter( curso = icurso, tipo_subscripcion = subscripcion_profesor).all()
+
+            print(profesor_curso)
+            if(not profesor_curso == None):   
+                for profesor in profesor_curso: 
+                    curso_item['subscribers']['teachers'].append({"UserID": profesor.usuario.id, "username": profesor.usuario.username, "email":profesor.usuario.email})
+
+            content.append(curso_item)
+        
+        else:
+            try:
+                usuario_curso = Usuario_Curso.objects.get(usuario = request.user, curso_id = icurso.id)
+            except:
+                continue
+
+
+            curso_item ={"courseID": icurso.id, "title": icurso.titulo, "description": icurso.descripcion, "status": icurso.estado,"center": icurso.centro.id,'subscribers':{'teachers':[]}}      
+            profesor_curso = Usuario_Curso.objects.filter( curso = icurso, tipo_subscripcion = subscripcion_profesor).all()
+
+            print(profesor_curso)
+            if(not profesor_curso == None):   
+                for profesor in profesor_curso: 
+                    curso_item['subscribers']['teachers'].append({"UserID": profesor.usuario.id, "username": profesor.usuario.username, "email":profesor.usuario.email})
+
+            content.append(curso_item)
+
         
             
     return Response({
@@ -279,7 +349,7 @@ def logout_usuario(request):
     
     content = {
         'status': 'OK',
-        'message': 'Sesión cerrada',
+        'message': 'Sesión cerrada.',
     }
     return Response(content)
 
@@ -335,7 +405,7 @@ def curso(request, id_curso):
         })
 
 @login_required
-def ejercicios(request, id_curso):
+def tareas(request, id_curso):
     if (request.method=='GET'):
 
         #proteccion: estar subscrito al curso, ser el admin del centro, o ser el super
@@ -346,21 +416,21 @@ def ejercicios(request, id_curso):
             raise PermissionDenied()     
         #fin proteccion   
 
-        ejercicios = Ejercicio.objects.filter(curso = id_curso).values()
+        tareas = Tarea.objects.filter(curso = id_curso).values()
 
-        if (len(ejercicios) == 0):
+        if (len(tareas) == 0):
             raise Http404()
 
         return JsonResponse({
-            'data': list(ejercicios)
+            'data': list(tareas)
         })
 
 @login_required
-def ejercicio(request, id_ejercicio):
+def tarea(request, id_tarea):
     if (request.method=='GET'):
         
         #proteccion: estar subscrito al curso, ser el admin del centro, o ser el super
-        curso = Curso.objects.get(id = Ejercicio.objects.get(id = id_ejercicio).curso.id)
+        curso = Curso.objects.get(id = Tarea.objects.get(id = id_tarea).curso.id)
         subscripcion = Usuario_Curso.objects.filter(usuario = request.user.id, curso = curso.id)
         admin_curso = Curso.objects.filter(centro__in = Centro.objects.filter(administrador = request.user.id), id = curso.id)
 
@@ -368,32 +438,34 @@ def ejercicio(request, id_ejercicio):
             raise PermissionDenied()     
         #fin proteccion
         
-        ejercicio = Ejercicio.objects.filter(id = id_ejercicio).values()
+        tarea = Tarea.objects.filter(id = id_tarea).values()
 
-        if (len(ejercicio) == 0):
+        if (len(tarea) == 0):
             raise Http404()
 
         return JsonResponse({
-            'data': list(ejercicio) 
+            'data': list(tarea) 
         })
 
 @login_required
-def entregas(request, id_ejercicio):
+def entregas(request, id_tarea):
     if (request.method=='GET'):
 
-        #proteccion: ser profesor del curso, ser el admin del centro o ser el super
-        curso = Curso.objects.get(id = Ejercicio.objects.get(id = id_ejercicio).curso.id)
+        alumno = Usuario.objects.get(id = request.GET.get("alumno"))
+
+        #proteccion: ser profesor del curso, el alumno, el admin del centro o el super
+        curso = Curso.objects.get(id = Tarea.objects.get(id = id_tarea).curso.id)
         profesor = Usuario_Curso.objects.filter(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))
         admin = Curso.objects.filter(centro__in = Centro.objects.filter(administrador = request.user.id), id = curso.id)
 
-        if (len(profesor) == 0 and len(admin) == 0 and not request.user.is_superuser):
+        if (len(profesor) == 0 and not alumno == request.user and len(admin) == 0 and not request.user.is_superuser):
             raise PermissionDenied()
         #fin proteccion
 
-        entregas = Entrega.objects.filter(ejercicio = id_ejercicio).values()
-
-        if (len(entregas) == 0):
-            raise Http404()
+        entregas = Entrega.objects.filter(tarea = id_tarea, autor = alumno).values()
+        for entrega in entregas:
+            auto_puntuacion = model_to_dict(Auto_Puntuacion.objects.get(id = entrega['auto_puntuacion_id']))
+            entrega['auto_puntuacion'] = auto_puntuacion
 
         return JsonResponse({
             'data': list(entregas)
@@ -407,7 +479,7 @@ def entrega(request, id_entrega):
 
         #proteccion: ser profesor del curso, ser el admin del centro, ser el autor de la entrega o ser el super
         entrega = Entrega.objects.get(id = id_entrega)
-        curso = Curso.objects.get(id = Ejercicio.objects.get(id = entrega.ejercicio.id).curso.id)
+        curso = Curso.objects.get(id = Tarea.objects.get(id = entrega.tarea.id).curso.id)
         profesor = Usuario_Curso.objects.filter(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))
         admin = Curso.objects.filter(centro__in = Centro.objects.filter(administrador = request.user.id), id = curso.id)
 
@@ -424,124 +496,37 @@ def entrega(request, id_entrega):
             'data': list(entrega) 
         })
 
-    elif (request.method=='PUT'): #para actualizar/poner la nota y/o el comentario del profesor
-    
-        #proteccion: ser profesor del curso, ser el admin del centro o ser el super
-        entrega = Entrega.objects.get(id = id_entrega)
-        curso = Curso.objects.get(id = Ejercicio.objects.get(id = entrega.ejercicio.id).curso.id)
-        profesor = Usuario_Curso.objects.filter(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))
-        admin = Curso.objects.filter(centro__in = Centro.objects.filter(administrador = request.user.id), id = curso.id)
-
-        if (len(profesor) == 0 and len(admin) == 0 and not request.user.is_superuser):
-            raise PermissionDenied()
-        #fin proteccion
-
-        entrega = Entrega.objects.filter(id = id_entrega).values()
-        ejercicio = Ejercicio.objects.get(id__in = Entrega.objects.filter(id = id_entrega).values('ejercicio'))
-
-        if (len(entrega) == 0 or ejercicio is None):
-            raise Http404()
-
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-        print(body)
-        if 'new_note' in body and 'comment_prof' in body:
-            max_note = ejercicio.nota_maxima
-            note = float(body['new_note'])
-            comment = str(body['comment_prof'])
-  
-
-            if not note==None and max_note:
-                if note <0:
-                    return JsonResponse({"msg": "La nota no puede ser negativa", "tipo": "danger"})
-                elif note <= max_note:
-                    entrega.update(profesor = request.user)
-                    entrega.update(nota=note)
-                    entrega.update(comentario_profesor=comment)
-                    entrega.update(fecha_calificacion=timezone.now())
-                    return JsonResponse({"msg": "Calificación actualizada", "tipo": "success"})  
-                else :
-                    return JsonResponse({"msg": "La nota no puede superar la nota máxima", "tipo": "danger"})
-            else:
-                return JsonResponse({"msg": "Faltan datos", "tipo": "danger"})
-
-        return JsonResponse({
-            'data': list(entrega) 
-        })
 
 @csrf_exempt
 @login_required
-def entrega_nueva_cal(request, ejercicio_id):
+def entrega_alumno(request, tarea_id):
     if (request.method=='POST'):
-
-        #proteccion: ser subscriptor del curso, ser el admin del centro o ser el super
-        curso = Curso.objects.get(id = Ejercicio.objects.get(id = ejercicio_id).curso.id)
-        profesor = Usuario_Curso.objects.filter(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))
-        admin = Curso.objects.filter(centro__in = Centro.objects.filter(administrador = request.user.id), id = curso.id)
-
-        if (len(profesor) == 0 and len(admin) == 0 and not request.user.is_superuser):
-            raise PermissionDenied()
-        #fin proteccion
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-
-        nota = float(body['new_note'])
-        nota_maxima = Ejercicio.objects.get(id = ejercicio_id).nota_maxima
-
-        if nota>nota_maxima:
-            return JsonResponse({"msg": "La nota no puede superar la nota máxima", "tipo": "danger"})
-        elif nota>=0:
-            comentario = str(body['comment_prof'])
-            autor = str(body['autor'])
-            entrega = Entrega.objects.create(ejercicio = Ejercicio.objects.get(id=ejercicio_id), autor_id = autor, profesor = request.user, nota = nota, comentario_profesor = comentario, fecha_calificacion = timezone.now())
-            return JsonResponse({"msg": "Calificación creada", "tipo": "success"})
-        else:
-            return JsonResponse({"msg": "Faltan datos", "tipo": "danger"})
-
-@csrf_exempt
-def entrega_alumno(request, ejercicio_id):
-    print(request.POST)
-    if (request.method=='POST'):
-
-        #proteccion: ser alumno en el curso del ejercicio o ser el super
-        ejercicio = Ejercicio.objects.get(id = ejercicio_id)
-        curso = ejercicio.curso
         try:
-            alumno = Usuario_Curso.objects.get(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Alumno"))
+            #proteccion: ser alumno en el curso del tarea o ser el super
+            tarea = Tarea.objects.get(id = tarea_id)
+            curso = tarea.curso
+            try:
+                alumno = Usuario_Curso.objects.get(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Alumno"))
+            except:
+                raise PermissionDenied()
+            #fin proteccion
+
+            body_unicode = request.body.decode('utf-8')
+            body = json.loads(body_unicode)
+
+            comentario = str(body['comentario'])
+            entrega_id = body['entrega_id']
+
+            entrega = Entrega.objects.get(id = entrega_id)
+            entrega.comentario_alumno = comentario
+            entrega.save()
+            return JsonResponse({"msg": "Comentario guardado", "tipo": "success"})
         except:
-            raise PermissionDenied()
-        #fin proteccion
+            return JsonResponse({"msg": "Error al guardar el comentario", "tipo": "warning"})
 
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-
-        comentario = str(body['comentario'])
-        entrega = Entrega.objects.filter(ejercicio = ejercicio_id, autor_id = request.user.id).values()
-        if (len(entrega) == 0):
-            Entrega.objects.create(ejercicio = ejercicio, autor = request.user, comentario_alumno = comentario, fecha_publicacion = timezone.now(), fecha_edicion = timezone.now(), nota = None)
-            return JsonResponse({"msg": "Entrega creada", "tipo": "success"})
-        
-        else:
-            entrega.update(comentario_alumno = comentario)
-            entrega.update(fecha_edicion = timezone.now())
-            return JsonResponse({"msg": "Entrega actualizada", "tipo": "success"})
-
-        return JsonResponse({"msg": "Algo ha ido mal", "tipo": "danger"})
 
     
 
-
-@login_required
-def tipo_ejercicio(request, id_tipo):
-    if (request.method=='GET'):
-        tipo = Tipo_Ejercicio.objects.filter(id = id_tipo).values()
-
-        if (len(tipo) == 0):
-            raise Http404()
-
-        return JsonResponse({
-            'data': list(tipo) 
-        })
 
 @login_required
 def usuario_cursos(request, id_usuario):
@@ -572,4 +557,89 @@ def usuario_cursos(request, id_usuario):
             'data': list(cursos)
         })
 
+@login_required
+def calificaciones(request, id_tarea):
+    if (request.method=='GET'):
 
+        #proteccion: ser profesor del curso del tarea o ser el super
+        tarea = Tarea.objects.get(id = id_tarea)
+        curso = tarea.curso
+        profesor = Usuario_Curso.objects.filter(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))
+        
+        if len(profesor) == 0 and not request.user.is_superuser:
+            raise PermissionDenied()
+        #fin proteccion
+
+        calificaciones = Calificacion.objects.filter(tarea = id_tarea).values()
+
+        return JsonResponse({
+            'data': list(calificaciones)
+        })
+
+import traceback
+
+@csrf_exempt
+@login_required
+def calificacion(request, id_tarea):
+    if (request.method=='POST'):
+        try:
+
+            #proteccion: ser profesor del curso del tarea o ser el super
+            tarea = Tarea.objects.get(id = id_tarea)
+            curso = tarea.curso
+            profesor = Usuario_Curso.objects.filter(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))
+            
+            if len(profesor) == 0 and not request.user.is_superuser:
+                raise PermissionDenied()
+            #fin proteccion
+
+            body_unicode = request.body.decode('utf-8')
+            body = json.loads(body_unicode)
+
+            if (float(body['nota']) > tarea.nota_maxima):
+                return JsonResponse({"msg": "La nota no puede ser mayor que la nota máxima", "tipo": "warning"})
+            elif (float(body['nota']) < 0):
+                return JsonResponse({"msg": "La nota no puede ser menor que 0", "tipo": "warning"})
+
+            nueva = True
+
+            try:
+                calificacion = Calificacion.objects.get(tarea = tarea.id, alumno = Usuario.objects.get(id = body['alumno'])).delete()
+                nueva = False
+            except:
+                pass
+            
+            calificacion = Calificacion.objects.create(tarea = tarea, alumno = Usuario.objects.get(id = body['alumno']), nota = body['nota'], comentario = body['comentario'], fecha_calificacion = timezone.now(),  profesor = request.user)
+
+            if (nueva):
+                return JsonResponse({"msg": "Calificacion creada", "tipo": "success"})
+            else:
+                return JsonResponse({"msg": "Calificacion actualizada", "tipo": "success"})
+
+        except:
+            traceback.print_exc()
+            return JsonResponse({"msg": "Algo ha ido mal", "tipo": "danger"})
+    
+    elif (request.method=='GET'):
+
+        #proteccion: ser profesor del curso de la tarea o ser el super
+        tarea = Tarea.objects.get(id = id_tarea)
+        curso = tarea.curso
+        profesor = Usuario_Curso.objects.filter(usuario = request.user.id, curso = curso.id, tipo_subscripcion = Tipo_Subscripcion.objects.get(nombre = "Profesor"))
+        
+        if len(profesor) == 0 and not request.user.is_superuser:
+            raise PermissionDenied()
+        #fin proteccion
+
+        try:
+            alumno = Usuario.objects.get(id = request.GET.get('alumno'))
+            calificacion = model_to_dict(Calificacion.objects.get(tarea = tarea, alumno = alumno))
+            profesor = model_to_dict(Usuario.objects.get(id = calificacion['profesor']))
+            calificacion['profesor'] = profesor["first_name"] + " " + profesor["last_name"]
+        except:
+            traceback.print_exc()
+            calificacion = False
+
+        return JsonResponse({
+            'data': calificacion
+        })

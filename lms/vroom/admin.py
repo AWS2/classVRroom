@@ -4,16 +4,21 @@ from .models import *
  
 # Register your models here.
  
-class EjercicioInline(admin.TabularInline):
-    model = Ejercicio
-    fields = ('id', 'autor','titulo','enunciado','nota_maxima','tipo_ejercicio', 'fecha_publicacion')  
+class TareaInline(admin.TabularInline):
+    model = Tarea
+    fields = ('autor','titulo','enunciado','nota_maxima', 'fecha_publicacion', 'ejercicio')  
     extra = 0
  
 class EntregaInline(admin.TabularInline):
     model = Entrega
-    fields = ('autor', 'archivo','comentario_alumno', 'nota', 'comentario_profesor','fecha_edicion')
+    fields = ('autor', 'archivo','comentario_alumno', 'fecha_edicion')
     extra = 0
  
+class CalificacionInline(admin.TabularInline):
+    model = Calificacion
+    fields = ('alumno', 'nota', 'comentario', 'fecha_calificacion', 'profesor')	
+    extra = 0
+
 class LinkInline(admin.TabularInline):
     model = Link
     fields = ('autor','titulo','link', 'fecha_publicacion')
@@ -37,20 +42,20 @@ class Usuario_CursoInline(admin.TabularInline):
     extra = 0
  
  
-class EjercicioAdmin(admin.ModelAdmin):
+class TareaAdmin(admin.ModelAdmin):
     list_display= ('titulo','get_Curso',)
  
     def get_Curso(self,obj):
         return obj.curso.titulo
     get_Curso.short_description = 'Curso'
-    inlines = [EntregaInline]
+    inlines = [EntregaInline, CalificacionInline]
  
 class EntregaAdmin(admin.ModelAdmin):
-    list_display= ('id','get_Ejercicio','get_Autor')
+    list_display= ('id','get_Tarea','get_Autor')
    
-    def get_Ejercicio(self,obj):
-        return obj.ejercicio.titulo
-    get_Ejercicio.short_description = 'Ejercicio'
+    def get_Tarea(self,obj):
+        return obj.tarea.titulo
+    get_Tarea.short_description = 'Tarea'
  
     def get_Autor(self,obj):
         print(obj.autor.username)
@@ -64,8 +69,14 @@ class CursoAdmin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(centro=Centro.objects.get(administrador=request.user))
-    inlines = [LinkInline, TextoInline ,DocumentoInline, EjercicioInline, Usuario_CursoInline ]
+        elif request.user.groups.filter(name='profesor').exists(): 
+            subProf = Tipo_Subscripcion.objects.get(nombre='Profesor')
+            print(qs)
+            return qs.filter(id__in = (Usuario_Curso.objects.filter(usuario=request.user,tipo_subscripcion=subProf.id)).values('curso'))
+        else:
+            return qs.filter(centro=Centro.objects.get(administrador=request.user))
+
+    inlines = [LinkInline, TextoInline ,DocumentoInline, TareaInline, Usuario_CursoInline ]
 
 from django.contrib.auth.forms import UserCreationForm
 class UserCreateForm(UserCreationForm):
@@ -88,11 +99,13 @@ class UserAdmin(UserAdmin):
 
 admin.site.register(Centro)
 admin.site.register(Curso, CursoAdmin)
-admin.site.register(Ejercicio, EjercicioAdmin)
-admin.site.register(Tipo_Ejercicio)
+admin.site.register(Tarea, TareaAdmin)
 admin.site.register(Tipo_Subscripcion)
 admin.site.register(Usuario, UserAdmin)
 admin.site.register(Termino)
 admin.site.register(Entrega)
 admin.site.register(Usuario_Curso)
 admin.site.register(Pin)
+admin.site.register(Calificacion)
+admin.site.register(Auto_Puntuacion)
+admin.site.register(Ejercicio)

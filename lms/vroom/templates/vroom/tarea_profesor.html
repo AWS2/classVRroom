@@ -1,0 +1,65 @@
+{% extends 'vroom/components/base.html' %}
+
+{% block title %}{{tarea.titulo}}{% endblock %}
+
+{% block extraclass %}tarea_profesor{% endblock %}
+
+{% load static %}
+
+{% block content %}
+
+
+<div id="app">
+
+    <section class="container" id="breadcrumbs">
+        <div class="innerBread">
+            <p>/<a href={% url 'tablero' %}>tablero</a>/<a :href="'/curso/' + [[tarea.curso]]">{{tarea.curso_nombre}}</a>/{{tarea.titulo}}</p>
+        </div>
+    </section>
+
+    {{ alumnos|json_script:"alumnos" }}
+    {{ tarea|json_script:"tarea" }}
+    {{ entregas|json_script:"entregas" }}
+
+    <div class="container">
+        <h2>[[tarea.titulo]]</h2>
+        
+        <input type="text" id="buscador" placeholder="busca por nombre" v-model="filtro_nombre">
+    </div>
+
+    <table>
+        <tr>
+            <th class="clicable" @click="cambiarOrden_nombre()">[[usuario_th]]</th>
+            <th>Correo</th>
+            <th class="clicable" @click="cambiarOrden_estado()">[[estado_th]]</th>
+            <th>Última modificación (entrega)</th>
+            <th>Calificación</th>
+            <th>Comentario del profesor</th>
+            <th>Última modificación (calificación)</th>
+        </tr>
+        <tr v-if="alumnos.length == 0"><td colspan="9">No hay alumnos</td></tr>
+        <tr v-else v-for="alumno in alumnos">
+
+            <td>[[alumno.first_name]] [[alumno.last_name]]</td>
+            
+            <td>[[alumno.email]]</td>
+
+            <td v-html="estado_td(alumno)"></td>
+
+            <td v-html='fecha_entrega_td(alumno)'></td>
+            
+            <td v-html="calificacion_td(alumno)"></td>
+
+            <td v-html='comentario_td(alumno)'></td>
+
+            <td v-html='fecha_calificacion_td(alumno)'></td>
+
+            <td><button class="btn" @click="guardar(alumno)">Guardar</button></td>
+            
+            <td v-if="entregas[alumno.id]"><button class="btn" @click="ver(alumno)">Ver entrega</button></td>
+        </tr>
+    </table>
+</div>
+<script src="{% static 'assets/js/entrega_profesor.js' %}"></script>
+
+{% endblock %}
