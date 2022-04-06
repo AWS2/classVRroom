@@ -9,73 +9,61 @@
 
 {% block content %}
 
-    <script>
-        var id = {{id}}
-    </script>
 
     <div id="app">
-
-        <form action={% url 'curso' %} method="POST" id="enlaceCurso">
-            {% csrf_token %}
-            <input type="hidden" name="curso" :value="[[id_curso]]">
-        </form>
-        <form action={% url 'ejercicio' %} method="POST" id="enlaceEjercicio">
-            {% csrf_token %}
-            <input type="hidden" name="id" :value="[[id_ejercicio]]">
-        </form>
-
         <section class="container" id="breadcrumbs">
             <div class="innerBread">
-                <p>/<a href={% url 'tablero' %}>tablero</a>/<a href="#" onclick="document.getElementById('enlaceCurso').submit()">[[curso]]</a>/<a href="#" onclick="document.getElementById('enlaceEjercicio').submit()">[[ejercicio]]</a>/[[nombre]]</p>
+                <p>/<a href={% url 'tablero' %}>tablero</a>/<a :href="'/curso/' + [[curso.id]]">[[curso.titulo]]</a>/<a :href="'/curso/' + [[curso.id]] + '/tarea/' + [[tarea.id]]">[[tarea.titulo]]</a>/[[alumno.first_name]] [[alumno.last_name]]</p>
             </div>
         </section>
 
+        {{ entregas|json_script:"entregas" }}
+        {{ alumno|json_script:"alumno" }}
+        {{ tarea|json_script:"tarea"}}
+        {{ curso|json_script:"curso" }}
+        {{ lista_entregas|json_script:"lista_entregas" }}
 
-        <div class="header">
-            <div class="left">
-                <p>Curso: [[curso]]</p>
-                <p>Ejercicio [[tipo_ejercicio]]: [[ejercicio]]</p>
-                <button class="btn" onclick="document.getElementById('enlaceEjercicio').submit()">Visualiza todas las entregas</button>
+        <div class="tarea">
+            <div class="info">
+                <p>Curso: [[curso.titulo]]</p>
+                <p>Tarea: [[tarea.titulo]]</p>
+                <button class="btn" @click="vistaGeneral('/curso/' + [[curso.id]] + '/tarea/' + [[tarea.id]])">Vista general</button>
             </div>
-            <div class="middle">
-                <p>Alumno: [[nombre]]</p>
-                <p>[[correo]]</p>
-                <p>Fecha de publicación: [[fecha_publicacion]]</p>
+            <div class="alumno">
+                <p>[[alumno.first_name]] [[alumno.last_name]]</p>
+                <p>[[alumno.email]]</p>
             </div>
-            <div class="right">
+            <div class="navegacion">
                 <div class="d-flex align-center gap-10">
-                    <button @click="set_anterior()" class="btn" ><img src="{% static 'assets/img/left-arrow.png' %}" alt="flecha izquierda"></button>
+                    <button @click="set_anterior()" class="btn btnNavegacion" ><img src="{% static 'assets/img/left-arrow.png' %}" alt="flecha izquierda"></button>
                     Cambia de alumno
-                    <button @click="set_siguiente()" class="btn" ><img src="{% static 'assets/img/right-arrow.png' %}" alt="flecha derecha"></button>
+                    <button @click="set_siguiente()" class="btn btnNavegacion" ><img src="{% static 'assets/img/right-arrow.png' %}" alt="flecha derecha"></button>
                 </div>        
             </div>
         </div>
-                
-        <div class="body">
-            <div class="content" v-html="vista_archivo"></div>
-            <div class="details">
-                <div class="detalles_alumno">
-                    <div v-if="[[tipo_ejercicio]] == 'vr'">
-                        <p v-if="[[archivo]] != '/'">Metadatos:<a :href=[[archivo]] target="_blank">descarga</a></p>
-                    </div>
-                    <div v-else>
-                        <p v-if="[[archivo]] != '/'">Archivo:<a :href=[[archivo]] target="_blank">descarga</a></p>
-                    </div>
-                    
-                    <p v-if="[[comentario_alumno]] != ''">Comentario del alumno:</p> 
-                    <p v-if="[[comentario_alumno]] != ''">[[comentario_alumno]]</p>
+
+        <div class="cuerpo">
+            <div class="entregas">
+                <div class="entrega" v-for="entrega in entregas">
+                    <p>Fecha de entrega: [[formato_fecha(entrega.fecha_publicacion)]]</p>
+                    <p>Datos de rendimiento:&nbsp<a :href="entrega.archivo" target="_blank">Ver</a></p>
+                    <p>Auto-puntuación: [[entrega.auto_puntuacion.passed_items]]/[[entrega.auto_puntuacion.failed_items + entrega.auto_puntuacion.passed_items]], [[entrega.auto_puntuacion.score]]% <span v-if="entrega.auto_puntuacion.comments">&nbsp[[entrega.auto_puntuacion.comments]]</span></p>
+                    <p>Comentario: [[entrega.comentario_alumno]]</p>
                 </div>
-                        
-                <h3>Calificación</h3>
-                <p>Calificación sobre [[nota_maxima]]:</p>
-                <p><input type="number" v-model="nota"></p>
-                    
-                <p>Comentario del profesor:</p>
-                <p><textarea v-model="comentario_profesor"></textarea></p>
-                    
-                <p><input type="checkbox" id="ckbNotificacion"><label for="ckbNotificacion">Notificar al alumno</label><button @click="save_nota_and_comment()" class="btn">Guardar</button></p>
+            </div>
+            <div class="calificacion">
+                <h4 v-if="calificacion">Calificada</h4>
+                <h4 v-else>Por calificar</h4>
+                <p>Calificación:&nbsp<textarea cols="3" rows="1" v-model="nota"></textarea>/[[tarea.nota_maxima]]</p>
+                <p>Comentario:&nbsp<textarea cols="20" rows="1" v-model="comentario"></textarea></p>
+                <p v-if="calificacion">Calificado el: [[formato_fecha(calificacion.fecha_calificacion)]]</p>
+                <p v-if="calificacion">Calificado por: [[calificacion.profesor]]</p>
+                <p>
+                    <button class="btn" @click="guardar()">Guardar</button>
+                </p>
             </div>
         </div>
+
     </div>
 
     <script src="{% static 'assets/js/entrega.js' %}"></script>

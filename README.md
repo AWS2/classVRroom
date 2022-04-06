@@ -1,6 +1,6 @@
 # VRoom
 
-Un lms para ejercicios de vr
+Un lms para tareas de vr
 
 ## Descripcion
 
@@ -18,6 +18,12 @@ Una vez tengas python3 instalado haras los siguientes comandos:
 pip install -r requirements.txt
 ```
 
+- Para inicializar la base de datos:
+```
+python3 manage.py makemigrations
+python3 manage.py migrate
+```
+
 - Para crear los grupos y modelos necesarios:
 ```
 python3 manage.py initvroom
@@ -28,6 +34,10 @@ python3 manage.py initvroom
 python manage.py runserver
 ```
 
+## Api
+
+[Docuemtacion de la api](./DocumentationApi/documentacion.md)
+
 ## Ayuda
 
 Para cualquier duda contactar con los autores
@@ -37,25 +47,34 @@ Para cualquier duda contactar con los autores
 ### Admin Centro
 - Curso: añadir, borrar, modificar y ver.
 - Documento: añadir, borrar, modificar y ver. 
-- Ejercicio: añadir, borrar, modificar y ver.
+- Tarea: añadir, borrar, modificar y ver.
+- Auto puntuacion: añadir, borrar, modificar y ver.
 - Entrega: añadir, borrar, modificar y ver.
 - Invitacion: añadir, borrar, modificar y ver.
 - Link: añadir, borrar, modificar y ver.
 - Texto: añadir, borrar, modificar y ver.
 - User: añadir, borrar, modificar y ver.
+- Usuario curso: añadir, borrar, modificar y ver.
 
 ### Profesor
+- Curso: modificar y ver
 - Documento: añadir, borrar, modificar y ver. 
-- Ejercicio: añadir, borrar, modificar y ver.
-- Entrega: modificar y ver.
+- Tarea: añadir, borrar, modificar y ver.
+- Entrega: ver.
+- Auto puntuacion: ver.
 - Invitacion: añadir, borrar, modificar y ver.
 - Link: añadir, borrar, modificar y ver.
 - Texto: añadir, borrar, modificar y ver.
+- Usuario curso: añadir, borrar, modificar y ver.
 
 ## Version History
 
 * 0.1
     * Release inicial
+* 0.2
+* 0.3
+* 1.0 Beta
+    * First fully working app release
 
 ## Autores
   
