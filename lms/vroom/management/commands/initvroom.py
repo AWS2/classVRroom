@@ -8,23 +8,26 @@ GROUPS = {
     'admin centro': {
         "curso" : ["add","delete","change","view"],
         "documento" : ["add","delete","change","view"],
-        "ejercicio" : ["add","delete","change","view"],
+        "tarea" : ["add","delete","change","view"],
+        "auto_ puntuacion" : ["add","delete","change","view"],
         "entrega" : ["add","delete","change","view"],
         "invitacion" : ["add","delete","change","view"],
         "link" : ["add","delete","change","view"],
         "texto" : ["add","delete","change","view"],
         "user" : ["add","delete","change","view"],
-        "usuario_curso": ["add","delete","change","view"],
+        "usuario_ curso" : ["add","delete","change","view"],
+        "ejercicio" : ["add","delete","change","view"],
     },
     'profesor': {
         "curso" : ["change","view"],
         "documento" : ["add","delete","change","view"],
-        "ejercicio" : ["add","delete","change","view"],
-        "entrega" : ["change","view"],
+        "tarea" : ["add","delete","change","view"],
+        "entrega" : ["view"],
+        "auto_ puntuacion" : ["view"],
         "invitacion" : ["add","delete","change","view"],
         "link" : ["add","delete","change","view"],
         "texto" : ["add","delete","change","view"],
-        "usuario_curso": ["add","delete","change","view"],
+        "usuario_ curso": ["add","delete","change","view"],
     }
 }
 
@@ -67,5 +70,3 @@ class Command(BaseCommand):
 
         Tipo_Subscripcion.objects.get_or_create(nombre="Alumno")
         Tipo_Subscripcion.objects.get_or_create(nombre="Profesor")
-        Tipo_Ejercicio.objects.get_or_create(nombre="vr")
-        Tipo_Ejercicio.objects.get_or_create(nombre="no vr")

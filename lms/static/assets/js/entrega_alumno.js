@@ -1,21 +1,18 @@
-const entrega = JSON.parse(document.getElementById('entrega').textContent);
-const ejercicio = JSON.parse(document.getElementById('ejercicio').textContent);
+const entregas = JSON.parse(document.getElementById('entregas').textContent);
+const tarea = JSON.parse(document.getElementById('tarea').textContent);
+const calificacion = JSON.parse(document.getElementById('calificacion').textContent);
 
 
 const app = Vue.createApp({
     delimiters: ['[[', ']]'],
     data() {
         return {
-            ejercicio: {},
-            entrega: {},
-            test: 'hola',
-            comentario: '',
+            tarea: {},
+            entregas: [],
+            calificacion: {},
         }
     },
     methods: {
-        nombre_archivo() {
-            return this.entrega.archivo.split('/').pop();
-        },
         formato_fecha(fecha) {
             try {
                 let fecha2 = `${fecha.split("T")[0].split("-")[2]}/${fecha.split("T")[0].split("-")[1]}/${fecha.split("T")[0].split("-")[0]}`
@@ -25,22 +22,28 @@ const app = Vue.createApp({
                 return "No hay fecha"
             }
         },
-        guardar() {
+        guardar(id_entrega) {
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
 
-            var raw = JSON.stringify({
-                "comentario": this.comentario,
-            });
+            console.log($(`#comentario${id_entrega}`).val())
 
+            var raw = JSON.stringify({
+                "comentario": $(`#comentario${id_entrega}`).val(),
+                "entrega_id": id_entrega,
+            });
+            
             var requestOptions = {
                 method: 'POST',
                 headers: myHeaders,
                 body: raw      
             };
-            fetch(`/api/entrega_alumno/${this.ejercicio.id}/`, requestOptions)
+
+            console.log(requestOptions)
+            fetch(`/api/entrega_alumno/${this.tarea.id}/`, requestOptions)
             .then(respuesta => respuesta.json())
             .then((res) => {
+                console.log(res)
                 let alerta = $(`<div class='alert alert-${res.tipo}' role='alert'>${res.msg}</div>`);
                 alerta.appendTo($('body'));
                 alerta.fadeIn();
@@ -53,12 +56,12 @@ const app = Vue.createApp({
         }
     },
     mounted() {
-        console.log("mounted")
-        this.ejercicio = ejercicio;
-        console.log(this.ejercicio);
-        this.entrega = entrega;
-        console.log(this.entrega);
-        this.comentario = entrega.comentario_alumno;
+        this.tarea = tarea;
+        console.log(this.tarea)
+        this.entregas = entregas;
+        console.log(this.entregas)
+        this.calificacion = calificacion
+        console.log(this.calificacion)
     }
 });
 app.mount('#app');
