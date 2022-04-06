@@ -118,32 +118,6 @@ def finish_vr_exercise(request):
         })
 
 
-    try:
-        tarea = Tarea.objects.get(id=VRexerciseID, min_exercise_version=exerciseVersionID)
-    except:
-  
-        return Response({
-            'status': 'ERROR',
-            'message': 'Tarea no encontrado.'
-        })
-
-
-    try:
-
-        workpath = os.path.dirname(os.path.abspath(__file__)) #Returns the Path your .py file is in
-        if not os.path.exists(os.path.join(workpath,'../static/assets/archivos/')):
-            os.makedirs(os.path.join(workpath,'../static/assets/archivos/'))
-        performance_data_file = open(os.path.join(workpath,'../static/assets/archivos/performance_data-' + str(pin.usuario.id) + str(tarea.id) + '.json'), 'w+')
-        performance_data_file.write(json.dumps(performance_data))
-        performance_data_file.close()
-
-    except:
-        return Response({
-            'status': 'ERROR',
-            'message': 'Error al guardar performance_data.'
-        })
-
-
     auto_puntuacion = Auto_Puntuacion.objects.create(
         passed_items = autograde_passed_items,
         failed_items = autograde_failed_items,
@@ -152,13 +126,31 @@ def finish_vr_exercise(request):
    
     entrega = Entrega.objects.create(
         autor = pin.usuario,
-        tarea = tarea,
+        tarea = pin.tarea,
         fecha_publicacion = timezone.now(),
         fecha_edicion = timezone.now(),
-        archivo = os.path.join(workpath,'../static/assets/archivos/performance_data-' + str(pin.usuario.id) + str(tarea.id) + '.json'),
         auto_puntuacion = auto_puntuacion,
         nota = None,
     )
+    setattr(entrega, 'archivo', '/static/assets/archivos/performance_data-' + str(pin.usuario.id) + str(entrega.id) + '.json')
+    entrega.save()
+    try:
+
+        workpath = os.path.dirname(os.path.abspath(__file__)) #Returns the Path your .py file is in
+        performance_data_file = open(os.path.join(workpath,'../static/assets/archivos/performance_data-' + str(pin.usuario.id) + str(entrega.id) + '.json'), 'w+')
+        performance_data_file.write(json.dumps(performance_data))
+        performance_data_file.close()
+
+    except:
+        traceback.print_exc()
+        
+        entrega.delete()
+        
+        return Response({
+            'status': 'ERROR',
+            'message': 'Error al guardar performance_data.'
+        })
+
 
     # Se borra el pin
     pin.delete()

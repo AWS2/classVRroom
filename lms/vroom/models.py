@@ -56,6 +56,7 @@ class Tarea(models.Model):
 
 class Ejercicio(models.Model):
     titulo = models.CharField(max_length=100,null=False,blank=False)
+    idVr = models.CharField(max_length=100,null=False,blank=False)
 
     def __str__(self):
         return self.titulo
