@@ -48,24 +48,33 @@ Para cualquier duda contactar con los autores
 - Curso: añadir, borrar, modificar y ver.
 - Documento: añadir, borrar, modificar y ver. 
 - Tarea: añadir, borrar, modificar y ver.
+- Auto puntuacion: añadir, borrar, modificar y ver.
 - Entrega: añadir, borrar, modificar y ver.
 - Invitacion: añadir, borrar, modificar y ver.
 - Link: añadir, borrar, modificar y ver.
 - Texto: añadir, borrar, modificar y ver.
 - User: añadir, borrar, modificar y ver.
+- Usuario curso: añadir, borrar, modificar y ver.
 
 ### Profesor
+- Curso: modificar y ver
 - Documento: añadir, borrar, modificar y ver. 
 - Tarea: añadir, borrar, modificar y ver.
-- Entrega: modificar y ver.
+- Entrega: ver.
+- Auto puntuacion: ver.
 - Invitacion: añadir, borrar, modificar y ver.
 - Link: añadir, borrar, modificar y ver.
 - Texto: añadir, borrar, modificar y ver.
+- Usuario curso: añadir, borrar, modificar y ver.
 
 ## Version History
 
 * 0.1
     * Release inicial
+* 0.2
+* 0.3
+* 1.0 Beta
+    * First fully working app release
 
 ## Autores
   
