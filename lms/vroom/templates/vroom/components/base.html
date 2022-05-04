@@ -1,57 +1,66 @@
 <!DOCTYPE html>
-{% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}{% endblock %}</title>
 
     <!-- Jquery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
 
     <!-- Global Custom Assets -->
-    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" />
     <script src="{% static 'assets/js/global.js' %}"></script>
-    
+
+    {#
     <!-- Google Analitics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8QBYYSYMSQ"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-8QBYYSYMSQ"
+    ></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-8QBYYSYMSQ');
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-8QBYYSYMSQ");
     </script>
+    #}
 
     <!-- Tailwind -->
     <script src="https://unpkg.com/vue@next"></script>
 
-</head>
-<body class="{% block extraclass %}{% endblock %} bg-light loading">
-
+    {# Para cargar archivos nativo de Django #} {% load static %}
+  </head>
+  <body class="{% block extraclass %}{% endblock %} bg-light loading">
     <div class="preloader">
-
-        <div class="loader-container">
-            <img class="loader1" src="{% static 'assets/img/loader1.png' %}" alt="">
-            <img class="loader2" src="{% static 'assets/img/loader2.png' %}" alt="">
-        </div>
-
+      <div class="loader-container">
+        <img
+          class="loader1"
+          src="{% static 'assets/img/loader1.png' %}"
+          alt=""
+        />
+        <img
+          class="loader2"
+          src="{% static 'assets/img/loader2.png' %}"
+          alt=""
+        />
+      </div>
     </div>
 
     {% include "vroom/components/header.html" %}
 
     <div class="main-content-container">
-
-        {% block breadcrumbs %}
-        {% endblock %}
-
-
-        {% block content %}
-        {% endblock %}
+      {% block breadcrumbs %} {% endblock %} {% block content %} {% endblock %}
     </div>
-    
+
     <div id="alert-container"></div>
 
     {% include "vroom/components/footer.html" %}
-
-</body>
+  </body>
 </html>
