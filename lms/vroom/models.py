@@ -5,11 +5,10 @@ import os
 
 
 class Usuario(AbstractUser):
-    termino = models.ForeignKey('Termino',on_delete=models.DO_NOTHING,null=True) 
-
+    termino = models.ForeignKey('Termino',on_delete=models.DO_NOTHING,null=True)
+    centro = models.ForeignKey('Centro',on_delete=models.CASCADE,null=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
-
     def __str__(self):
         return self.username
 
@@ -28,8 +27,7 @@ class Termino(models.Model):
 class Centro(models.Model):
     nombre = models.CharField(max_length=100)
     icono = models.ImageField(default=None, blank=True, null=True)
-    administrador = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=True)
-
+    administrador = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,related_name="admin_centro")
     def __str__(self):
         return self.nombre
 
@@ -37,35 +35,32 @@ class Curso(models.Model):
     titulo = models.CharField(max_length=100,null=False,blank=False)
     descripcion = models.TextField()
     estado = models.BooleanField(null=False,blank=False,default=False)
-    centro = models.ForeignKey('Centro',on_delete=models.DO_NOTHING,default=True)   
-
+    centro = models.ForeignKey('Centro',on_delete=models.DO_NOTHING)   
     def __str__(self):
         return self.titulo
 
 class Tarea(models.Model):
-    autor = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=True)
-    curso = models.ForeignKey('Curso',on_delete=models.DO_NOTHING,default=True)
+    autor = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING)
+    curso = models.ForeignKey('Curso',on_delete=models.DO_NOTHING)
     titulo = models.CharField(max_length=100,null=False,blank=False)
     descripcion = models.TextField(default=None, blank=True, null=True)
     enunciado = models.TextField()
     nota_maxima = models.FloatField()
     fecha_publicacion = models.DateTimeField(default=timezone.now)
     min_exercise_version = models.FloatField(default=0, null=True, blank=True)
-    ejercicio = models.ForeignKey('Ejercicio',on_delete=models.DO_NOTHING,default=True)
-
+    ejercicio = models.ForeignKey('Ejercicio',on_delete=models.DO_NOTHING)
     def __str__(self):
         return self.titulo
 
 class Ejercicio(models.Model):
     titulo = models.CharField(max_length=100,null=False,blank=False)
     idVr = models.CharField(max_length=100,null=False,blank=False)
-
     def __str__(self):
         return self.titulo
 
 
 class Entrega(models.Model):
-    autor = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=True)
+    autor = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING)
     fecha_publicacion = models.DateTimeField(default=timezone.now)
     fecha_edicion = models.DateTimeField(default=timezone.now)
     archivo = models.FileField(upload_to='static/assets/archivos',default=None, blank=True, null=True)
@@ -123,7 +118,6 @@ class Documento(models.Model):
 
 class Tipo_Subscripcion(models.Model):
     nombre = models.CharField(max_length=100,null=False,blank=False)
-
     def __str__(self):
         return self.nombre
 
