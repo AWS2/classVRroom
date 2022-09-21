@@ -22,6 +22,8 @@ class Termino(models.Model):
     version = models.FloatField()
     permisos = models.IntegerField()
     texto = models.TextField(null=True)
+    def __str__(self):
+        return self.texto
 
 class Centro(models.Model):
     nombre = models.CharField(max_length=100)

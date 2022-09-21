@@ -1,0 +1,23 @@
+
+
+
+- pasar idioma a ES en el admin django
+- Restricciones admin panel:
+	- escoder (no para super) usuario-curso, ejercicio, tarea, entrega y autopuntuaciones. Dejamos solo curso, user
+	- Curso:
+		- centro read-only y fijar en save
+		- Link, Doc, Texto, Tarea -> autor read-only y fijar en save (o esconder)
+	- User:
+		- ver tipo de usuario en la lista (grupos)
+		- ver solo los de tu centro
+		- al crear usuario
+			- fijar centro, staff_status y permisos (de alumno o de profe)
+			- esconder ternimos (null), staff_status, superuser, permisos
+			- profe ve admins como readonly (o no los ve)
+- frontend
+	- primer login de alumnos pide nivel de aceptación
+	- invitaciones email?
+	- 
+- social auth
+- responsive
+

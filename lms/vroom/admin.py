@@ -3,7 +3,11 @@ from django.contrib import admin
 from .models import *
  
 # Register your models here.
- 
+
+class TerminoAdmin(admin.ModelAdmin):
+    model = Termino
+    list_display = ('version','permisos','texto')
+  
 class TareaInline(admin.TabularInline):
     model = Tarea
     fields = ('autor','titulo','enunciado','nota_maxima', 'fecha_publicacion', 'ejercicio')  
@@ -102,7 +106,7 @@ admin.site.register(Curso, CursoAdmin)
 admin.site.register(Tarea, TareaAdmin)
 admin.site.register(Tipo_Subscripcion)
 admin.site.register(Usuario, UserAdmin)
-admin.site.register(Termino)
+admin.site.register(Termino,TerminoAdmin)
 admin.site.register(Entrega)
 admin.site.register(Usuario_Curso)
 admin.site.register(Pin)
