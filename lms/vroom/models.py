@@ -12,6 +12,11 @@ class Usuario(AbstractUser):
     def __str__(self):
         return self.username
     @property
+    def es_admin(self):
+        if self.groups.filter(name='admin centro').exists():
+            return True
+        return False
+    @property
     def es_profesor(self):
         if self.groups.filter(name='profesor').exists():
             return True

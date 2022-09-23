@@ -94,7 +94,7 @@ class UserCreateForm(UserCreationForm):
 class UserAdmin(UserAdmin):
     add_form = UserCreateForm
     prepopulated_fields = {'username': ('first_name' , 'last_name', )}
-    list_display = UserAdmin.list_display + ('centro',)
+    list_display = UserAdmin.list_display + ('centro','get_permisos',)
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
@@ -106,17 +106,27 @@ class UserAdmin(UserAdmin):
                 'fields': ('centro',),
             }),
     )
+    def get_permisos(self, obj):
+        permisos = ""
+        for permiso in obj.groups.all():
+            permisos += permiso.name + " "
+        return permisos
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
+        elif request.user.es_admin:
+            return qs.filter(centro=request.user.centro)
         elif request.user.es_profesor:
-            subProf = Tipo_Subscripcion.objects.get(nombre='Profesor')
+            return qs.filter(centro=request.user.centro)
+        """    subProf = Tipo_Subscripcion.objects.get(nombre='Profesor')
             return qs.filter(id__in=(Usuario_Curso.objects.filter(usuario=request.user,tipo_subscripcion=subProf.id)).values('curso'))
-        """elif request.user.es_admin and \
+        elif request.user.es_admin and \
             Centro.objects.filter(administrador=request.user).exists():
             return qs.filter(centro=Centro.objects.get(administrador=request.user))"""
         # no se tendria que llegar aqui
+        print("none!")
         return Usuario.objects.none()
 
 
