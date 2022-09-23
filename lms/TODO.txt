@@ -8,6 +8,11 @@ OK- pasar idioma a ES en el admin django
 	- arreglar script initvroom
 
 - en users, poner centro en readonly menos para super
+- asignar centro automaticamente a new user
+- new curso:
+	- asignar centro autom a new curso
+	- subscribir profe creador autom.
+- filtrar alumnos en inscripciones (usuario_curso inline)
 
 - Restricciones admin panel:
 	- autor no es necesario, esconder
