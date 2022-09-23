@@ -2,6 +2,10 @@
 
 
 OK- pasar idioma a ES en el admin django
+- simplificar admins
+	- eliminar admin_centro
+	- dar permisos de cursos a profesores
+	- arreglar script initvroom
 - Restricciones admin panel:
 	- autor no es necesario, esconder
 	- esconder (no para super) usuario-curso, ejercicio, tarea, entrega y autopuntuaciones. Dejamos solo curso, user, tarea

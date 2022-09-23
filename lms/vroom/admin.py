@@ -73,17 +73,16 @@ class EntregaAdmin(admin.ModelAdmin):
  
  
 class CursoAdmin(admin.ModelAdmin):
+    list_display = ('titulo','centro',)
     inlines = [LinkInline, TextoInline ,DocumentoInline, TareaInline, Usuario_CursoInline ]   
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        elif request.user.groups.filter(name='profesor').exists(): 
-            subProf = Tipo_Subscripcion.objects.get(nombre='Profesor')
-            print(qs)
-            return qs.filter(id__in = (Usuario_Curso.objects.filter(usuario=request.user,tipo_subscripcion=subProf.id)).values('curso'))
-        else:
-            return qs.filter(centro=Centro.objects.get(administrador=request.user))
+        elif request.user.es_profesor:
+            return qs.filter(centro=request.user.centro)
+        # aquí no se tendria que llegar
+        return qs.objects.none()
 
 
 from django.contrib.auth.forms import UserCreationForm
@@ -95,6 +94,7 @@ class UserCreateForm(UserCreationForm):
 class UserAdmin(UserAdmin):
     add_form = UserCreateForm
     prepopulated_fields = {'username': ('first_name' , 'last_name', )}
+    list_display = UserAdmin.list_display + ('centro',)
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
@@ -110,14 +110,14 @@ class UserAdmin(UserAdmin):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        elif request.user.groups.filter(name='profesor').exists(): 
-            """subProf = Tipo_Subscripcion.objects.get(nombre='Profesor')
-            print(qs)
-            return qs.filter(id__in = (Usuario_Curso.objects.filter(usuario=request.user,tipo_subscripcion=subProf.id)).values('curso'))"""
-            # TODO: filtrar
-            pass
-        else:
-            return qs.filter(centro=Centro.objects.get(administrador=request.user))
+        elif request.user.es_profesor:
+            subProf = Tipo_Subscripcion.objects.get(nombre='Profesor')
+            return qs.filter(id__in=(Usuario_Curso.objects.filter(usuario=request.user,tipo_subscripcion=subProf.id)).values('curso'))
+        """elif request.user.es_admin and \
+            Centro.objects.filter(administrador=request.user).exists():
+            return qs.filter(centro=Centro.objects.get(administrador=request.user))"""
+        # no se tendria que llegar aqui
+        return Usuario.objects.none()
 
 
 admin.site.register(Centro,CentroAdmin)

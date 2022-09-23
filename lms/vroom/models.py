@@ -11,7 +11,11 @@ class Usuario(AbstractUser):
     REQUIRED_FIELDS = ['username']
     def __str__(self):
         return self.username
-
+    @property
+    def es_profesor(self):
+        if self.groups.filter(name='profesor').exists():
+            return True
+        return False
 Usuario._meta.get_field('email')._unique = True
 Usuario._meta.get_field('email').blank = False
 Usuario._meta.get_field('email').null = False
