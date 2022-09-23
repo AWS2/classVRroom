@@ -3,11 +3,11 @@
 
 OK- pasar idioma a ES en el admin django
 - simplificar admins
-	- eliminar admin_centro
-	- dar permisos de cursos a profesores
-	- arreglar script initvroom
+	XNO- eliminar admin_centro
+	OK- dar permisos de cursos a profesores
+	OK- arreglar script initvroom
 
-- en users, poner centro en readonly menos para super
+OK- en users, poner centro en readonly menos para super
 - asignar centro automaticamente a new user
 - new curso:
 	- asignar centro autom a new curso

@@ -116,13 +116,22 @@ class UserAdmin(UserAdmin):
             permisos += permiso.name + " "
         return permisos
 
+    def get_form(self,request,obj=None,**kwargs):
+        if request.user.is_superuser:
+            self.readonly_fields = ()
+        else:
+            print(self.fieldsets)
+            self.readonly_fields = ('centro','is_staff','is_superuser','groups','user_permissions')
+        return super().get_form(request,obj,**kwargs)
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        elif request.user.es_admin:
+        elif request.user.es_admin or request.user.es_profesor:
             return qs.filter(centro=request.user.centro)
-        elif request.user.es_profesor:
+        """elif request.user.es_profesor:
+            # mostramos alumnos que el profesor tenga en algun curso
             # TODO: optimizar
             subs_profe = Tipo_Subscripcion.objects.get(nombre='Profesor')
             subscripciones = request.user.usuario_curso_set.filter(tipo_subscripcion=subs_profe)
@@ -134,11 +143,27 @@ class UserAdmin(UserAdmin):
                     #print(alumno)
                     alumno_ids.append(alumno["usuario"])
             #print(alumno_ids)
-            return qs.filter(id__in=alumno_ids)
+            return qs.filter(id__in=alumno_ids)"""
         # no se tendria que llegar aqui
         print("none!")
         return Usuario.objects.none()
 
+    def save_model(self,request,obj,form,change):
+        # si es superuser lo dejamos como diga
+        if request.user.is_superuser:
+            super().save_model(request,obj,form,change)
+            return
+        # asociamos el nuevo usuario al centro del actual usuario
+        if request.user.es_admin or request.user.es_profesor:
+            obj.centro = request.user.centro
+            obj.is_staff = False
+            obj.is_superuser = False
+            obj.save()
+            return
+        # si no es admin_centre ni superuser no es guarda res
+        # Donar error (cap usuari hauria d'arribar aqui)
+        print("ERROR: en UserAdmin.save_model (usuario no autorizado)")
+        raise Exception("Usuari no autorizado. Hablar con el administrdor.")
 
 admin.site.register(Centro,CentroAdmin)
 admin.site.register(Curso, CursoAdmin)
