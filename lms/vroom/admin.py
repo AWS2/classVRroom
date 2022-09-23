@@ -79,8 +79,12 @@ class CursoAdmin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        elif request.user.es_profesor:
+        elif request.user.es_admin:
             return qs.filter(centro=request.user.centro)
+        elif request.user.es_profesor:
+            subscripciones = request.user.usuario_curso_set.all()
+            mis_cursos = subscripciones.values("curso")
+            return qs.filter(id__in=mis_cursos)
         # aquí no se tendria que llegar
         return qs.objects.none()
 
@@ -119,12 +123,18 @@ class UserAdmin(UserAdmin):
         elif request.user.es_admin:
             return qs.filter(centro=request.user.centro)
         elif request.user.es_profesor:
-            return qs.filter(centro=request.user.centro)
-        """    subProf = Tipo_Subscripcion.objects.get(nombre='Profesor')
-            return qs.filter(id__in=(Usuario_Curso.objects.filter(usuario=request.user,tipo_subscripcion=subProf.id)).values('curso'))
-        elif request.user.es_admin and \
-            Centro.objects.filter(administrador=request.user).exists():
-            return qs.filter(centro=Centro.objects.get(administrador=request.user))"""
+            # TODO: optimizar
+            subs_profe = Tipo_Subscripcion.objects.get(nombre='Profesor')
+            subscripciones = request.user.usuario_curso_set.filter(tipo_subscripcion=subs_profe)
+            mis_cursos = Curso.objects.filter(id__in=subscripciones.values("curso"))
+            alumno_ids = []
+            for curso in mis_cursos:
+                alumnos = curso.usuario_curso_set.filter(curso=curso).values("usuario")
+                for alumno in alumnos:
+                    #print(alumno)
+                    alumno_ids.append(alumno["usuario"])
+            #print(alumno_ids)
+            return qs.filter(id__in=alumno_ids)
         # no se tendria que llegar aqui
         print("none!")
         return Usuario.objects.none()

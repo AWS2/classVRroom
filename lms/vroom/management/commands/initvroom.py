@@ -19,7 +19,7 @@ GROUPS = {
         "ejercicio" : ["add","delete","change","view"],
     },
     'profesor': {
-        "curso" : ["change","view"],
+        "curso" : ["change","view","add","delete"],
         "documento" : ["add","delete","change","view"],
         "tarea" : ["add","delete","change","view"],
         "entrega" : ["view"],
@@ -28,6 +28,7 @@ GROUPS = {
         "link" : ["add","delete","change","view"],
         "texto" : ["add","delete","change","view"],
         "usuario_ curso": ["add","delete","change","view"],
+        "user" : ["add","change","view"],
     }
 }
 
