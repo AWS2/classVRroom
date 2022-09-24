@@ -7,12 +7,14 @@ OK- pasar idioma a ES en el admin django
 	OK- dar permisos de cursos a profesores
 	OK- arreglar script initvroom
 
+OK- duración sesiones de 2 horas
 OK- en users, poner centro en readonly menos para super
-- asignar centro automaticamente a new user
-- new curso:
-	- asignar centro autom a new curso
-	- subscribir profe creador autom.
-- filtrar alumnos en inscripciones (usuario_curso inline)
+OK- asignar centro automaticamente a new user
+OK- new curso:
+	OK- asignar centro autom a new curso
+	OK- subscribir profe creador autom.
+OK- filtrar alumnos en inscripciones (usuario_curso inline)
+
 
 - Restricciones admin panel:
 	- autor no es necesario, esconder

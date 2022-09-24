@@ -36,6 +36,8 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
+# la sesión dura 2 horas por defecto
+SESSION_COOKIE_AGE = 2 * 60 * 60
 
 # Application definition
 

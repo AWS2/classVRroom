@@ -21,6 +21,8 @@ class Usuario(AbstractUser):
         if self.groups.filter(name='profesor').exists():
             return True
         return False
+    def __str__(self):
+        return "{} {} ({})".format(self.first_name,self.last_name,self.email)
 Usuario._meta.get_field('email')._unique = True
 Usuario._meta.get_field('email').blank = False
 Usuario._meta.get_field('email').null = False
@@ -131,6 +133,8 @@ class Tipo_Subscripcion(models.Model):
         return self.nombre
 
 class Usuario_Curso(models.Model):
+    class Meta:
+        unique_together = ('usuario', 'curso','tipo_subscripcion')
     usuario = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=True)
     curso = models.ForeignKey('Curso',on_delete=models.CASCADE)
     tipo_subscripcion = models.ForeignKey('Tipo_Subscripcion',on_delete=models.CASCADE)

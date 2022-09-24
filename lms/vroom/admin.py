@@ -1,5 +1,6 @@
 from django.contrib.auth.admin import UserAdmin
 from django.contrib import admin
+from django.db import IntegrityError, transaction
 from .models import *
  
 # Register your models here.
@@ -44,8 +45,12 @@ class Usuario_CursoInline(admin.TabularInline):
     verbose_plural_name = "Suscripciones"
     fields = ('usuario','tipo_subscripcion',)
     extra = 0
+    def formfield_for_foreignkey(self,db_field,request=None,**kwargs):
+        if db_field.name=="usuario" and not request.user.is_superuser:
+            # restringir a alumnos del centro
+            kwargs["queryset"] = Usuario.objects.filter(centro=request.user.centro)
+        return super().formfield_for_foreignkey(db_field,request=request,**kwargs)
  
-
 class CentroAdmin(admin.ModelAdmin):
     list_display = ('nombre','administrador')
 
@@ -74,7 +79,20 @@ class EntregaAdmin(admin.ModelAdmin):
  
 class CursoAdmin(admin.ModelAdmin):
     list_display = ('titulo','centro',)
-    inlines = [LinkInline, TextoInline ,DocumentoInline, TareaInline, Usuario_CursoInline ]   
+    edit_inlines = [LinkInline, TextoInline ,DocumentoInline, TareaInline, Usuario_CursoInline ]
+
+    def get_form(self,request,obj=None,**kwargs):
+        # por defecto cargamos los inlines
+        self.inlines = self.edit_inlines
+        if request.user.is_superuser:
+            self.readonly_fields = ()
+        else:
+            self.readonly_fields = ('centro',)
+            # cuando creamos nuevo curso, no ponemos inlines
+            if obj==None:
+                self.inlines = []
+        return super().get_form(request,obj,**kwargs)
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
@@ -88,6 +106,34 @@ class CursoAdmin(admin.ModelAdmin):
         # aquí no se tendria que llegar
         return qs.objects.none()
 
+    def save_model(self,request,obj,form,change):
+        nuevo_curso = True
+        if obj.pk: nuevo_curso = False
+        # si es superuser lo dejamos como diga
+        if request.user.is_superuser:
+            super().save_model(request,obj,form,change)
+            return
+        if request.user.es_admin:
+            # asociamos el nuevo usuario al centro del actual usuario
+            obj.centro = request.user.centro
+            super().save_model(request,obj,form,change)
+            return
+        if request.user.es_profesor:
+            # asociamos el nuevo usuario al centro del actual usuario
+            obj.centro = request.user.centro
+            super().save_model(request,obj,form,change)
+            # intentamos inscribir al profesor en el curso al crear curso
+            if nuevo_curso:
+                subsProfe = Tipo_Subscripcion.objects.get(nombre='Profesor')
+                subscripcion = Usuario_Curso(usuario=request.user,
+                            curso=obj,tipo_subscripcion=subsProfe)
+                # no necesita protección porque en creación se desactivan los inlines
+                subscripcion.save()
+            return
+        # si no es admin_centro ni superuser no se guarda nada
+        # Dar error (ningun usuario debería llegar aquí)
+        print("ERROR: en UserAdmin.save_model (usuario no autorizado)")
+        raise Exception("Usuario no autorizado. Hablar con el administrdor.")
 
 from django.contrib.auth.forms import UserCreationForm
 class UserCreateForm(UserCreationForm):
@@ -98,7 +144,7 @@ class UserCreateForm(UserCreationForm):
 class UserAdmin(UserAdmin):
     add_form = UserCreateForm
     prepopulated_fields = {'username': ('first_name' , 'last_name', )}
-    list_display = UserAdmin.list_display + ('centro','get_permisos',)
+    list_display = UserAdmin.list_display + ('is_active','centro','get_permisos',)
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
@@ -120,8 +166,8 @@ class UserAdmin(UserAdmin):
         if request.user.is_superuser:
             self.readonly_fields = ()
         else:
-            print(self.fieldsets)
-            self.readonly_fields = ('centro','is_staff','is_superuser','groups','user_permissions')
+            self.readonly_fields = ('centro','is_staff',
+                    'is_superuser','groups','user_permissions')
         return super().get_form(request,obj,**kwargs)
 
     def get_queryset(self, request):
@@ -160,8 +206,8 @@ class UserAdmin(UserAdmin):
             obj.is_superuser = False
             obj.save()
             return
-        # si no es admin_centre ni superuser no es guarda res
-        # Donar error (cap usuari hauria d'arribar aqui)
+        # si no es admin_centro ni superuser no se guarda nada
+        # Dar error (ningun usuario debería llegar aquí)
         print("ERROR: en UserAdmin.save_model (usuario no autorizado)")
         raise Exception("Usuari no autorizado. Hablar con el administrdor.")
 
