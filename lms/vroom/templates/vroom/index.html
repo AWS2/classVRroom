@@ -12,8 +12,8 @@
 
         <div class="row">
             <div class=" ">
-                <h1>Bienvenido a el proyecto Vroom</h1>
-                <p class="text-justify">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure id non sunt magnam illo doloribus, suscipit minus fugit, vitae beatae provident ea ex eos minima alias soluta ipsum, nobis dicta est qui consectetur quisquam totam aspernatur ipsa? Fuga commodi laudantium veniam ut aliquam id, numquam, dignissimos odit illum, tempore alias!</p>
+                <h1>Bienvenido al portal classVRroom</h1>
+                <p class="text-justify"><b>classVRroom es un software LMS o Learning Management System</b> especialmente diseñado para el seguimiento académico del alumnado del ciclo de Auxiliar de Enfermería que usa el software inmersivo 3D desarrollado en el proyecto <b>VR Salud</b>.</p>
             </div>
         </div>
 
@@ -22,7 +22,9 @@
     <section class="container mx-auto bg-light">
         <div class="row align-items-center py-4">
             <div class="col-6  p-l">
-                <p class="text-justify">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure id non sunt magnam illo doloribus, suscipit minus fugit, vitae beatae provident ea ex eos minima alias soluta ipsum, nobis dicta est qui consectetur quisquam totam aspernatur ipsa? Fuga commodi laudantium veniam ut aliquam id, numquam, dignissimos odit illum, tempore alias!</p>
+                <p class="text-justify">El <b>proyecto VR Salud</b> se ubica dentro de las ayudas para la innovación en la FP del Ministerio de Educación y FP, y está financiado con los fondos europeos Next Generation.</p>
+                <br>
+
                 {% if user.is_authenticated %}
                     <span class="my-3">
                     Bienvenido de nuevo {{user}}
@@ -31,13 +33,24 @@
                     <a class="btn btn-primary my-3" href="{% url 'login' %}" role="button">Iniciar sesión</a>
                 {% endif %}
             </div>
-            <div class="col-6"><img src="{% static 'assets/img/landing1.jpg' %}" alt=""></div>
-        </div>
-        <div class="row align-items-center  py-4">
             <div class="col-6 p-l"><img src="{% static 'assets/img/landing1.jpg' %}" alt=""></div>
         </div>
     </section>
 
+    <section class="container mx-auto bg-light">
+        <div class="row align-items-center py-4">
+            <div class="col-6">
+                <p>
+                    <img src="{% static 'assets/img/logo-mefp.jpg' %}" alt="logo mefp">
+                </p>
+            </div>
+            <div class="col-6">
+                <p>
+                    <img src="{% static 'assets/img/logos-ue-next-generation.png' %}" alt="logo UE Next Generation">
+                </p>
+            </div>
+        </div>
+    </section>
 
 
 

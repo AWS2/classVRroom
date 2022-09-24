@@ -16,18 +16,23 @@ OK- new curso:
 OK- filtrar alumnos en inscripciones (usuario_curso inline)
 
 
+PRIO
+- frontend peitición PIN alumno
+- aceptación de TOS alumnos
+
+
 - Restricciones admin panel:
-	- autor no es necesario, esconder
+	OK- autor no es necesario, esconder
 	- esconder (no para super) usuario-curso, ejercicio, tarea, entrega y autopuntuaciones. Dejamos solo curso, user, tarea
 	- Curso:
-		- centro read-only y fijar en save
+		OK- centro read-only y fijar en save
 		- Link, Doc, Texto, Tarea -> autor read-only y fijar en save (o esconder)
 	- User:
-		- ver tipo de usuario en la lista (grupos)
-		- ver solo los de tu centro
+		OK- ver tipo de usuario en la lista (grupos)
+		OK- ver solo los de tu centro
 		- al crear usuario
-			- fijar centro, staff_status y permisos (de alumno o de profe)
-			- esconder ternimos (null), staff_status, superuser, permisos
+			OK- fijar centro, staff_status y permisos (de alumno o de profe)
+			OK- esconder ternimos (null), staff_status, superuser, permisos
 			- profe ve admins como readonly (o no los ve)
 - frontend
 	- primer login de alumnos pide nivel de aceptación
