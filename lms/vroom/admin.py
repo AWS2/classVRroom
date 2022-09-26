@@ -13,7 +13,10 @@ class TareaInline(admin.TabularInline):
     model = Tarea
     fields = ('titulo','enunciado','nota_maxima', 'fecha_publicacion', 'ejercicio')  
     extra = 0
- 
+    def save_model(self,request,obj,form,change):
+        print("saving...")
+        return super().save_model(request,obj,form,change)
+
 class EntregaInline(admin.TabularInline):
     model = Entrega
     fields = ('autor','archivo','comentario_alumno', 'fecha_edicion')
@@ -135,6 +138,7 @@ class CursoAdmin(admin.ModelAdmin):
         print("ERROR: en UserAdmin.save_model (usuario no autorizado)")
         raise Exception("Usuario no autorizado. Hablar con el administrdor.")
 
+
 from django.contrib.auth.forms import UserCreationForm
 class UserCreateForm(UserCreationForm):
     class Meta:
@@ -211,6 +215,17 @@ class UserAdmin(UserAdmin):
         print("ERROR: en UserAdmin.save_model (usuario no autorizado)")
         raise Exception("Usuari no autorizado. Hablar con el administrdor.")
 
+
+class PinAdmin(admin.ModelAdmin):
+    model = Pin
+    list_display = ('pin','usuario','tarea','get_curso','get_centro')
+    search_fields = ('usuario__first_name','usuario__last_name',
+            'usuario__email','tarea__titulo','tarea__curso__titulo')
+    def get_curso(self,obj):
+        return obj.tarea.curso.titulo
+    def get_centro(self,obj):
+        return obj.tarea.curso.centro.nombre
+
 admin.site.register(Centro,CentroAdmin)
 admin.site.register(Curso, CursoAdmin)
 admin.site.register(Tarea, TareaAdmin)
@@ -219,7 +234,7 @@ admin.site.register(Usuario, UserAdmin)
 admin.site.register(Termino,TerminoAdmin)
 #admin.site.register(Entrega)
 #admin.site.register(Usuario_Curso)
-#admin.site.register(Pin)
+admin.site.register(Pin,PinAdmin)
 #admin.site.register(Calificacion)
 #admin.site.register(Auto_Puntuacion)
 admin.site.register(Ejercicio)

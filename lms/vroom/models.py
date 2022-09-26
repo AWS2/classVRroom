@@ -51,7 +51,7 @@ class Curso(models.Model):
         return self.titulo
 
 class Tarea(models.Model):
-    autor = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING)
+    autor = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,null=True,blank=True)
     curso = models.ForeignKey('Curso',on_delete=models.DO_NOTHING)
     titulo = models.CharField(max_length=100,null=False,blank=False)
     descripcion = models.TextField(default=None, blank=True, null=True)

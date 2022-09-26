@@ -12,6 +12,30 @@
 {{ entregas|json_script:"entregas" }}
 {{ calificacion|json_script:"calificacion" }}
 
+<script type="text/javascript">
+    function get_pin() {
+        var id_tarea = {{tarea.id}};
+        if( !id_tarea ) {
+            alert("ERROR en la tarea para tramitar PIN");
+        }
+        $.ajax({
+          method: "GET",
+          url: "/get_pin/"+id_tarea,
+          dataType: "json",
+        }).done(function (msg) {
+            if( msg.status="OK" ) {
+                alert("PIN="+msg.pin);
+                $("#pin_num").html(msg.pin);
+            }
+            else {
+                alert("ERROR. "+msg.message)
+            }
+        }).fail(function () {
+            alert("ERROR");
+        });
+    }
+</script>
+
 
 <div id="app">
 
@@ -42,6 +66,10 @@
                 <p>Datos de rendimiento:&nbsp<a :href="entrega.archivo" target="_blank">Ver</a></p>
                 <p>Auto-puntuación: [[entrega.auto_puntuacion.passed_items]]/[[entrega.auto_puntuacion.failed_items + entrega.auto_puntuacion.passed_items]], [[entrega.auto_puntuacion.score]]% <span v-if="entrega.auto_puntuacion.comments">&nbsp[[entrega.auto_puntuacion.comments]]</span></p>
                 <p>Comentario:&nbsp<textarea cols="70" rows="1" :id="'comentario' + [[entrega.id]]">[[entrega.comentario_alumno]]</textarea><button class='btn' @click="guardar(entrega.id)">Guardar</button></p>
+            </div>
+            <div>
+                <h3>PIN: <span id="pin_num">{{pin}}</span></h3>
+                <button onclick="get_pin()">Solicitar PIN</button>
             </div>
         </div>
 

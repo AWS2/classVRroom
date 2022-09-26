@@ -1,8 +1,9 @@
 from django.shortcuts import render
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, JsonResponse, Http404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
+import random
 
 from .models import *
 
@@ -82,8 +83,6 @@ def tarea(request, id_tarea, id_curso):
     rol = Usuario_Curso.objects.get(usuario = request.user, curso = tarea.curso).tipo_subscripcion
 
     if (rol.nombre == "Alumno"):
-        
-        
         entregas = list(Entrega.objects.filter(tarea = tarea.id, autor = request.user).values())
         if len(entregas) == 0:
             entregas = False
@@ -91,21 +90,22 @@ def tarea(request, id_tarea, id_curso):
             for entrega in entregas:
                 auto_puntuacion = model_to_dict(Auto_Puntuacion.objects.get(id = entrega['auto_puntuacion_id']))
                 entrega['auto_puntuacion'] = auto_puntuacion
-            
         try:
             calificacion = model_to_dict(Calificacion.objects.get(tarea = tarea.id, alumno = request.user))
             profe = Calificacion.objects.get(tarea = tarea.id, alumno = request.user).profesor
             calificacion["profesor"] = profe.first_name + " " + profe.last_name
         except:
             calificacion = False
-        
-
+        pin_number = None
+        if Pin.objects.filter(tarea=tarea,usuario=request.user).exists():
+            pin = Pin.objects.filter(tarea=tarea,usuario=request.user).first()
+            pin_number = pin.pin
         contexto = {
             "tarea": tarea_dict,
+            "pin": pin_number,
             "entregas": entregas,
             "calificacion": calificacion,
         }
-
         return render(request, 'vroom/tarea_alumno.html', contexto)
 
     else:
@@ -135,3 +135,50 @@ def tarea(request, id_tarea, id_curso):
         }
 
         return render(request, 'vroom/tarea_profesor.html', contexto)
+
+
+# API
+###############
+
+@login_required
+def get_pin(request,id_tarea):
+    tarea = None
+    try:
+        tarea = Tarea.objects.get(pk=id_tarea)
+    except:
+        pass
+    if not tarea or not request.user or request.user.is_anonymous:
+        return JsonResponse({
+            "status": "ERROR",
+            "message": "Error en tarea o en usuario"
+            })
+
+    # TODO: comprovar que la tarea es de un curso donde está matriculado el usuario
+    
+    # objeto PIN preexistente. Devolvemos el que ha ya habia
+    # TODO: quizas mejor recrear PIN?
+    if Pin.objects.filter(usuario=request.user,tarea=tarea).exists():
+        pin = Pin.objects.filter(usuario=request.user,tarea=tarea).first()
+        return JsonResponse({
+                "status": "OK",
+                "message": "PIN preexistente",
+                "id_tarea":id_tarea,
+                "pin": pin.pin
+            })
+    # nuevo numero PIN que no exista ya en la BD
+    randomnum = random.randint(1000,9999)
+    while True:
+        # iteramos hasta que encontremos un numero PIN libre
+        if not Pin.objects.filter(pin=randomnum).exists():
+            break
+        randomnum = random.randint(1000,9999)
+    # crear nuevo PIN
+    pin = Pin.objects.create(tarea=tarea,pin=randomnum,usuario=request.user)
+    # enviamos
+    return JsonResponse({
+            "status": "OK",
+            "message": "Nuevo PIN creado",
+            "id_tarea":id_tarea,
+            "pin": pin.pin
+        })
+
