@@ -28,11 +28,11 @@ def ping(request):
             'message': 'Conexión exitosa.',
         })
 
-@api_view(['GET'])
+@api_view(['POST'])
 @authentication_classes([])
 @permission_classes([])
 def start_vr_exercise(request):
-    getpin=request.GET.get('pin')
+    getpin=request.POST.get('PIN')
     
     try:
         pin = Pin.objects.get(pin=getpin)
@@ -64,7 +64,7 @@ def finish_vr_exercise(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
 
-    getpin=int(body['pin'])
+    getpin=int(body['PIN'])
     autograde=body['autograde']
     VRexerciseID=int(body['VRexerciseID'])
     exerciseVersionID=float(body['exerciseVersionID'])

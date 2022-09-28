@@ -17,13 +17,13 @@ OK- filtrar alumnos en inscripciones (usuario_curso inline)
 
 
 PRIO
-- frontend peitición PIN alumno
+OK- frontend peitición PIN alumno
 - aceptación de TOS alumnos
 
 
 - Restricciones admin panel:
 	OK- autor no es necesario, esconder
-	- esconder (no para super) usuario-curso, ejercicio, tarea, entrega y autopuntuaciones. Dejamos solo curso, user, tarea
+	(a medias) OK- esconder (no para super) usuario-curso, ejercicio, tarea, entrega y autopuntuaciones. Dejamos solo curso, user, tarea
 	- Curso:
 		OK- centro read-only y fijar en save
 		- Link, Doc, Texto, Tarea -> autor read-only y fijar en save (o esconder)
