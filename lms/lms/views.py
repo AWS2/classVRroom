@@ -46,7 +46,7 @@ def start_vr_exercise(request):
         })
     pin = Pin.objects.get(pin=getpin)
     # no aceptamos tokens creados hace mas de 24h
-    if not pin.vigente():
+    if not pin.vigente:
         pin.delete()
         return Response({
             'status': 'ERROR',
