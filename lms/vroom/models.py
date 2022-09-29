@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
-import os
+import os, datetime, random
 
 
 class Usuario(AbstractUser):
@@ -145,9 +145,33 @@ class Invitacion(models.Model):
     tipo_subscripcion = models.ForeignKey('Tipo_Subscripcion',on_delete=models.CASCADE)
 
 class Pin(models.Model):
-    pin = models.CharField(max_length=4, default=None, unique=True, null=False)
+    pin = models.CharField(max_length=4,unique=True,null=False)
     tarea = models.ForeignKey('Tarea',on_delete=models.DO_NOTHING,null=False,default=False)
     usuario = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING,default=True)
+    fecha_creacion = models.DateTimeField(default=timezone.now)
+    token = models.CharField(max_length=40,null=True,blank=True)
+    @property
+    def vigente(self):
+        # admitimos PINs dentro de las 24h de su creación
+        if self.fecha_creacion+datetime.timedelta(hours=24) > timezone.now():
+            return True
+        return False
+    def genera(self):
+        # genera nuevo PIN y mantiene el objeto y relaciones
+        randomnum = random.randint(1000,9999)
+        cuenta = 0
+        while True:
+            # protegemos contra bucle infinito
+            cuenta += 1
+            if cuenta>1000:
+                randomnum = 0
+                break
+            # iteramos hasta que encontremos un numero PIN libre
+            if not Pin.objects.filter(pin=randomnum).exists():
+                break
+            randomnum = random.randint(1000,9999)
+        self.pin = randomnum
+        return randomnum
 
 class Auto_Puntuacion(models.Model):
     passed_items = models.IntegerField(null=False,blank=False,default=0)

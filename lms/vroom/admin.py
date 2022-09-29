@@ -218,13 +218,16 @@ class UserAdmin(UserAdmin):
 
 class PinAdmin(admin.ModelAdmin):
     model = Pin
-    list_display = ('pin','usuario','tarea','get_curso','get_centro')
+    list_display = ('pin','vigente','usuario','tarea','get_curso','get_centro','fecha_creacion')
     search_fields = ('usuario__first_name','usuario__last_name',
             'usuario__email','tarea__titulo','tarea__curso__titulo')
     def get_curso(self,obj):
         return obj.tarea.curso.titulo
     def get_centro(self,obj):
         return obj.tarea.curso.centro.nombre
+    def vigente(self,obj):
+        return obj.vigente
+    vigente.boolean = True
 
 admin.site.register(Centro,CentroAdmin)
 admin.site.register(Curso, CursoAdmin)

@@ -24,10 +24,12 @@
           dataType: "json",
         }).done(function (msg) {
             if( msg.status="OK" ) {
-                alert("PIN="+msg.pin);
+                console.log(msg.message);
                 $("#pin_num").html(msg.pin);
+                alert("PIN="+msg.pin);
             }
             else {
+                console.log(msg.message);
                 alert("ERROR. "+msg.message)
             }
         }).fail(function () {

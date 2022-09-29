@@ -154,26 +154,32 @@ def get_pin(request,id_tarea):
             })
 
     # TODO: comprovar que la tarea es de un curso donde está matriculado el usuario
-    
+
     # objeto PIN preexistente. Devolvemos el que ha ya habia
     # TODO: quizas mejor recrear PIN?
     if Pin.objects.filter(usuario=request.user,tarea=tarea).exists():
         pin = Pin.objects.filter(usuario=request.user,tarea=tarea).first()
-        return JsonResponse({
-                "status": "OK",
-                "message": "PIN preexistente",
-                "id_tarea":id_tarea,
-                "pin": pin.pin
-            })
-    # nuevo numero PIN que no exista ya en la BD
-    randomnum = random.randint(1000,9999)
-    while True:
-        # iteramos hasta que encontremos un numero PIN libre
-        if not Pin.objects.filter(pin=randomnum).exists():
-            break
-        randomnum = random.randint(1000,9999)
+        # pin vigente se puede reutilizar
+        if pin.vigente:
+            return JsonResponse({
+                    "status": "OK",
+                    "message": "PIN válido preexistente",
+                    "id_tarea":id_tarea,
+                    "pin": pin.pin
+                })
+        else:
+            # pin caducado, lo eliminamos
+            pin.delete()
     # crear nuevo PIN
-    pin = Pin.objects.create(tarea=tarea,pin=randomnum,usuario=request.user)
+    pin = Pin(tarea=tarea,usuario=request.user)
+    if not pin.genera():
+        # pins agotados
+        return JsonResponse({
+                "status": "ERROR",
+                "message": "Error en la creación del PIN. Consulte al administrador.",
+            })
+    # el nº PIN se ha generado correctamente
+    pin.save()
     # enviamos
     return JsonResponse({
             "status": "OK",

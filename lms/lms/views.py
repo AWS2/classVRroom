@@ -16,8 +16,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-import random
-import json
+import random, json, datetime, binascii
 from django.forms.models import model_to_dict
 
 
@@ -33,16 +32,31 @@ def ping(request):
 @permission_classes([])
 def start_vr_exercise(request):
     getpin=request.POST.get('PIN')
-    
-    try:
-        pin = Pin.objects.get(pin=getpin)
-    except:
-        
+    if not getpin:
         return Response({
             'status': 'ERROR',
-            'message': 'Pin no encontrado.'
+            'message': 'Hay que adjuntar PIN.'
         })
-
+    # localizamos objeto pin
+    pin = None
+    if not Pin.objects.filter(pin=getpin).exists():
+        return Response({
+            'status': 'ERROR',
+            'message': 'PIN no encontrado.',
+        })
+    pin = Pin.objects.get(pin=getpin)
+    # no aceptamos tokens creados hace mas de 24h
+    if not pin.vigente():
+        pin.delete()
+        return Response({
+            'status': 'ERROR',
+            'message': 'PIN caducado.',
+        })
+    # si hemos llegado aquí, hay pin
+    # creamos session token
+    # TODO: que hacemos si ya está creado el token?
+    pin.token = binascii.hexlify(os.urandom(20)).decode()
+    pin.save()
     user = pin.usuario
     vr_exerciseid = pin.tarea.id
     minVer = Tarea.objects.get(id=vr_exerciseid).min_exercise_version
@@ -53,6 +67,7 @@ def start_vr_exercise(request):
         "username": user.first_name+" "+user.last_name,
         "VRexerciseID" :  vr_exerciseid,
         "minExerciseVersion" : minVer,
+        "session_token" : pin.token,
     })
 
 
