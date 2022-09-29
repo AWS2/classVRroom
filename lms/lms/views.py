@@ -27,10 +27,19 @@ def ping(request):
             'message': 'Conexión exitosa.',
         })
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
 @api_view(['POST'])
 @authentication_classes([])
 @permission_classes([])
 def start_vr_exercise(request):
+    print("IP="+str(get_client_ip(request)))
     getpin=request.POST.get('PIN')
     if not getpin:
         return Response({
