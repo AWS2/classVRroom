@@ -88,11 +88,19 @@ def finish_vr_exercise(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
 
-    getpin=int(body['PIN'])
-    autograde=body['autograde']
-    VRexerciseID=int(body['VRexerciseID'])
-    exerciseVersionID=float(body['exerciseVersionID'])
-    performance_data = body['performance_data']
+    """if not "PIN" in body.keys() or \
+        not "autograde" in body.keys() or \
+        not "VRexerciseID" in body.keys():
+        return Response({
+            'status': 'ERROR',
+            'message': 'Faltan parámetros (PIN, autograde, VRexerciseID). Comprueba la documentación.'
+        })"""
+
+    getpin=body.get('PIN')
+    autograde=body.get('autograde')
+    VRexerciseID=body.get('VRexerciseID')
+    exerciseVersion=body.get('exerciseVersion')
+    performance_data = body.get('performance_data')
 
 
     # Comprueba que el pin existe
@@ -106,10 +114,10 @@ def finish_vr_exercise(request):
 
 
     # Comprueba que estan todos los parametros
-    if getpin==None or autograde==None or VRexerciseID==None or exerciseVersionID==None or performance_data==None:
+    if getpin==None or autograde==None or VRexerciseID==None or exerciseVersion==None or performance_data==None:
         return Response({
             'status': 'ERROR',
-            'message': 'Faltan parametros.'
+            'message': 'Faltan parametros. Consulta la documentación.'
         })
 
     # Comprueba que el autograde es correcto
@@ -181,8 +189,8 @@ def finish_vr_exercise(request):
         })
 
 
-    # Se borra el pin
-    pin.delete()
+    # Se borra el pin?
+    #pin.delete()
 
     return Response({
         'status': 'OK',

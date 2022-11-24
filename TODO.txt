@@ -1,0 +1,24 @@
+
+TODO
+====
+
+- no borrar PIN, pero revisar caducidad
+- revisar registro de dados en /media , no en /static
+
+
+
+
+/api/finish_vr_exercise :
+
+{
+	"PIN":2127,
+	"autograde": {
+		"passed_items": 3,
+		"failed_items": 1,
+		"score": 68,
+		"comments": "Bien, pero se puede mejorar."
+	},
+	"VRexerciseID": 221,
+	"exerciseVersion": 112,
+	"performance_data": {"datos": "ejemplo"}
+}
