@@ -175,7 +175,7 @@ def finish_vr_exercise(request):
     entrega.save()
     try:
         filename = 'performance_data-'+str(pin.usuario.id)+"-"+str(entrega.id)+'.json'
-        entrega.archivo.save(filename,ContentFile(str(performance_data)))
+        entrega.archivo.save(filename,ContentFile(json.dumps(performance_data)))
         entrega.save()
     except:
         traceback.print_exc()
