@@ -18,6 +18,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 import random, json, datetime, binascii
 from django.forms.models import model_to_dict
+from django.core.files import File
+from django.core.files.base import ContentFile
+from django.conf import settings
 
 
 def ping(request):
@@ -169,20 +172,14 @@ def finish_vr_exercise(request):
         auto_puntuacion = auto_puntuacion,
         nota = None,
     )
-    setattr(entrega, 'archivo', '/static/assets/archivos/performance_data-' + str(pin.usuario.id) + str(entrega.id) + '.json')
     entrega.save()
     try:
-
-        workpath = os.path.dirname(os.path.abspath(__file__)) #Returns the Path your .py file is in
-        performance_data_file = open(os.path.join(workpath,'../static/assets/archivos/performance_data-' + str(pin.usuario.id) + str(entrega.id) + '.json'), 'w+')
-        performance_data_file.write(json.dumps(performance_data))
-        performance_data_file.close()
-
+        filename = 'performance_data-'+str(pin.usuario.id)+"-"+str(entrega.id)+'.json'
+        entrega.archivo.save(filename,ContentFile(str(performance_data)))
+        entrega.save()
     except:
         traceback.print_exc()
-        
         entrega.delete()
-        
         return Response({
             'status': 'ERROR',
             'message': 'Error al guardar performance_data.'

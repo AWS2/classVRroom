@@ -11,7 +11,7 @@ TODO
 /api/finish_vr_exercise :
 
 {
-	"PIN":2127,
+	"PIN":3068,
 	"autograde": {
 		"passed_items": 3,
 		"failed_items": 1,

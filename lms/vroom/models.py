@@ -74,7 +74,7 @@ class Entrega(models.Model):
     autor = models.ForeignKey('Usuario',on_delete=models.DO_NOTHING)
     fecha_publicacion = models.DateTimeField(default=timezone.now)
     fecha_edicion = models.DateTimeField(default=timezone.now)
-    archivo = models.FileField(upload_to='static/assets/archivos',default=None, blank=True, null=True)
+    archivo = models.FileField(upload_to='performances/',default=None, blank=True, null=True)
     auto_puntuacion = models.ForeignKey('Auto_Puntuacion',on_delete=models.DO_NOTHING,default=None,blank=True,null=True)
     comentario_alumno = models.CharField(max_length=500,default=None, blank=True, null=True)
     tarea = models.ForeignKey('Tarea',on_delete=models.DO_NOTHING,null=False) 
