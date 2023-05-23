@@ -70,7 +70,9 @@
                 <p>Comentario:&nbsp<textarea cols="70" rows="1" :id="'comentario' + [[entrega.id]]">[[entrega.comentario_alumno]]</textarea><button class='btn' @click="guardar(entrega.id)">Guardar</button></p>
             </div>
             <div>
-                <h3>PIN: <span id="pin_num">{{pin}}</span></h3>
+                {% if pin.vigente %}
+                    <h3>PIN: <span id="pin_num">{{pin.pin}}</span></h3>
+                {% endif %}
                 <button onclick="get_pin()">Solicitar PIN</button>
             </div>
         </div>

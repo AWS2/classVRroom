@@ -102,7 +102,7 @@ def tarea(request, id_tarea, id_curso):
             pin_number = pin.pin
         contexto = {
             "tarea": tarea_dict,
-            "pin": pin_number,
+            "pin": pin,
             "entregas": entregas,
             "calificacion": calificacion,
         }
