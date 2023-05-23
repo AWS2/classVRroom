@@ -70,7 +70,7 @@ def start_vr_exercise(request):
     pin.token = binascii.hexlify(os.urandom(20)).decode()
     pin.save()
     user = pin.usuario
-    vr_exerciseid = pin.tarea.id
+    vr_exerciseid = pin.tarea.ejercicio.idVr
     minVer = Tarea.objects.get(id=vr_exerciseid).min_exercise_version
     if (minVer == None):
         minVer = None
