@@ -121,13 +121,15 @@ def tarea(request, id_tarea, id_curso):
             id_alumno = alumno["usuario_id"]
             dict_alumno = model_to_dict(Usuario.objects.get(id = id_alumno))
             dict_alumno["ultima_entrega"] = ultima_entrega
+            # patch error "group is not json serializable"
+            del dict_alumno["groups"]
             alumnos.append(dict_alumno)
 
         entregas = Entrega.objects.filter(tarea = tarea.id).values()
         for entrega in entregas:
             auto_puntuacion = model_to_dict(Auto_Puntuacion.objects.get(id = entrega['auto_puntuacion_id']))
             entrega['auto_puntuacion'] = auto_puntuacion
-            
+        
         contexto = {
             "tarea": tarea_dict,
             "alumnos": list(alumnos),

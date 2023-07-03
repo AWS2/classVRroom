@@ -2,8 +2,9 @@
 TODO
 ====
 
-- no borrar PIN, pero revisar caducidad
-- revisar registro de dados en /media , no en /static
+OK- no borrar PIN, pero revisar caducidad
+OK- revisar registro de dados en /media , no en /static
+- implementar /close_vr_exercise + PIN
 
 
 
