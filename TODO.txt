@@ -1,0 +1,25 @@
+
+TODO
+====
+
+OK- no borrar PIN, pero revisar caducidad
+OK- revisar registro de dados en /media , no en /static
+- implementar /close_vr_exercise + PIN
+
+
+
+
+/api/finish_vr_exercise :
+
+{
+	"PIN":3068,
+	"autograde": {
+		"passed_items": 3,
+		"failed_items": 1,
+		"score": 68,
+		"comments": "Bien, pero se puede mejorar."
+	},
+	"VRexerciseID": 221,
+	"exerciseVersion": 112,
+	"performance_data": {"datos": "ejemplo"}
+}

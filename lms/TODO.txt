@@ -1,0 +1,43 @@
+
+
+
+OK- pasar idioma a ES en el admin django
+- simplificar admins
+	XNO- eliminar admin_centro
+	OK- dar permisos de cursos a profesores
+	OK- arreglar script initvroom
+
+OK- duración sesiones de 2 horas
+OK- en users, poner centro en readonly menos para super
+OK- asignar centro automaticamente a new user
+OK- new curso:
+	OK- asignar centro autom a new curso
+	OK- subscribir profe creador autom.
+OK- filtrar alumnos en inscripciones (usuario_curso inline)
+
+
+PRIO
+OK- frontend peitición PIN alumno
+- aceptación de TOS alumnos
+
+
+- Restricciones admin panel:
+	OK- autor no es necesario, esconder
+	(a medias) OK- esconder (no para super) usuario-curso, ejercicio, tarea, entrega y autopuntuaciones. Dejamos solo curso, user, tarea
+	- Curso:
+		OK- centro read-only y fijar en save
+		- Link, Doc, Texto, Tarea -> autor read-only y fijar en save (o esconder)
+	- User:
+		OK- ver tipo de usuario en la lista (grupos)
+		OK- ver solo los de tu centro
+		- al crear usuario
+			OK- fijar centro, staff_status y permisos (de alumno o de profe)
+			OK- esconder ternimos (null), staff_status, superuser, permisos
+			- profe ve admins como readonly (o no los ve)
+- frontend
+	- primer login de alumnos pide nivel de aceptación
+	- invitaciones email?
+	- 
+- social auth
+- responsive
+

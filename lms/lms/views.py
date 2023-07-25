@@ -16,9 +16,11 @@ from rest_framework.authtoken.models import Token
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-import random
-import json
+import random, json, datetime, binascii
 from django.forms.models import model_to_dict
+from django.core.files import File
+from django.core.files.base import ContentFile
+from django.conf import settings
 
 
 def ping(request):
@@ -28,23 +30,47 @@ def ping(request):
             'message': 'Conexión exitosa.',
         })
 
-@api_view(['GET'])
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+@api_view(['POST'])
 @authentication_classes([])
 @permission_classes([])
 def start_vr_exercise(request):
-    getpin=request.GET.get('pin')
-    
-    try:
-        pin = Pin.objects.get(pin=getpin)
-    except:
-        
+    print("IP="+str(get_client_ip(request)))
+    getpin=request.POST.get('PIN')
+    if not getpin:
         return Response({
             'status': 'ERROR',
-            'message': 'Pin no encontrado.'
+            'message': 'Hay que adjuntar PIN.'
         })
-
+    # localizamos objeto pin
+    pin = None
+    if not Pin.objects.filter(pin=getpin).exists():
+        return Response({
+            'status': 'ERROR',
+            'message': 'PIN no encontrado.',
+        })
+    pin = Pin.objects.get(pin=getpin)
+    # no aceptamos tokens creados hace mas de 24h
+    if not pin.vigente:
+        pin.delete()
+        return Response({
+            'status': 'ERROR',
+            'message': 'PIN caducado.',
+        })
+    # si hemos llegado aquí, hay pin
+    # creamos session token
+    # TODO: que hacemos si ya está creado el token?
+    pin.token = binascii.hexlify(os.urandom(20)).decode()
+    pin.save()
     user = pin.usuario
-    vr_exerciseid = pin.tarea.id
+    vr_exerciseid = pin.tarea.ejercicio.idVr
     minVer = Tarea.objects.get(id=vr_exerciseid).min_exercise_version
     if (minVer == None):
         minVer = None
@@ -53,6 +79,7 @@ def start_vr_exercise(request):
         "username": user.first_name+" "+user.last_name,
         "VRexerciseID" :  vr_exerciseid,
         "minExerciseVersion" : minVer,
+        "session_token" : pin.token,
     })
 
 
@@ -64,11 +91,19 @@ def finish_vr_exercise(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
 
-    getpin=int(body['pin'])
-    autograde=body['autograde']
-    VRexerciseID=int(body['VRexerciseID'])
-    exerciseVersionID=float(body['exerciseVersionID'])
-    performance_data = body['performance_data']
+    """if not "PIN" in body.keys() or \
+        not "autograde" in body.keys() or \
+        not "VRexerciseID" in body.keys():
+        return Response({
+            'status': 'ERROR',
+            'message': 'Faltan parámetros (PIN, autograde, VRexerciseID). Comprueba la documentación.'
+        })"""
+
+    getpin=body.get('PIN')
+    autograde=body.get('autograde')
+    VRexerciseID=body.get('VRexerciseID')
+    exerciseVersion=body.get('exerciseVersion')
+    performance_data = body.get('performance_data')
 
 
     # Comprueba que el pin existe
@@ -82,10 +117,10 @@ def finish_vr_exercise(request):
 
 
     # Comprueba que estan todos los parametros
-    if getpin==None or autograde==None or VRexerciseID==None or exerciseVersionID==None or performance_data==None:
+    if getpin==None or autograde==None or VRexerciseID==None or exerciseVersion==None or performance_data==None:
         return Response({
             'status': 'ERROR',
-            'message': 'Faltan parametros.'
+            'message': 'Faltan parametros. Consulta la documentación.'
         })
 
     # Comprueba que el autograde es correcto
@@ -137,28 +172,22 @@ def finish_vr_exercise(request):
         auto_puntuacion = auto_puntuacion,
         nota = None,
     )
-    setattr(entrega, 'archivo', '/static/assets/archivos/performance_data-' + str(pin.usuario.id) + str(entrega.id) + '.json')
     entrega.save()
     try:
-
-        workpath = os.path.dirname(os.path.abspath(__file__)) #Returns the Path your .py file is in
-        performance_data_file = open(os.path.join(workpath,'../static/assets/archivos/performance_data-' + str(pin.usuario.id) + str(entrega.id) + '.json'), 'w+')
-        performance_data_file.write(json.dumps(performance_data))
-        performance_data_file.close()
-
+        filename = 'performance_data-'+str(pin.usuario.id)+"-"+str(entrega.id)+'.json'
+        entrega.archivo.save(filename,ContentFile(json.dumps(performance_data)))
+        entrega.save()
     except:
         traceback.print_exc()
-        
         entrega.delete()
-        
         return Response({
             'status': 'ERROR',
             'message': 'Error al guardar performance_data.'
         })
 
 
-    # Se borra el pin
-    pin.delete()
+    # Se borra el pin?
+    #pin.delete()
 
     return Response({
         'status': 'OK',

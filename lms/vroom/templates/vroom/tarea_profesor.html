@@ -57,6 +57,7 @@
             <td><button class="btn" @click="guardar(alumno)">Guardar</button></td>
             
             <td v-if="entregas[alumno.id]"><button class="btn" @click="ver(alumno)">Ver entrega</button></td>
+            <td v-else><button class="btn" style="background-color:grey;">No hay entregas</button></td>
         </tr>
     </table>
 </div>

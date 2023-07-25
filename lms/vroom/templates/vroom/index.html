@@ -12,8 +12,8 @@
 
         <div class="row">
             <div class=" ">
-                <h1>Bienvenido al proyecto classVRroom</h1>
-                <p class="text-justify"><b>classVRroom</b> es un entorno LMS (Learning Management System) adaptado específicamente para aplicaciones inmersivas 3D con dispositivos de realidad virtual. Dentro del proyecto VR Salud se ha desarrollado dicha aplicación inmersiva para que el alumando de Auxiliar de Enfermería ejercite su higiene postural a la vez que se entrena en las movilizaciones de pacientes.</p>
+                <h1>Bienvenido al portal classVRroom</h1>
+                <p class="text-justify"><b>classVRroom es un software LMS o Learning Management System</b> desarrollado por el <a href="https://esteveterradas.cat">Institut Esteve Terradas i Illa de Cornellà de Llobregat</a>, y especialmente diseñado para el seguimiento académico del alumnado del ciclo de Auxiliar de Enfermería que usa el software inmersivo 3D desarrollado en el proyecto <b>VR Salud</b>.</p>
             </div>
         </div>
 
@@ -22,14 +22,22 @@
     <section class="container mx-auto bg-light">
         <div class="row align-items-center py-4">
             <div class="col-6  p-l">
-                <p class="text-justify">El proyecto VR Salud está enmarcado en los programas de innovación en la FP del Ministerio de Educación y Formación Profesional. El software <b>classVRroom</b> ha sido desarrollado por el Institut Esteve Terradas i Illa de Cornellà de Llobregat.</p>
-
-                    Para mas información se puede visitar:
+                <p class="text-justify">El <b>proyecto VR Salud</b> se ubica dentro de las ayudas para la innovación en la FP del Ministerio de Educación y FP, y está financiado con los fondos europeos Next Generation.</p>
+                <p>Los partners del proyeto VR Salud son:</p>
                 <ul>
-                    <li><a href="http://esteveterradas.cat">Institut Esteve Terradas i Illa</a></li>
-                    <li><a href="http://ergonomiadelcuidador.es">www.ergonomiadelcuidador.es</a></li>
-                    <li><a href="http://github.com/AWS2/classVRroom">Repositorio Github de classVRroom</a></li>
+                    <li>Institut Esteve Terradas i Illa (Cornellà de Llobregat)</li>
+                    <li>IES Politécnico de Soria</li>
+                    <li>CIFP Los Enlaces (Zaragoza)</li>
+                    <li>Intech 3D (Lleida)</li>
+                    <li>UIC - Universitat Internacional de Catalunya</li>
                 </ul>
+                <br>
+
+                <p>Direcciones de interés:</p>
+                <ul>
+                    <li><a href="http://ergonomiadelcuidador.es">www.ergonomiadelcuidador.es</a></li>
+                </ul>
+
                 {% if user.is_authenticated %}
                     <span class="my-3">
                     Bienvenido de nuevo {{user}}
@@ -38,10 +46,24 @@
                     <a class="btn btn-primary my-3" href="{% url 'login' %}" role="button">Iniciar sesión</a>
                 {% endif %}
             </div>
-            <div class="col-6"><img src="{% static 'assets/img/movilizacion1.png' %}" alt=""></div>
+            <div class="col-6 p-l"><img src="{% static 'assets/img/landing1.jpg' %}" alt=""></div>
         </div>
     </section>
 
+    <section class="container mx-auto bg-light">
+        <div class="row align-items-center py-4">
+            <div class="col-6">
+                <p>
+                    <img src="{% static 'assets/img/logo-mefp.jpg' %}" alt="logo mefp">
+                </p>
+            </div>
+            <div class="col-6">
+                <p>
+                    <img src="{% static 'assets/img/logos-ue-next-generation.png' %}" alt="logo UE Next Generation">
+                </p>
+            </div>
+        </div>
+    </section>
 
 
 

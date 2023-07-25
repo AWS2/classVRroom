@@ -66,4 +66,5 @@ urlpatterns += [
     path('api/pin_request',views.pin_request, name="api pin_request"),
     path('api/start_vr_exercise',views.start_vr_exercise, name="api start_vr_exercise"),
     path('api/finish_vr_exercise',views.finish_vr_exercise, name="api finish_vr_exercise"),
-]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) \
+ + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

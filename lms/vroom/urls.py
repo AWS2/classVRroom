@@ -7,6 +7,7 @@ urlpatterns = [
     path('curso/<int:id_curso>', views.curso, name='curso'),
     path('curso/<int:id_curso>/tarea/<int:id_tarea>', views.tarea, name='tarea'),
     path('curso/<int:id_curso>/tarea/<int:id_tarea>/entrega/<int:id_alumno>', views.entrega, name='entrega'),
+    path('get_pin/<int:id_tarea>', views.get_pin, name="get_pin"),
 ]
 
 
@@ -18,3 +19,4 @@ urlpatterns += [
     path('login/', LoginView.as_view(authentication_form=CustomLoginForm), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
 ]
+
