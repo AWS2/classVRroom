@@ -97,6 +97,7 @@ def tarea(request, id_tarea, id_curso):
         except:
             calificacion = False
         pin_number = None
+        pin = None
         if Pin.objects.filter(tarea=tarea,usuario=request.user).exists():
             pin = Pin.objects.filter(tarea=tarea,usuario=request.user).first()
             pin_number = pin.pin
